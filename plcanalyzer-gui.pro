@@ -17,7 +17,6 @@ HEADERS  += mainwindow.h
 
 FORMS    += mainwindow.ui
 
-OTHER_FILES += \
-    lukas.txt
+OTHER_FILES +=
 
 
