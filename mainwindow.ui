@@ -47,9 +47,20 @@
      <x>0</x>
      <y>0</y>
      <width>400</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
+   <widget class="QMenu" name="menuDatei">
+    <property name="title">
+     <string>Datei</string>
+    </property>
+    <addaction name="actionNeues_Projekt"/>
+    <addaction name="actionProjekt_ffnen"/>
+    <addaction name="actionProjekt_speichern"/>
+    <addaction name="separator"/>
+    <addaction name="actionBeenden"/>
+   </widget>
+   <addaction name="menuDatei"/>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
    <attribute name="toolBarArea">
@@ -60,6 +71,26 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
+  <action name="actionNeues_Projekt">
+   <property name="text">
+    <string>neues Projekt</string>
+   </property>
+  </action>
+  <action name="actionProjekt_ffnen">
+   <property name="text">
+    <string>Projekt öffnen</string>
+   </property>
+  </action>
+  <action name="actionProjekt_speichern">
+   <property name="text">
+    <string>Projekt speichern</string>
+   </property>
+  </action>
+  <action name="actionBeenden">
+   <property name="text">
+    <string>Beenden</string>
+   </property>
+  </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
@@ -77,6 +108,22 @@
     <hint type="destinationlabel">
      <x>217</x>
      <y>148</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>actionBeenden</sender>
+   <signal>triggered()</signal>
+   <receiver>MainWindow</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>-1</x>
+     <y>-1</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>199</x>
+     <y>149</y>
     </hint>
    </hints>
   </connection>
