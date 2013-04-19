@@ -14,12 +14,11 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-public slots:
-    void printUnnuetzesZeug();
     
 private slots:
     void on_actionNeues_Projekt_triggered();
+
+    void on_actionProjekt_ffnen_triggered();
 
 private:
     Ui::MainWindow *ui;
