@@ -23,7 +23,10 @@ HEADERS  += mainwindow.h \
 
 FORMS    += mainwindow.ui
 
-OTHER_FILES +=
+OTHER_FILES += \
+    lib/s7onlinx.dll \
+    lib/libnodave.lib \
+    lib/libnodave.dll
 
 DEFINES += BCCWIN
 
