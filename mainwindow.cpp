@@ -2,8 +2,6 @@
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
-#include <iostream>
-using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -21,17 +19,17 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionNeues_Projekt_triggered()
 {
-    cout << "Hello World" << endl;
+    printf("Hello World\r\n");
 }
 
 
 void MainWindow::on_actionProjekt_ffnen_triggered()
 {
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt öffnen"), "", tr("Files (*.xml)"));
+   /* QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt öffnen"), "", tr("Files (*.xml)"));
 
     QMessageBox::information(
             this,
             tr("Gewaehlter Pfad"),
                 tr(fileName.toUtf8().constData()));
-
+*/
 }
