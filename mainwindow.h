@@ -7,7 +7,7 @@ namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow
+class MainWindow : public QMainWindow//, public S7Connection
 {
     Q_OBJECT
     
@@ -19,6 +19,8 @@ private slots:
     void on_actionNeues_Projekt_triggered();
 
     void on_actionProjekt_ffnen_triggered();
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::MainWindow *ui;
