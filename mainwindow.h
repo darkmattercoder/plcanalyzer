@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include "s7connection.h"
 
 namespace Ui {
 class MainWindow;
@@ -20,10 +21,17 @@ private slots:
 
     void on_actionProjekt_ffnen_triggered();
 
-    void on_pushButton_2_clicked();
+    void on_pushButton_clicked();
+
+//    void on_Button_Light_clicked();
+
+    void on_Button_Connect_clicked();
+
+    void on_Button_Get_Val_clicked();
 
 private:
     Ui::MainWindow *ui;
+    S7Connection MyS7Connection;
 };
 
 #endif // MAINWINDOW_H

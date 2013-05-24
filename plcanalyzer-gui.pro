@@ -11,12 +11,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     s7connection.cpp
 
 HEADERS  += mainwindow.h \
     nodave.h \
-    s7connection.h
+    s7connection.h \
+    log2.h
 
 FORMS    += mainwindow.ui
 
@@ -25,7 +26,8 @@ OTHER_FILES += \
     lib/libnodave.lib \
     lib/libnodave.dll
 
-DEFINES += BCCWIN
+DEFINES += BCCWIN \
+    DAVE_LITTLE_ENDIAN
 
 LIBS += -L$$PWD/lib/ -llibnodave
 

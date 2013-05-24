@@ -1,6 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "s7connection.h"
+//#include "s7connection.h"
 #include <QFileDialog>
 #include <QMessageBox>
 
@@ -9,8 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    //S7Connection::S7Connection();
-    //S7Connection::connect(this->winId());
+
 }
 
 MainWindow::~MainWindow()
@@ -37,16 +36,29 @@ void MainWindow::on_actionProjekt_ffnen_triggered()
 
 }
 
-void MainWindow::on_pushButton_2_clicked()
+
+//void MainWindow::on_Button_Light_clicked()
+//{
+
+//}
+
+void MainWindow::on_pushButton_clicked()
 {
-    S7Connection MyS7Connection;
-    MyS7Connection.startConnection(this->winId());
-    //    char szOutput[128];
-    //    //sprintf_s(szOutput, "MB 1: %i", S7Connection::getValue());
-    //    QMessageBox::information(
-    //                this,
-    //                tr("Wert von Merker Byte 1"),
 
-    //                tr(szOutput));
+}
 
+void MainWindow::on_Button_Connect_clicked()
+{
+    if(MyS7Connection.startConnection(this->winId()))
+    {
+        ui->Button_Get_Val->setEnabled(true);
+    }
+}
+
+void MainWindow::on_Button_Get_Val_clicked()
+{
+    if (MyS7Connection.isConnected())
+    {
+        ui->lcdNumber->display(MyS7Connection.getValue());
+    }
 }
