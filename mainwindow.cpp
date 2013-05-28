@@ -1,14 +1,22 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-//#include "s7connection.h"
 #include <QFileDialog>
 #include <QMessageBox>
+#include <QTimer>
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+
+    ui->textEdit->append(QString().sprintf("Willkommen\n"));
+
+    MyRedirector.setOutputTF(ui->textEdit);
+
+    QTimer *timer = new QTimer(this);
+    connect(timer, SIGNAL(timeout()), this, SLOT(on_Timer_clicked()));
+    timer->start(100);
 
 }
 
@@ -27,7 +35,7 @@ void MainWindow::on_actionNeues_Projekt_triggered()
 
 void MainWindow::on_actionProjekt_ffnen_triggered()
 {
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt öffnen"), "", tr("Files (*.xml)"));
+   QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt oeffnen"), "", tr("Files (*.xml)"));
 
     QMessageBox::information(
             this,
@@ -45,6 +53,8 @@ void MainWindow::on_actionProjekt_ffnen_triggered()
 void MainWindow::on_pushButton_clicked()
 {
 
+    MyRedirector.readOutsToTF();
+
 }
 
 void MainWindow::on_Button_Connect_clicked()
@@ -61,4 +71,10 @@ void MainWindow::on_Button_Get_Val_clicked()
     {
         ui->lcdNumber->display(MyS7Connection.getValue());
     }
+}
+
+void MainWindow::on_Timer_clicked()
+{
+    // Redirect STDOUTs to TextEdit
+    MyRedirector.readOutsToTF();
 }

@@ -1,6 +1,8 @@
 #include "s7connection.h"
 #include "log2.h"
 
+//#define printf(x) ui->textEdit->append(QString().sprintf(x));
+
 // Konstruktor
 S7Connection::S7Connection()
 {
@@ -17,6 +19,7 @@ S7Connection::S7Connection()
 S7Connection::~S7Connection()
 {
     disconnect();
+
 }
 
 // Opens the Connection
@@ -112,7 +115,7 @@ bool S7Connection::startConnection(HWND WndHandle)
     }
     else
     {
-        printf("Connection already exists!");
+        printf("Connection already exists!\n");
 
     }
 

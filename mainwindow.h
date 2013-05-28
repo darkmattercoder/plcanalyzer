@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "s7connection.h"
+#include "StdOutRedirector.h"
 
 namespace Ui {
 class MainWindow;
@@ -23,15 +24,16 @@ private slots:
 
     void on_pushButton_clicked();
 
-//    void on_Button_Light_clicked();
-
     void on_Button_Connect_clicked();
 
     void on_Button_Get_Val_clicked();
 
+    void on_Timer_clicked();
+
 private:
     Ui::MainWindow *ui;
     S7Connection MyS7Connection;
+    StdOutRedirector MyRedirector;
 };
 
 #endif // MAINWINDOW_H

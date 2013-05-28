@@ -17,7 +17,8 @@ SOURCES += main.cpp\
 HEADERS  += mainwindow.h \
     nodave.h \
     s7connection.h \
-    log2.h
+    log2.h \
+    StdOutRedirector.h
 
 FORMS    += mainwindow.ui
 
