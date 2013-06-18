@@ -12,15 +12,18 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
     mainwindow.cpp \
-    s7connection.cpp
+    s7connection.cpp \
+    connectionsettings.cpp
 
 HEADERS  += mainwindow.h \
     nodave.h \
     s7connection.h \
     log2.h \
-    StdOutRedirector.h
+    StdOutRedirector.h \
+    connectionsettings.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    connectionsettings.ui
 
 OTHER_FILES += \
     lib/s7onlinx.dll \

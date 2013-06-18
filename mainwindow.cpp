@@ -15,9 +15,10 @@ MainWindow::MainWindow(QWidget *parent) :
     MyRedirector.setOutputTF(ui->textEdit);
 
     QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(on_Timer_clicked()));
+    connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
     timer->start(100);
 
+    connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 }
 
 MainWindow::~MainWindow()
@@ -28,7 +29,8 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_actionNeues_Projekt_triggered()
 {
-    printf("Hello World\r\n");
+    printf("Gewähltes Protokoll: %i\n", MyS7Connection.MyConSet.useProto);
+
 
 }
 
@@ -45,15 +47,11 @@ void MainWindow::on_actionProjekt_ffnen_triggered()
 }
 
 
-//void MainWindow::on_Button_Light_clicked()
-//{
-
-//}
-
 void MainWindow::on_pushButton_clicked()
 {
 
-    MyRedirector.readOutsToTF();
+    ConDiag.SetSettings(MyS7Connection.MyConSet);
+    ConDiag.show();
 
 }
 
@@ -73,8 +71,14 @@ void MainWindow::on_Button_Get_Val_clicked()
     }
 }
 
-void MainWindow::on_Timer_clicked()
+void MainWindow::TimeOut()
 {
     // Redirect STDOUTs to TextEdit
     MyRedirector.readOutsToTF();
+}
+
+void MainWindow::ChangeSettings(ConSets NewConSets)
+{
+    MyS7Connection.MyConSet = NewConSets;
+
 }

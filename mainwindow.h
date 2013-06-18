@@ -4,18 +4,21 @@
 #include <QMainWindow>
 #include "s7connection.h"
 #include "StdOutRedirector.h"
+#include "connectionsettings.h"
+#include "mainwindow.h"
 
 namespace Ui {
 class MainWindow;
 }
 
-class MainWindow : public QMainWindow//, public S7Connection
+class MainWindow : public QMainWindow
 {
     Q_OBJECT
     
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    S7Connection MyS7Connection;
     
 private slots:
     void on_actionNeues_Projekt_triggered();
@@ -28,12 +31,14 @@ private slots:
 
     void on_Button_Get_Val_clicked();
 
-    void on_Timer_clicked();
+    void TimeOut();
+
+    void ChangeSettings(ConSets NewConSets);
 
 private:
     Ui::MainWindow *ui;
-    S7Connection MyS7Connection;
     StdOutRedirector MyRedirector;
+    ConnectionSettings ConDiag;
 };
 
 #endif // MAINWINDOW_H

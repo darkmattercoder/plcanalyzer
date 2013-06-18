@@ -72,14 +72,14 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>220</x>
-      <y>50</y>
-      <width>75</width>
+      <x>20</x>
+      <y>60</y>
+      <width>151</width>
       <height>23</height>
      </rect>
     </property>
     <property name="text">
-     <string>PushButton</string>
+     <string>Verbindungseinstellungen</string>
     </property>
    </widget>
    <widget class="QLCDNumber" name="lcdNumber">
@@ -206,11 +206,11 @@
    <hints>
     <hint type="sourcelabel">
      <x>215</x>
-     <y>91</y>
+     <y>69</y>
     </hint>
     <hint type="destinationlabel">
-     <x>217</x>
-     <y>148</y>
+     <x>145</x>
+     <y>64</y>
     </hint>
    </hints>
   </connection>

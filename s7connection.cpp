@@ -7,11 +7,12 @@
 S7Connection::S7Connection()
 {
     // Initialisize Variables
-    localMPI = 0;
-    useProto = daveProtoS7online;
-    speed = daveSpeed187k;
-    plcMPI = 2;
-    plc2MPI = -1;
+    MyConSet.localMPI = 0;
+    MyConSet.useProto = daveProtoS7online;
+    MyConSet.speed = daveSpeed187k;
+    MyConSet.plcMPI = 2;
+    MyConSet.plc2MPI = -1;
+    MyConSet.IP_Adr = "192.168.0.1";
     initSuccess = 0;
 }
 
@@ -37,7 +38,7 @@ bool S7Connection::startConnection(HWND WndHandle)
 
             daveSetDebug(daveDebugListReachables);
 
-            di = daveNewInterface(fds, "IF1", localMPI, useProto, speed);
+            di = daveNewInterface(fds, "IF1", MyConSet.localMPI, MyConSet.useProto, MyConSet.speed);
 
             char buf1 [davePartnerListSize];
 
@@ -74,13 +75,13 @@ bool S7Connection::startConnection(HWND WndHandle)
             }
 
             // Try to Connect
-            dc = daveNewConnection(di,plcMPI,0,0);
+            dc = daveNewConnection(di,MyConSet.plcMPI,0,0);
 
             msgBox.setText("New Connection erfolgreich\n");
             msgBox.exec();
 
-            if(plc2MPI>=0)
-                dc2 =daveNewConnection(di,plc2MPI,0,0);
+            if(MyConSet.plc2MPI>=0)
+                dc2 =daveNewConnection(di,MyConSet.plc2MPI,0,0);
             else
                 dc2=NULL;
 
@@ -90,7 +91,7 @@ bool S7Connection::startConnection(HWND WndHandle)
                 msgBox.setText("Try to connect erfolgreich\n");
                 msgBox.exec();
 
-                if(plc2MPI>=0)
+                if(MyConSet.plc2MPI>=0)
                 {
                     daveConnectPLC(dc2);
                 }

@@ -27,6 +27,17 @@
 #define WIN_STYLE
 #endif
 
+struct ConSets
+{
+    int localMPI;
+    int useProto;
+    int speed;
+    int plcMPI;
+    int plc2MPI;
+    QString IP_Adr;
+};
+
+
 class S7Connection
 {
 private:
@@ -50,12 +61,14 @@ public:
     bool isConnected();
 
     // Public Variables
-    int localMPI;
-    int useProto;
-    int speed;
-    int plcMPI;
-    int plc2MPI;
+//    int localMPI;
+//    int useProto;
+//    int speed;
+//    int plcMPI;
+//    int plc2MPI;
+    ConSets MyConSet;
 };
+
 
 #endif // S7CONNECTION_H
 
