@@ -25,8 +25,6 @@ private slots:
 
     void on_actionProjekt_ffnen_triggered();
 
-    void on_pushButton_clicked();
-
     void on_Button_Connect_clicked();
 
     void on_Button_Get_Val_clicked();
@@ -35,6 +33,8 @@ private slots:
 
     void ChangeSettings(ConSets NewConSets);
 
+    void on_pushButton_ConSets_clicked();
+
 private:
     Ui::MainWindow *ui;
     StdOutRedirector MyRedirector;
@@ -42,3 +42,5 @@ private:
 };
 
 #endif // MAINWINDOW_H
+
+

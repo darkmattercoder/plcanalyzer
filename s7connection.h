@@ -10,6 +10,7 @@
 #include <QDir>
 #include "nodave.h"
 #include "openS7online.h"
+#include "openSocket.h"
 
 #ifdef LINUX
 #include <unistd.h>
@@ -27,6 +28,7 @@
 #define WIN_STYLE
 #endif
 
+// Connection Settings
 struct ConSets
 {
     int localMPI;
@@ -34,6 +36,8 @@ struct ConSets
     int speed;
     int plcMPI;
     int plc2MPI;
+    int rack;
+    int slot;
     QString IP_Adr;
 };
 
@@ -61,11 +65,6 @@ public:
     bool isConnected();
 
     // Public Variables
-//    int localMPI;
-//    int useProto;
-//    int speed;
-//    int plcMPI;
-//    int plc2MPI;
     ConSets MyConSet;
 };
 

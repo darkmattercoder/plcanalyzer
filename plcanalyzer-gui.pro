@@ -20,7 +20,8 @@ HEADERS  += mainwindow.h \
     s7connection.h \
     log2.h \
     StdOutRedirector.h \
-    connectionsettings.h
+    connectionsettings.h \
+    openSocket.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui
@@ -31,7 +32,8 @@ OTHER_FILES += \
     lib/libnodave.dll
 
 DEFINES += BCCWIN \
-    DAVE_LITTLE_ENDIAN
+    DAVE_LITTLE_ENDIAN \
+    DONT_USE_GETHOSTBYNAME
 
 LIBS += -L$$PWD/lib/ -llibnodave
 

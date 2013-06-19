@@ -14,37 +14,11 @@
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="Button_Light">
-    <property name="geometry">
-     <rect>
-      <x>170</x>
-      <y>10</y>
-      <width>131</width>
-      <height>27</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Licht An/Aus</string>
-    </property>
-   </widget>
-   <widget class="QRadioButton" name="radioButton">
-    <property name="geometry">
-     <rect>
-      <x>30</x>
-      <y>10</y>
-      <width>116</width>
-      <height>22</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Licht</string>
-    </property>
-   </widget>
    <widget class="QPushButton" name="Button_Connect">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>90</y>
+      <y>40</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -60,7 +34,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>120</y>
+      <y>70</y>
       <width>75</width>
       <height>23</height>
      </rect>
@@ -69,11 +43,11 @@
      <string>Get Val</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="pushButton">
+   <widget class="QPushButton" name="pushButton_ConSets">
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>60</y>
+      <y>10</y>
       <width>151</width>
       <height>23</height>
      </rect>
@@ -86,7 +60,7 @@
     <property name="geometry">
      <rect>
       <x>220</x>
-      <y>90</y>
+      <y>40</y>
       <width>161</width>
       <height>51</height>
      </rect>
@@ -107,7 +81,7 @@
     <property name="geometry">
      <rect>
       <x>120</x>
-      <y>90</y>
+      <y>40</y>
       <width>91</width>
       <height>51</height>
      </rect>
@@ -129,6 +103,12 @@
       <width>381</width>
       <height>71</height>
      </rect>
+    </property>
+    <property name="sizePolicy">
+     <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <horstretch>0</horstretch>
+      <verstretch>0</verstretch>
+     </sizepolicy>
     </property>
    </widget>
   </widget>
@@ -198,22 +178,6 @@
  <layoutdefault spacing="6" margin="11"/>
  <resources/>
  <connections>
-  <connection>
-   <sender>Button_Light</sender>
-   <signal>clicked()</signal>
-   <receiver>radioButton</receiver>
-   <slot>toggle()</slot>
-   <hints>
-    <hint type="sourcelabel">
-     <x>215</x>
-     <y>69</y>
-    </hint>
-    <hint type="destinationlabel">
-     <x>145</x>
-     <y>64</y>
-    </hint>
-   </hints>
-  </connection>
   <connection>
    <sender>actionBeenden</sender>
    <signal>triggered()</signal>

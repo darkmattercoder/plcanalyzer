@@ -20,6 +20,8 @@ public:
 private slots:
     void on_buttonBox_accepted();
 
+    void on_ComboBox_Protokoll_currentIndexChanged(int index);
+
 signals:
     void SettingsChanged(ConSets DiagSets);
 

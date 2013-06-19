@@ -46,23 +46,26 @@ void MainWindow::on_actionProjekt_ffnen_triggered()
 
 }
 
-
-void MainWindow::on_pushButton_clicked()
-{
-
-    ConDiag.SetSettings(MyS7Connection.MyConSet);
-    ConDiag.show();
-
-}
-
+// Button Verbinden / Trennen
 void MainWindow::on_Button_Connect_clicked()
 {
-    if(MyS7Connection.startConnection(this->winId()))
+    if (ui->Button_Connect->text().compare("Connect") == 0)
     {
-        ui->Button_Get_Val->setEnabled(true);
+        if(MyS7Connection.startConnection(this->winId()))
+        {
+            ui->Button_Get_Val->setEnabled(true);
+            ui->Button_Connect->setText("Disconnect");
+        }
+    }
+    else
+    {
+        MyS7Connection.disconnect();
+        ui->Button_Get_Val->setEnabled(false);
+        ui->Button_Connect->setText("Connect");
     }
 }
 
+// Neunen Wert aus der SPS anfordern
 void MainWindow::on_Button_Get_Val_clicked()
 {
     if (MyS7Connection.isConnected())
@@ -71,14 +74,23 @@ void MainWindow::on_Button_Get_Val_clicked()
     }
 }
 
+// Zyklisches Event
 void MainWindow::TimeOut()
 {
     // Redirect STDOUTs to TextEdit
     MyRedirector.readOutsToTF();
 }
 
+// Event Werte aus Dialog sollen übernommen werden
 void MainWindow::ChangeSettings(ConSets NewConSets)
 {
     MyS7Connection.MyConSet = NewConSets;
 
+}
+
+// Button Verbindungseinstellungen
+void MainWindow::on_pushButton_ConSets_clicked()
+{
+    ConDiag.SetSettings(MyS7Connection.MyConSet);
+    ConDiag.show();
 }

@@ -4,29 +4,20 @@
 ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
     ui(new Ui::ConnectionSettings)
-
-
 {
-
+    // Userinterface aufbauen
     ui->setupUi(this);
-//#ifdef BCCWIN
-//    szListConnection = (QStringList() << "TCP IP" << "S7 Online");
-//#endif // BCCWIN
 
-//#ifdef LINUX
-//    szListConnection = (QStringList() << "TCP IP");
-//#endif
-
-    //ui->ComboBox_Protokoll->addItems(szListConnection);
-    ui->ComboBox_Protokoll->insertItem(daveProtoMPI, "MPI for S7 300/400");
-    ui->ComboBox_Protokoll->insertItem(daveProtoPPI, "PPI for S7 200");
-    ui->ComboBox_Protokoll->insertItem(daveProtoAS511, "S5 programming port protocol");
+    // ComboBox "Protokoll" mit den Einstellungen füllen
+    ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
+    ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
+    ui->ComboBox_Protokoll->addItem("S5 programming port protocol", daveProtoAS511);
 #ifdef BCCWIN
-    ui->ComboBox_Protokoll->insertItem(daveProtoS7online, "use s7onlinx.dll for transport");
+    ui->ComboBox_Protokoll->addItem("use s7onlinx.dll for transport", daveProtoS7online);
 #endif
-    ui->ComboBox_Protokoll->insertItem(daveProtoISOTCP, "ISO over TCP");
-    ui->ComboBox_Protokoll->insertItem(daveProtoISOTCP243, "ISO over TCP with CP243");
-    ui->ComboBox_Protokoll->insertItem(daveProtoISOTCPR, "ISO over TCP with Routing");
+    ui->ComboBox_Protokoll->addItem("ISO over TCP", daveProtoISOTCP);
+    ui->ComboBox_Protokoll->addItem("ISO over TCP with CP243", daveProtoISOTCP243);
+    ui->ComboBox_Protokoll->addItem("ISO over TCP with Routing", daveProtoISOTCPR);
 
     // Validator für die Eingabe der IP Adresse
     QRegExpValidator *RegExp_IP = new QRegExpValidator(this);
@@ -40,7 +31,6 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     RegExp_MPI->setRegExp(rx);
     ui->lineEdit_CPU_MPI->setValidator(RegExp_MPI);
     ui->lineEdit_local_MPI->setValidator(RegExp_MPI);
-
 
 }
 
@@ -56,7 +46,9 @@ void ConnectionSettings::on_buttonBox_accepted()
     m_DiagSets.localMPI = ui->lineEdit_local_MPI->text().toInt();
     m_DiagSets.plcMPI = ui->lineEdit_CPU_MPI->text().toInt();
     m_DiagSets.speed = ui->comboBox_Speed->currentIndex();
-    m_DiagSets.useProto = ui->ComboBox_Protokoll->currentIndex();
+    m_DiagSets.useProto = ui->ComboBox_Protokoll->itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
+    m_DiagSets.rack = ui->lineEdit_Rack->text().toInt();
+    m_DiagSets.slot = ui->lineEdit_Slot->text().toInt();
 
     // Signal "Einstellungen geändert" auslösen
     emit SettingsChanged(m_DiagSets);
@@ -72,6 +64,53 @@ void ConnectionSettings::SetSettings(ConSets CurrentSets)
     ui->lineEdit_local_MPI->setText(QString::number(m_DiagSets.localMPI));
     ui->lineEdit_CPU_MPI->setText(QString::number(m_DiagSets.plcMPI));
     ui->comboBox_Speed->setCurrentIndex(m_DiagSets.speed);
-    ui->ComboBox_Protokoll->setCurrentIndex(m_DiagSets.useProto);
+    ui->ComboBox_Protokoll->setCurrentIndex(ui->ComboBox_Protokoll->findData(m_DiagSets.useProto));
+    ui->lineEdit_Rack->setText(QString::number(m_DiagSets.rack));
+    ui->lineEdit_Slot->setText(QString::number(m_DiagSets.slot));
+}
 
+void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
+{
+    // Setzt die Bedienbarkeit von Elementen in Abhängigkeit des gewählten Protokolltyps
+    int iCurrProto = ui->ComboBox_Protokoll->itemData(index).toInt();
+
+    switch(iCurrProto)
+    {
+    case daveProtoMPI:
+    case daveProtoPPI:
+    case daveProtoAS511:
+        ui->comboBox_Speed->setEnabled(true);
+        ui->lineEdit_CPU_MPI->setEnabled(true);
+        ui->lineEdit_IP->setEnabled(false);
+        ui->lineEdit_local_MPI->setEnabled(true);
+        ui->lineEdit_Rack->setEnabled(true);
+        ui->lineEdit_Slot->setEnabled(true);
+        break;
+    case daveProtoS7online:
+        ui->comboBox_Speed->setEnabled(false);
+        ui->lineEdit_CPU_MPI->setEnabled(false);
+        ui->lineEdit_IP->setEnabled(false);
+        ui->lineEdit_local_MPI->setEnabled(false);
+        ui->lineEdit_Rack->setEnabled(true);
+        ui->lineEdit_Slot->setEnabled(true);
+        break;
+    case daveProtoISOTCP:
+    case daveProtoISOTCP243:
+    case daveProtoISOTCPR:
+        ui->comboBox_Speed->setEnabled(false);
+        ui->lineEdit_CPU_MPI->setEnabled(false);
+        ui->lineEdit_IP->setEnabled(true);
+        ui->lineEdit_local_MPI->setEnabled(false);
+        ui->lineEdit_Rack->setEnabled(true);
+        ui->lineEdit_Slot->setEnabled(true);
+        break;
+    default:
+        ui->comboBox_Speed->setEnabled(false);
+        ui->lineEdit_CPU_MPI->setEnabled(false);
+        ui->lineEdit_IP->setEnabled(false);
+        ui->lineEdit_local_MPI->setEnabled(false);
+        ui->lineEdit_Rack->setEnabled(false);
+        ui->lineEdit_Slot->setEnabled(false);
+        break;
+    }
 }
