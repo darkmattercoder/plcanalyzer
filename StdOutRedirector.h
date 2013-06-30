@@ -5,7 +5,14 @@
 #include <iostream>
 #include <stdio.h>
 #include <fcntl.h>
+
+//IO Header location changed with gcc 4.7
+#ifdef LINUX
+#include <sys/io.h>
+#else
 #include <io.h>
+#endif
+
 #include <QTextEdit>
 
 class StdOutRedirector : public QObject

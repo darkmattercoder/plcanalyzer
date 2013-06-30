@@ -4,6 +4,9 @@
 #
 #-------------------------------------------------
 
+#Change Linux to BCCWIN here
+CONFIG += LINUX
+
 QT       += core gui
 
 TARGET = plcanalyzer-gui
@@ -29,14 +32,29 @@ FORMS    += mainwindow.ui \
 OTHER_FILES += \
     lib/s7onlinx.dll \
     lib/libnodave.lib \
-    lib/libnodave.dll
+    lib/libnodave.dll \
+    lib/libnodave64.so
 
+#DEFINES depend on CONFIG above
+LINUX {
+DEFINES += LINUX \
+    DAVE_LITTLE_ENDIAN \
+    DONT_USE_GETHOSTBYNAME
+}
+BCCWIN {
 DEFINES += BCCWIN \
     DAVE_LITTLE_ENDIAN \
     DONT_USE_GETHOSTBYNAME
+}
 
+#LIBS depend on CONFIG above
+BCCWIN {
 LIBS += -L$$PWD/lib/ -llibnodave
+}
 
+LINUX {
+LIBS += -L$$PWD/lib/ -lnodave64
+}
 INCLUDEPATH += $$PWD/
 DEPENDPATH += $$PWD/lib/
 
