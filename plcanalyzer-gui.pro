@@ -22,7 +22,6 @@ HEADERS  += mainwindow.h \
     nodave.h \
     s7connection.h \
     log2.h \
-    StdOutRedirector.h \
     connectionsettings.h \
     openSocket.h
 
