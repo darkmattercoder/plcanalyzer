@@ -39,10 +39,12 @@ bool S7Connection::startConnection(WId WndHandle)
         case daveProtoAS511:
 
             break;
+#ifdef BCCWIN
         case daveProtoS7online:
             fds.rfd = openS7online("/S7ONLINE", WndHandle);
             qDebug("OpenS7online Handle:",(int) fds.rfd);
             break;
+#endif
         case daveProtoISOTCP:
         case daveProtoISOTCP243:
         case daveProtoISOTCPR:
@@ -131,9 +133,11 @@ bool S7Connection::startConnection(WId WndHandle)
                 case daveProtoAS511:
 
                     break;
+#ifdef BCCWIN
                 case daveProtoS7online:
                     closeS7online(int(fds.rfd));
                     break;
+#endif
                 case daveProtoISOTCP:
                 case daveProtoISOTCP243:
                 case daveProtoISOTCPR:
@@ -185,9 +189,11 @@ void S7Connection::disconnect()
         case daveProtoAS511:
 
             break;
+#ifdef BCCWIN
         case daveProtoS7online:
             closeS7online(int(fds.rfd));
             break;
+#endif
         case daveProtoISOTCP:
         case daveProtoISOTCP243:
         case daveProtoISOTCPR:

@@ -34,13 +34,10 @@ private slots:
     void ChangeSettings(ConSets NewConSets);
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
-    void updateOutput();
 
 private:
     Ui::MainWindow *ui;
-    //StdOutRedirector MyRedirector;
     ConnectionSettings ConDiag;
-    QProcess *process;
 };
 
 #endif // MAINWINDOW_H

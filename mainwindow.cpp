@@ -80,8 +80,7 @@ void MainWindow::on_Button_Get_Val_clicked()
 // Zyklisches Event
 void MainWindow::TimeOut()
 {
-    // Redirect STDOUTs to TextEdit
-    //MyRedirector.readOutsToTF();
+    // Zyklisches lesen
 }
 
 // Event Werte aus Dialog sollen übernommen werden
@@ -98,13 +97,6 @@ void MainWindow::on_pushButton_ConSets_clicked()
     ConDiag.show();
 }
 
-
-void MainWindow::updateOutput()
-{
-    QByteArray bytes = process->readAllStandardOutput();
-    ui->textEdit->insertPlainText(bytes);
-    printf("Test\n");
-}
 
 void MainWindow::on_Button_read_slots_clicked()
 {
