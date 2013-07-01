@@ -1,4 +1,5 @@
-#include <QtGui/QApplication>
+//uncommented for strange linux compile errors
+//#include <QtGui/QApplication>
 #include "mainwindow.h"
 
 int main(int argc, char *argv[])

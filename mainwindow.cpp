@@ -1,5 +1,6 @@
     #include "mainwindow.h"
-#include "ui_mainwindow.h"
+//uncommented for strange linux compile errrors and mpoved to mainwindow.h
+//#include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
