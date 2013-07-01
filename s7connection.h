@@ -8,6 +8,7 @@
 #include <QLibrary>
 #include <QFile>
 #include <QDir>
+#include <QDebug>
 #include "nodave.h"
 #include "openS7online.h"
 #include "openSocket.h"
@@ -28,6 +29,20 @@
 #define WIN_STYLE
 #endif
 
+// Verfügbare Anzeigeformate
+#define AnzFormatBinaer 1
+#define AnzFormatBool 2
+#define AnzFormatDezimal 3
+#define AnzFormatHexadezimal 4
+#define AnzFormatGleitpunkt 5
+#define AnzFormatZeichen 6
+
+// Datenlänge in Bit
+#define DatLenBit 1
+#define DatLenByte 8
+#define DatLenWord 16
+#define DatLenDWord 32
+
 // Connection Settings
 struct ConSets
 {
@@ -39,6 +54,28 @@ struct ConSets
     int rack;
     int slot;
     QString IP_Adr;
+};
+
+// Union Datentypen
+union OutputTypes
+{
+    bool bBit;
+    char cByte;
+    short sInt;
+    long lDInt;
+    float fReal;
+};
+
+// Connection Slot
+struct ConSlot
+{
+    int iAdrBereich;
+    int iDBnummer;
+    int iStartAdr;
+    int iBitnummer;
+    int iDatenlaenge;
+    int iAnzFormat;
+    OutputTypes otAusgabe;
 };
 
 
@@ -59,10 +96,12 @@ public:
     // Public Functions
     S7Connection();
     ~S7Connection();
-    bool startConnection(HWND WndHandle);
+    bool startConnection(WId WndHandle);
     void disconnect();
     int getValue();
     bool isConnected();
+    void readSlots(ConSlot cSlot[], int iAmountSlots);
+    QString interpret(ConSlot cSlot);
 
     // Public Variables
     ConSets MyConSet;

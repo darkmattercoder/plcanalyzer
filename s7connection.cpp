@@ -1,5 +1,4 @@
 #include "s7connection.h"
-#include "log2.h"
 
 // Konstruktor
 S7Connection::S7Connection()
@@ -27,7 +26,7 @@ S7Connection::~S7Connection()
 }
 
 // Opens the Connection
-bool S7Connection::startConnection(HWND WndHandle)
+bool S7Connection::startConnection(WId WndHandle)
 {
     if(!isConnected())
     {
@@ -42,8 +41,7 @@ bool S7Connection::startConnection(HWND WndHandle)
             break;
         case daveProtoS7online:
             fds.rfd = openS7online("/S7ONLINE", WndHandle);
-            LOG2("OpenS7online Handle:",(int) fds.rfd);
-            FLUSH;
+            qDebug("OpenS7online Handle:",(int) fds.rfd);
             break;
         case daveProtoISOTCP:
         case daveProtoISOTCP243:
@@ -51,7 +49,7 @@ bool S7Connection::startConnection(HWND WndHandle)
             fds.rfd=openSocket(102, MyConSet.IP_Adr.toUtf8());
             break;
         default:
-            printf("Abbruch!\nKeine gueltiges Protokoll gewaehlt!");
+            qDebug("Abbruch!\nKeine gueltiges Protokoll gewaehlt!");
             return false;
             break;
         }
@@ -78,11 +76,11 @@ bool S7Connection::startConnection(HWND WndHandle)
                     if (0==daveInitAdapter(di)) {
                         initSuccess=1;
                         a= daveListReachablePartners(di,buf1);
-                        printf("daveListReachablePartners List length: %d\n",a);
+                        qDebug("daveListReachablePartners List length: %d\n",a);
                         if (a>0) {
                             for (int j=0;j<a;j++) {
-                                if (buf1[j]==daveMPIReachable) printf("Aktiver Teilnehmer mit Adresse:%d\n",j);
-                                if (buf1[j]==daveMPIPassive) printf("Passiver Teilnehmer mit Adresse:%d\n",j);
+                                if (buf1[j]==daveMPIReachable) qDebug("Aktiver Teilnehmer mit Adresse:%d\n",j);
+                                if (buf1[j]==daveMPIPassive) qDebug("Passiver Teilnehmer mit Adresse:%d\n",j);
                             }
                         }
                         break;
@@ -94,7 +92,7 @@ bool S7Connection::startConnection(HWND WndHandle)
 
                 if (!initSuccess)
                 {
-                    printf("Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal.\n");
+                    qDebug("Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal.\n");
                 }
             }
 
@@ -109,7 +107,7 @@ bool S7Connection::startConnection(HWND WndHandle)
 
             if (0==daveConnectPLC(dc))
             {
-                printf("Verbindung erfolgreich hergestellt.\n");
+                qDebug("Verbindung erfolgreich hergestellt.\n");
                 initSuccess=1;
 
                 if(MyConSet.plc2MPI>=0)
@@ -123,7 +121,7 @@ bool S7Connection::startConnection(HWND WndHandle)
             }
             else
             {
-                printf("Es konnte keine Verbinung aufgebaut werden.\n");
+                qDebug("Es konnte keine Verbinung aufgebaut werden.\n");
                 daveDisconnectAdapter(di);
 
                 switch(MyConSet.useProto)
@@ -143,7 +141,7 @@ bool S7Connection::startConnection(HWND WndHandle)
                     break;
                 default:
                     // Unbekannter Protokolltyp gewählt
-                    printf("Unbekannter Protokolltyp!\n");
+                    qDebug("Unbekannter Protokolltyp!\n");
                     return false;
                     break;
                 }
@@ -152,17 +150,15 @@ bool S7Connection::startConnection(HWND WndHandle)
             }
 
         } else {
-            printf("Couldn't open access point S7ONLINE.\n");
+            qDebug("Couldn't open access point S7ONLINE.\n");
             //return -1;
         }
     }
     else
     {
-        printf("Connection already exists!\n");
+        qDebug("Connection already exists!\n");
 
     }
-
-    FLUSH;
     return isConnected();
 }
 
@@ -199,14 +195,14 @@ void S7Connection::disconnect()
             break;
         default:
             // Unbekannter Protokolltyp gewählt
-            printf("Unbekannter Protokolltyp!\n");
+            qDebug("Unbekannter Protokolltyp!\n");
             break;
         }
 
         daveFree(di);
         initSuccess = 0;
 
-        printf("Verbindung wurde getrennt.\n");
+        qDebug("Verbindung wurde getrennt.\n");
     }
 }
 
@@ -230,4 +226,170 @@ bool S7Connection::isConnected()
     bool bRet = false;
     if (initSuccess) bRet = true;
     return bRet;
+}
+
+void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
+{
+    PDU p;
+    davePrepareReadRequest(dc, &p);
+
+    for (int i = 0; i < iAmountSlots; i++)
+    {
+        // Add Variables to Request
+        if (cSlot[i].iDatenlaenge != DatLenBit)
+        {
+            // Read Byte(s)
+            daveAddVarToReadRequest(&p, cSlot[i].iAdrBereich, cSlot[i].iDBnummer, cSlot[i].iStartAdr, cSlot[i].iDatenlaenge / 8);
+        }
+        else
+        {
+            // Read Bit
+            // Das Bit ab Adresse 0.0
+            int iBit = cSlot[i].iStartAdr * 8 + cSlot[i].iBitnummer;
+            daveAddBitVarToReadRequest(&p, cSlot[i].iAdrBereich, cSlot[i].iDBnummer, iBit , 1);
+        }
+    }
+
+    daveResultSet rs;
+    unsigned long res;
+    res=daveExecReadRequest(dc, &p, &rs);
+
+    for (int i = 0; i < iAmountSlots; i++)
+    {
+        // Use the result
+        res=daveUseResult(dc, &rs, i);
+        if (res==0)
+        {
+            switch(cSlot[i].iDatenlaenge)
+            {
+            case DatLenBit:
+                // Read Value
+                cSlot[i].otAusgabe.bBit = bool (daveGetU8(dc));
+                break;
+            case DatLenByte:
+                cSlot[i].otAusgabe.cByte = char (daveGetU8(dc));
+                break;
+            case DatLenWord:
+                cSlot[i].otAusgabe.sInt = daveGetU16(dc);
+                break;
+            case DatLenDWord:
+                cSlot[i].otAusgabe.lDInt = daveGetU32(dc);
+                break;
+            default:
+                qDebug("Länge muss in Bit angegeben werden und kann maximal 32 betragen.\n");
+                break;
+            }
+
+        }
+        else
+        {
+            // Ausgabe des Fehlercodes
+            qDebug("*** Error: %s\n",daveStrerror(res));
+
+        }
+    }
+
+    daveFreeResults(&rs);
+
+}
+
+// Werte im gewünschten Format ausgeben
+QString S7Connection::interpret(ConSlot cSlot)
+{
+    QString szRetVal;
+    switch(cSlot.iDatenlaenge)
+    {
+    case DatLenBit:
+        // Read Value
+        switch(cSlot.iAnzFormat)
+        {
+        case AnzFormatBinaer:
+            szRetVal  = QString::number(cSlot.otAusgabe.bBit, 2);
+            break;
+        case AnzFormatBool:
+            if (cSlot.otAusgabe.bBit)
+            {
+                szRetVal  = "true";
+            }
+            else
+            {
+                szRetVal  = "false";
+            }
+            break;
+        case AnzFormatDezimal:
+            szRetVal  = QString::number(cSlot.otAusgabe.bBit, 2);
+            break;
+        default:
+            szRetVal  = "Datentyp kann nicht angezeigt werden";
+            break;
+        }
+        break;
+    case DatLenByte:
+        switch(cSlot.iAnzFormat)
+        {
+        case AnzFormatBinaer:
+            szRetVal  = QString::number(cSlot.otAusgabe.cByte, 2);
+            break;
+        case AnzFormatDezimal:
+            szRetVal  = QString::number(cSlot.otAusgabe.cByte);
+            break;
+        case AnzFormatHexadezimal:
+            szRetVal = QString::number(cSlot.otAusgabe.cByte, 16.).toUpper();
+            break;
+        case AnzFormatZeichen:
+            szRetVal = QString(cSlot.otAusgabe.cByte);
+            break;
+        default:
+            szRetVal  = "Datentyp kann nicht angezeigt werden";
+            break;
+        }
+        break;
+    case DatLenWord:
+        switch(cSlot.iAnzFormat)
+        {
+        case AnzFormatBinaer:
+            szRetVal  = QString::number(cSlot.otAusgabe.sInt, 2);
+            break;
+        case AnzFormatDezimal:
+            szRetVal  = QString::number(cSlot.otAusgabe.sInt);
+            break;
+        case AnzFormatHexadezimal:
+            szRetVal = QString::number(cSlot.otAusgabe.sInt, 16).toUpper();
+            break;
+        case AnzFormatZeichen:
+            szRetVal = QString::number(cSlot.otAusgabe.sInt).toAscii();
+            break;
+        default:
+            szRetVal  = "Datentyp kann nicht angezeigt werden";
+            break;
+        }
+        break;
+    case DatLenDWord:
+        switch(cSlot.iAnzFormat)
+        {
+        case AnzFormatBinaer:
+            szRetVal  = QString::number(cSlot.otAusgabe.lDInt, 2);
+            break;
+        case AnzFormatDezimal:
+            szRetVal  = QString::number(cSlot.otAusgabe.lDInt);
+            break;
+        case AnzFormatHexadezimal:
+            szRetVal = QString::number(cSlot.otAusgabe.lDInt).toAscii().toHex();
+            break;
+        case AnzFormatZeichen:
+            szRetVal = QString::number(cSlot.otAusgabe.lDInt).toAscii();
+            break;
+        case AnzFormatGleitpunkt:
+            szRetVal = QString::number(cSlot.otAusgabe.fReal);
+            break;
+        default:
+            szRetVal  = "Datentyp kann nicht angezeigt werden";
+            break;
+        }
+        break;
+    default:
+        qDebug("Länge muss in Bit angegeben werden und kann maximal 32 betragen.\n");
+        break;
+    }
+    return szRetVal;
 }
