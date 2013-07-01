@@ -1,5 +1,5 @@
 #include "connectionsettings.h"
-#include "ui_connectionsettings.h"
+
 
 ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
