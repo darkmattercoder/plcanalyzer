@@ -3,7 +3,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
-#include "qdebugstream.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -13,7 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
 
-    MyRedirector.setOutputTF(ui->textEdit);
+    //MyRedirector.setOutputTF(ui->textEdit);
 
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
@@ -80,7 +80,7 @@ void MainWindow::on_Button_Get_Val_clicked()
 void MainWindow::TimeOut()
 {
     // Redirect STDOUTs to TextEdit
-    MyRedirector.readOutsToTF();
+    //MyRedirector.readOutsToTF();
 }
 
 // Event Werte aus Dialog sollen übernommen werden

@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QProcess>
 #include "s7connection.h"
-#include "StdOutRedirector.h"
 #include "connectionsettings.h"
 #include "mainwindow.h"
 
@@ -36,7 +35,7 @@ private slots:
 
 private:
     Ui::MainWindow *ui;
-    StdOutRedirector MyRedirector;
+    //StdOutRedirector MyRedirector;
     ConnectionSettings ConDiag;
     QProcess *process;
 };
