@@ -32,7 +32,8 @@ OTHER_FILES += \
     lib/s7onlinx.dll \
     lib/libnodave.lib \
     lib/libnodave.dll \
-    lib/libnodave64.so
+    lib/libnodave64.so \
+    README.md
 
 #DEFINES depend on CONFIG above
 LINUX {
