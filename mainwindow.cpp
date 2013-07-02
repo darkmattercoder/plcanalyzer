@@ -22,27 +22,17 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 
-    // Testing Graph
-    x.resize(100);
-    y.resize(100);
+    // Validator für die Eingabe der Aufnahmedauer
+    QRegExpValidator *RegExp_Duration = new QRegExpValidator(this);
+    QRegExp rx("[0-9]{0,2}|1{1,1}0{0,2}");
+    RegExp_Duration->setRegExp(rx);
+    ui->lineEdit_Duration->setValidator(RegExp_Duration);
 
-//        for (int i=0; i<100; ++i)
-//        {
-//          x[i] = i * 0.1; // x goes from -1 to 1
-//          y[i] = i / 100.0; // let's plot a quadratic function
-//        }
+    recordings = MAXINT;
 
-    // create graph and assign data to it:
-    ui->customPlot->addGraph();
-    //ui->customPlot->graph(0)->setData(x, y);
-    // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("[Zeit] s");
-    ui->customPlot->yAxis->setLabel("Wert");
-    // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0.0, 10.0);
-    ui->customPlot->yAxis->setRange(-1.0, 1.0);
-    recordings = 100;
-
+    //####################ZU BEARBEITEN######################################
+    numberOfSlots = 2;
+    //#######################################################################
 }
 
 MainWindow::~MainWindow()
@@ -78,6 +68,7 @@ void MainWindow::on_Button_Connect_clicked()
         if(MyS7Connection.startConnection(this->winId()))
         {
             ui->Button_Get_Val->setEnabled(true);
+            ui->Button_read_slots->setEnabled(true);
             ui->Button_Connect->setText("Disconnect");
         }
     }
@@ -85,6 +76,7 @@ void MainWindow::on_Button_Connect_clicked()
     {
         MyS7Connection.disconnect();
         ui->Button_Get_Val->setEnabled(false);
+        ui->Button_read_slots->setEnabled(false);
         ui->Button_Connect->setText("Connect");
     }
 }
@@ -103,13 +95,23 @@ void MainWindow::on_Button_Get_Val_clicked()
 void MainWindow::TimeOut()
 {
     // Zyklisches lesen
-    if (recordings < 100)
+    if (recordings < ui->lineEdit_Duration->text().toInt() * 10)
     {
-        MyS7Connection.readSlots(&MySlot[0], 1);
+        // Read new values to slots
+        MyS7Connection.readSlots(&MySlot[0], numberOfSlots);
+
+        // Write the time vector
         x[recordings] = 0.1 * recordings; //Abtastung alle 100ms
-        y[recordings] = MySlot[0].RetVal.Real;
-        //qDebug("Starte zu lesen mit %i, gelesener Wert %f", recordings, MySlot[0].RetVal.Real );
-        ui->customPlot->graph(0)->setData(x, y);
+
+        // Write all dimensions of value vector
+        for (int i = 0; i < numberOfSlots; i++)
+        {
+            // Write actual value
+            y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
+
+            // Assign vector to graph
+            ui->customPlot->graph(i)->setData(x, y[i]);
+        }
         ui->customPlot->replot();
         recordings++;
     }
@@ -146,7 +148,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[1].iStartAdr = 1;
     MySlot[1].iDBnummer = 0;
     MySlot[1].iBitnummer = 7;
-    MySlot[1].iAnzFormat = AnzFormatBool;
+    MySlot[1].iAnzFormat = AnzFormatDezimal;
 
     // Slot 3
     MySlot[2].iAdrBereich = daveFlags;
@@ -172,14 +174,49 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[4].iBitnummer = 0;
     MySlot[4].iAnzFormat = AnzFormatZeichen;
 
+    // Reset recording couter
     recordings = 0;
 
-    //        for(int i = 0; i < 5; i++)
-    //        {
-    //            ui->textEdit->append(MyS7Connection.interpret(MySlot[i]));
-    //        }
+    //Delete old graphs
+    int numberOfGraphs = ui->customPlot->graphCount();
+    qDebug("Number of Graphs is: %i", numberOfGraphs);
+
+    for (int i = numberOfGraphs; i > numberOfSlots; i--)
+    {
+        // Remove not needed graphs
+        ui->customPlot->removeGraph(i);
+        qDebug("Remove Graph: %i", i);
+    }
+
+    for (int i = 0; i < numberOfSlots; i++)
+    {
+        // Add new graphs
+        ui->customPlot->addGraph();
+        qDebug("Adding Graph number %i", i);
+    }
+
+    // Resize vectors
+    int amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10; //Abtastung mit 10 Hz
+    x.resize(amountOfPoints);
+    y.resize(numberOfSlots);
+
+    // Resize 2nd dimension
+    for (int i = 0; i < numberOfSlots; i++)
+    {
+        y[i].resize(amountOfPoints);
+    }
+
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("[Zeit] s");
+    ui->customPlot->yAxis->setLabel("Wert");
+
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
+    ui->customPlot->yAxis->setRange(-1.0, 1.0);
+
 }
 
+// Autoscale axes
 void MainWindow::on_pushButton_clicked()
 {
     ui->customPlot->rescaleAxes();

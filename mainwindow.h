@@ -40,8 +40,10 @@ private:
     Ui::MainWindow *ui;
     ConnectionSettings ConDiag;
     ConSlot MySlot[5];
+    int numberOfSlots;
     int recordings;
-    QVector<double> x, y;
+    QVector<double> x;          // 1d Vector
+    QVector<QVector<double>> y; // 2d Vectot
 
 };
 

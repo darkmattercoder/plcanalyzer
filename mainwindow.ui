@@ -106,7 +106,7 @@
      <rect>
       <x>10</x>
       <y>350</y>
-      <width>381</width>
+      <width>581</width>
       <height>71</height>
      </rect>
     </property>
@@ -121,6 +121,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="Button_read_slots">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -130,7 +133,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>read slots</string>
+     <string>Read slots</string>
     </property>
    </widget>
    <widget class="QCustomPlot" name="customPlot" native="true">
@@ -146,7 +149,7 @@
    <widget class="QPushButton" name="pushButton">
     <property name="geometry">
      <rect>
-      <x>120</x>
+      <x>220</x>
       <y>100</y>
       <width>75</width>
       <height>23</height>
@@ -154,6 +157,57 @@
     </property>
     <property name="text">
      <string>Autoscale</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_Duration">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>100</y>
+      <width>41</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Recording duration in seconds</string>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>10</string>
+    </property>
+    <property name="maxLength">
+     <number>100</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>104</x>
+      <y>104</y>
+      <width>46</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Duration:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>194</x>
+      <y>103</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>s</string>
     </property>
    </widget>
   </widget>
