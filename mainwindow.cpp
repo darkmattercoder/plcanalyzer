@@ -14,8 +14,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
 
-    //MyRedirector.setOutputTF(ui->textEdit);
-
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
     timer->start(100);
@@ -148,3 +146,5 @@ void MainWindow::on_Button_read_slots_clicked()
         ui->textEdit->append(MyS7Connection.interpret(MySlot[i]));
     }
 }
+
+

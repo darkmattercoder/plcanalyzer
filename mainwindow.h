@@ -9,6 +9,7 @@
 #include "s7connection.h"
 #include "connectionsettings.h"
 #include "mainwindow.h"
+#include <QTextEdit>
 
 
 namespace Ui {
@@ -35,9 +36,11 @@ private slots:
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
 
+
 private:
     Ui::MainWindow *ui;
     ConnectionSettings ConDiag;
-};
+    QTextEdit* debugText;
+    };
 
 #endif // MAINWINDOW_H
