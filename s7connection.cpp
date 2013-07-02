@@ -26,6 +26,7 @@ S7Connection::~S7Connection()
 }
 
 // Opens the Connection
+
 bool S7Connection::startConnection(WId WndHandle)
 {
     if(!isConnected())

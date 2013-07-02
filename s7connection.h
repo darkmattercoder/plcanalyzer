@@ -93,6 +93,7 @@ public:
     // Public Functions
     S7Connection();
     ~S7Connection();
+
     bool startConnection(WId WndHandle);
     void disconnect();
     int getValue();

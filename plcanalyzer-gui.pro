@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 #Change Linux to BCCWIN here
-CONFIG += BCCWIN
+CONFIG += LINUX
 
 QT       += core gui
 
@@ -59,3 +59,5 @@ INCLUDEPATH += $$PWD/
 DEPENDPATH += $$PWD/lib/
 
 PRE_TARGETDEPS += $$PWD/lib/libnodave.lib
+
+QMAKE_CXXFLAGS += -std=c++0x
