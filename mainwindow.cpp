@@ -22,6 +22,27 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 
+    // Testing Graph
+    x.resize(100);
+    y.resize(100);
+
+//        for (int i=0; i<100; ++i)
+//        {
+//          x[i] = i * 0.1; // x goes from -1 to 1
+//          y[i] = i / 100.0; // let's plot a quadratic function
+//        }
+
+    // create graph and assign data to it:
+    ui->customPlot->addGraph();
+    //ui->customPlot->graph(0)->setData(x, y);
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("[Zeit] s");
+    ui->customPlot->yAxis->setLabel("Wert");
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0.0, 10.0);
+    ui->customPlot->yAxis->setRange(-1.0, 1.0);
+    recordings = 100;
+
 }
 
 MainWindow::~MainWindow()
@@ -74,6 +95,7 @@ void MainWindow::on_Button_Get_Val_clicked()
     if (MyS7Connection.isConnected())
     {
         ui->lcdNumber->display(MyS7Connection.getValue());
+
     }
 }
 
@@ -81,6 +103,16 @@ void MainWindow::on_Button_Get_Val_clicked()
 void MainWindow::TimeOut()
 {
     // Zyklisches lesen
+    if (recordings < 100)
+    {
+        MyS7Connection.readSlots(&MySlot[0], 1);
+        x[recordings] = 0.1 * recordings; //Abtastung alle 100ms
+        y[recordings] = MySlot[0].RetVal.Real;
+        //qDebug("Starte zu lesen mit %i, gelesener Wert %f", recordings, MySlot[0].RetVal.Real );
+        ui->customPlot->graph(0)->setData(x, y);
+        ui->customPlot->replot();
+        recordings++;
+    }
 }
 
 // Event Werte aus Dialog sollen übernommen werden
@@ -100,7 +132,6 @@ void MainWindow::on_pushButton_ConSets_clicked()
 
 void MainWindow::on_Button_read_slots_clicked()
 {
-    ConSlot MySlot[5];
     // Slot 1
     MySlot[0].iAdrBereich = daveFlags;
     MySlot[0].iDatenlaenge = DatLenDWord;
@@ -141,10 +172,15 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[4].iBitnummer = 0;
     MySlot[4].iAnzFormat = AnzFormatZeichen;
 
-    MyS7Connection.readSlots(&MySlot[0], 5);
+    recordings = 0;
 
-    for(int i = 0; i < 5; i++)
-    {
-        ui->textEdit->append(MyS7Connection.interpret(MySlot[i]));
-    }
+    //        for(int i = 0; i < 5; i++)
+    //        {
+    //            ui->textEdit->append(MyS7Connection.interpret(MySlot[i]));
+    //        }
+}
+
+void MainWindow::on_pushButton_clicked()
+{
+    ui->customPlot->rescaleAxes();
 }
