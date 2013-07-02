@@ -65,9 +65,7 @@ bool S7Connection::startConnection(WId WndHandle)
 
             di = daveNewInterface(fds, "IF1", MyConSet.localMPI, MyConSet.useProto, MyConSet.speed);
 
-            daveSetTimeout(di,5000000);
-
-
+            daveSetTimeout(di,1000000);
 
             char buf1 [davePartnerListSize];
 
@@ -89,8 +87,6 @@ bool S7Connection::startConnection(WId WndHandle)
                     } else daveDisconnectAdapter(di);
 
                 }
-
-
 
                 if (!initSuccess)
                 {
@@ -270,50 +266,47 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
             {
             case DatLenBit:
                 // Read Value
-                cSlot[i].otAusgabe.bBit = bool (daveGetU8(dc));
+                cSlot[i].RetVal.Bit = bool (daveGetU8(dc));
                 break;
             case DatLenByte:
-                cSlot[i].otAusgabe.cByte = char (daveGetU8(dc));
+                cSlot[i].RetVal.Byte = char (daveGetU8(dc));
                 break;
             case DatLenWord:
-                cSlot[i].otAusgabe.sInt = daveGetU16(dc);
+                cSlot[i].RetVal.Int = daveGetU16(dc);
                 break;
             case DatLenDWord:
-                cSlot[i].otAusgabe.lDInt = daveGetU32(dc);
+                cSlot[i].RetVal.DInt = daveGetU32(dc);
                 break;
             default:
                 qDebug("Länge muss in Bit angegeben werden und kann maximal 32 betragen.\n");
                 break;
             }
-
         }
         else
         {
             // Ausgabe des Fehlercodes
             qDebug("*** Error: %s\n",daveStrerror(res));
-
         }
     }
 
+    // Bereinigung des Ergebnisspeichers
     daveFreeResults(&rs);
-
 }
 
-// Werte im gewünschten Format ausgeben
+// Wert im gewünschten Format ausgeben
 QString S7Connection::interpret(ConSlot cSlot)
 {
     QString szRetVal;
     switch(cSlot.iDatenlaenge)
     {
     case DatLenBit:
-        // Read Value
-        switch(cSlot.iAnzFormat)
+           switch(cSlot.iAnzFormat)
         {
         case AnzFormatBinaer:
-            szRetVal  = QString::number(cSlot.otAusgabe.bBit, 2);
+            szRetVal  = QString::number(cSlot.RetVal.Bit, 2).right(DatLenBit);
             break;
         case AnzFormatBool:
-            if (cSlot.otAusgabe.bBit)
+            if (cSlot.RetVal.Bit)
             {
                 szRetVal  = "true";
             }
@@ -323,76 +316,80 @@ QString S7Connection::interpret(ConSlot cSlot)
             }
             break;
         case AnzFormatDezimal:
-            szRetVal  = QString::number(cSlot.otAusgabe.bBit, 2);
+            szRetVal  = QString::number(cSlot.RetVal.Bit);
             break;
         default:
             szRetVal  = "Datentyp kann nicht angezeigt werden";
             break;
         }
         break;
+
     case DatLenByte:
         switch(cSlot.iAnzFormat)
         {
         case AnzFormatBinaer:
-            szRetVal  = QString::number(cSlot.otAusgabe.cByte, 2);
+            szRetVal  = QString::number(cSlot.RetVal.Byte, 2).right(DatLenByte);
             break;
         case AnzFormatDezimal:
-            szRetVal  = QString::number(cSlot.otAusgabe.cByte);
+            szRetVal  = QString::number(cSlot.RetVal.Byte);
             break;
         case AnzFormatHexadezimal:
-            szRetVal = QString::number(cSlot.otAusgabe.cByte, 16.).toUpper();
+            szRetVal = QString::number(cSlot.RetVal.Byte, 16.).toUpper();
             break;
         case AnzFormatZeichen:
-            szRetVal = QString(cSlot.otAusgabe.cByte);
+            szRetVal = QString(cSlot.RetVal.Byte);
             break;
         default:
             szRetVal  = "Datentyp kann nicht angezeigt werden";
             break;
         }
         break;
+
     case DatLenWord:
         switch(cSlot.iAnzFormat)
         {
         case AnzFormatBinaer:
-            szRetVal  = QString::number(cSlot.otAusgabe.sInt, 2);
+            szRetVal  = QString::number(cSlot.RetVal.Int, 2).right(DatLenWord);
             break;
         case AnzFormatDezimal:
-            szRetVal  = QString::number(cSlot.otAusgabe.sInt);
+            szRetVal  = QString::number(cSlot.RetVal.Int);
             break;
         case AnzFormatHexadezimal:
-            szRetVal = QString::number(cSlot.otAusgabe.sInt, 16).toUpper();
+            szRetVal = QString::number(cSlot.RetVal.Int, 16).toUpper();
             break;
         case AnzFormatZeichen:
-            szRetVal = QString::number(cSlot.otAusgabe.sInt).toAscii();
+            szRetVal = QString::number(cSlot.RetVal.Int).toAscii();
             break;
         default:
             szRetVal  = "Datentyp kann nicht angezeigt werden";
             break;
         }
         break;
+
     case DatLenDWord:
         switch(cSlot.iAnzFormat)
         {
         case AnzFormatBinaer:
-            szRetVal  = QString::number(cSlot.otAusgabe.lDInt, 2);
+            szRetVal  = QString::number(cSlot.RetVal.DInt, 2).right(DatLenDWord);
             break;
         case AnzFormatDezimal:
-            szRetVal  = QString::number(cSlot.otAusgabe.lDInt);
+            szRetVal  = QString::number(cSlot.RetVal.DInt);
             break;
         case AnzFormatHexadezimal:
-            szRetVal = QString::number(cSlot.otAusgabe.lDInt).toAscii().toHex();
+            szRetVal = QString::number(cSlot.RetVal.DInt).toAscii().toHex();
             break;
         case AnzFormatZeichen:
-            szRetVal = QString::number(cSlot.otAusgabe.lDInt).toAscii();
+            szRetVal = QString::number(cSlot.RetVal.DInt).toAscii();
             break;
         case AnzFormatGleitpunkt:
-            szRetVal = QString::number(cSlot.otAusgabe.fReal);
+            szRetVal = QString::number(cSlot.RetVal.Real);
             break;
         default:
             szRetVal  = "Datentyp kann nicht angezeigt werden";
             break;
         }
         break;
+
     default:
         qDebug("Länge muss in Bit angegeben werden und kann maximal 32 betragen.\n");
         break;

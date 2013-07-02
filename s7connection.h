@@ -5,10 +5,8 @@
 #include <stdio.h>
 #include <string.h>
 #include <QMessageBox>
-#include <QLibrary>
-#include <QFile>
-#include <QDir>
 #include <QDebug>
+#include <cstdint>
 #include "nodave.h"
 #include "openS7online.h"
 #include "openSocket.h"
@@ -59,11 +57,11 @@ struct ConSets
 // Union Datentypen
 union OutputTypes
 {
-    bool bBit;
-    char cByte;
-    short sInt;
-    long lDInt;
-    float fReal;
+    bool Bit;
+    char Byte;
+    int16_t Int;
+    int32_t DInt;
+    float Real;
 };
 
 // Connection Slot
@@ -75,9 +73,8 @@ struct ConSlot
     int iBitnummer;
     int iDatenlaenge;
     int iAnzFormat;
-    OutputTypes otAusgabe;
+    OutputTypes RetVal;
 };
-
 
 class S7Connection
 {

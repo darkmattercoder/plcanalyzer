@@ -5,7 +5,7 @@
 #-------------------------------------------------
 
 #Change Linux to BCCWIN here
-CONFIG += LINUX
+CONFIG += BCCWIN
 
 QT       += core gui
 
