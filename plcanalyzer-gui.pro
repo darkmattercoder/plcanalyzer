@@ -16,14 +16,16 @@ TEMPLATE = app
 SOURCES += main.cpp\
     mainwindow.cpp \
     s7connection.cpp \
-    connectionsettings.cpp
+    connectionsettings.cpp \
+    qcustomplot.cpp
 
 HEADERS  += mainwindow.h \
     nodave.h \
     s7connection.h \
     log2.h \
     connectionsettings.h \
-    openSocket.h
+    openSocket.h \
+    qcustomplot.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui

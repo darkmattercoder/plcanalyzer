@@ -37,7 +37,8 @@ bool S7Connection::startConnection(WId WndHandle)
         case daveProtoMPI:
         case daveProtoPPI:
         case daveProtoAS511:
-
+            qDebug("Diese Verbinung ist in Vorbereitung");
+            return false;
             break;
 #ifdef BCCWIN
         case daveProtoS7online:
@@ -296,7 +297,7 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
 // Wert im gewünschten Format ausgeben
 QString S7Connection::interpret(ConSlot cSlot)
 {
-    QString szRetVal;
+    QString szRetVal("ERROR");
     switch(cSlot.iDatenlaenge)
     {
     case DatLenBit:

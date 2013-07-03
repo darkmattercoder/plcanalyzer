@@ -23,8 +23,7 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     S7Connection MyS7Connection;
-    void customMessageHandler();
-    
+
 private slots:
     void on_actionNeues_Projekt_triggered();
     void on_actionProjekt_ffnen_triggered();
@@ -35,9 +34,19 @@ private slots:
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
 
+    void on_pushButton_clicked();
+
 private:
     Ui::MainWindow *ui;
     ConnectionSettings ConDiag;
+    ConSlot MySlot[5];
+    int numberOfSlots;
+    int recordings;
+    int amountOfPoints;
+    QVector<double> x;          // 1d Vector
+    QVector<QVector<double>> y; // 2d Vectot
+
 };
 
 #endif // MAINWINDOW_H
+
