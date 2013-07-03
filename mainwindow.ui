@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>308</height>
+    <width>606</width>
+    <height>491</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -105,8 +105,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>170</y>
-      <width>381</width>
+      <y>350</y>
+      <width>581</width>
       <height>71</height>
      </rect>
     </property>
@@ -121,6 +121,9 @@
     </property>
    </widget>
    <widget class="QPushButton" name="Button_read_slots">
+    <property name="enabled">
+     <bool>false</bool>
+    </property>
     <property name="geometry">
      <rect>
       <x>20</x>
@@ -130,7 +133,81 @@
      </rect>
     </property>
     <property name="text">
-     <string>read slots</string>
+     <string>Read slots</string>
+    </property>
+   </widget>
+   <widget class="QCustomPlot" name="customPlot" native="true">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>130</y>
+      <width>581</width>
+      <height>211</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="pushButton">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>100</y>
+      <width>75</width>
+      <height>23</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Autoscale</string>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="lineEdit_Duration">
+    <property name="geometry">
+     <rect>
+      <x>150</x>
+      <y>100</y>
+      <width>41</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="toolTip">
+     <string>Recording duration in seconds</string>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>10</string>
+    </property>
+    <property name="maxLength">
+     <number>100</number>
+    </property>
+    <property name="alignment">
+     <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_2">
+    <property name="geometry">
+     <rect>
+      <x>104</x>
+      <y>104</y>
+      <width>46</width>
+      <height>13</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Duration:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_3">
+    <property name="geometry">
+     <rect>
+      <x>194</x>
+      <y>103</y>
+      <width>16</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>s</string>
     </property>
    </widget>
   </widget>
@@ -139,7 +216,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>606</width>
      <height>21</height>
     </rect>
    </property>
@@ -198,6 +275,14 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>QCustomPlot</class>
+   <extends>QWidget</extends>
+   <header location="global">qcustomplot.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections>
   <connection>
