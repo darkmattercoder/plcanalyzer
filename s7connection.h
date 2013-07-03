@@ -7,9 +7,9 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <cstdint>
-#include "nodave.h"
-#include "openS7online.h"
-#include "openSocket.h"
+#include <nodave.h>
+#include <openS7online.h>
+#include <openSocket.h>
 
 #ifdef LINUX
 #include <unistd.h>

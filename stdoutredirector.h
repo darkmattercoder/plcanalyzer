@@ -18,20 +18,16 @@
 #endif
 #include <assert.h>
 #include <QObject>
+#include <QThread>
 
-class stdoutRedirector : public QObject
+class stdoutRedirector : public QThread
+   Q_OBJECT
 {
 public:
 
     stdoutRedirector();
     ~stdoutRedirector();
-    int doRedirection();
-
-public slots:
-
-signals:
-
-
+    void run();
 
 private:
 

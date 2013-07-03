@@ -1,6 +1,6 @@
     #include "mainwindow.h"
 //uncommented for strange linux compile errrors and mpoved to mainwindow.h
-//#include "ui_mainwindow.h"
+#include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
@@ -20,13 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 
-    //Timer for cyclic stdout redirection
-
-    QTimer *redirectTimer = new QTimer(this);
-    connect(redirectTimer, SIGNAL(timeout()), this, SLOT(redirectTimer()));
-    redirectTimer->start(100);
-
-
+    stdoutRedirector.start();
 }
 
 MainWindow::~MainWindow()
@@ -88,13 +82,6 @@ void MainWindow::TimeOut()
     // Zyklisches lesen
 }
 
-//Cyclic Timer for stdoutRedirection
-void MainWindow::redirectTimer()
-{
-    //fflush(stdout);
-     myRedirector.doRedirection();
-    qDebug("time");
-}
 
 // Event Werte aus Dialog sollen übernommen werden
 void MainWindow::ChangeSettings(ConSets NewConSets)

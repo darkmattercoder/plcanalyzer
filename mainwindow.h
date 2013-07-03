@@ -2,7 +2,7 @@
 #define MAINWINDOW_H
 
 //moved from initial mainwindow.cpp due to strange linux compile errors
-#include "ui_mainwindow.h"
+//#include "ui_mainwindow.h"
 
 #include <QMainWindow>
 #include <QProcess>

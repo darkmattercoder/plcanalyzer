@@ -20,11 +20,9 @@ SOURCES += main.cpp\
     stdoutredirector.cpp
 
 HEADERS  += mainwindow.h \
-    nodave.h \
     s7connection.h \
     log2.h \
     connectionsettings.h \
-    openSocket.h \
     stdoutredirector.h
 
 FORMS    += mainwindow.ui \

@@ -405,7 +405,8 @@ typedef struct {
     uc ch1;	// logical connection or channel ?
     uc ch2;	// logical connection or channel ?
     uc len;	// number of bytes counted from the ninth one.
-    uc packetNumber;	// a counter, response packets refer to request packets
+    uc packetNumbL2
+#define EXPORer;	// a counter, response packets refer to request packets
     us sFlags;		// my guess
     us rFlags;		// my interpretation
 } IBHpacket;
