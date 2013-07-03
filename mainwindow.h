@@ -2,16 +2,18 @@
 #define MAINWINDOW_H
 
 //moved from initial mainwindow.cpp due to strange linux compile errors
-//#include "ui_mainwindow.h"
+#include "ui_mainwindow.h"
 
 #include <QMainWindow>
 #include <QProcess>
+#include <QDebug>
+#include <QTextEdit>
+#include "mainwindow.h"
+
+#include "stdoutredirector.h"
+
 #include "s7connection.h"
 #include "connectionsettings.h"
-#include "mainwindow.h"
-#include <QTextEdit>
-#include "stdoutredirector.h"
-#include <QDebug>
 
 
 namespace Ui {
@@ -38,13 +40,15 @@ private slots:
     void ChangeSettings(ConSets NewConSets);
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
-    void redirectTimer();
+
+    void on_pushButton_clicked();
 
 private:
     Ui::MainWindow *ui;
     ConnectionSettings ConDiag;
     QTextEdit* debugText;
     stdoutRedirector myRedirector;
+    fflushThread myFflushThread;
     };
 
 #endif // MAINWINDOW_H

@@ -23,7 +23,26 @@ void stdoutRedirector::run()
     res=read(fds[0],buf,sizeof(buf)-1);
     assert(res>=0 && res<sizeof(buf));
     buf[res]=0;
-    fprintf(stderr,"buf=>%s\n",buf);
+    fprintf(stderr,"printf: %s\n",buf);
     }
 
 }
+
+fflushThread::fflushThread()
+{
+
+}
+
+fflushThread::~fflushThread()
+{
+
+}
+
+void fflushThread::run()
+{
+
+    Q_FOREVER{
+        fflush(stdout);
+    }
+
+    }

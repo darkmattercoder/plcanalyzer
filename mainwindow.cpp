@@ -20,7 +20,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 
-    stdoutRedirector.start();
+    myRedirector.start();
+    myFflushThread.start();
 }
 
 MainWindow::~MainWindow()
@@ -150,3 +151,8 @@ void MainWindow::on_Button_read_slots_clicked()
 }
 
 
+
+void MainWindow::on_pushButton_clicked()
+{
+    printf("hallohallo\n");
+   }

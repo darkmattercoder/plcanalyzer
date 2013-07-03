@@ -1,6 +1,7 @@
 #ifndef STDOUTREDIRECTOR_H
 #define STDOUTREDIRECTOR_H
-
+#include <QObject>
+#include <QThread>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -17,12 +18,11 @@
 
 #endif
 #include <assert.h>
-#include <QObject>
-#include <QThread>
 
-class stdoutRedirector : public QThread
-   Q_OBJECT
+
+class stdoutRedirector : public QThread 
 {
+      Q_OBJECT
 public:
 
     stdoutRedirector();
@@ -38,4 +38,17 @@ private:
 
 };
 
+class fflushThread : public QThread
+{
+      Q_OBJECT
+public:
+
+    fflushThread();
+    ~fflushThread();
+    void run();
+
+private:
+
+
+};
 #endif // STDOUTREDIRECTOR_H
