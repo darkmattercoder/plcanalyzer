@@ -20,6 +20,13 @@ MainWindow::MainWindow(QWidget *parent) :
 
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 
+    //Timer for cyclic stdout redirection
+
+    QTimer *redirectTimer = new QTimer(this);
+    connect(redirectTimer, SIGNAL(timeout()), this, SLOT(redirectTimer()));
+    redirectTimer->start(100);
+
+
 }
 
 MainWindow::~MainWindow()
@@ -66,7 +73,7 @@ void MainWindow::on_Button_Connect_clicked()
     }
 }
 
-// Neunen Wert aus der SPS anfordern
+// Neuen Wert aus der SPS anfordern
 void MainWindow::on_Button_Get_Val_clicked()
 {
     if (MyS7Connection.isConnected())
@@ -79,6 +86,14 @@ void MainWindow::on_Button_Get_Val_clicked()
 void MainWindow::TimeOut()
 {
     // Zyklisches lesen
+}
+
+//Cyclic Timer for stdoutRedirection
+void MainWindow::redirectTimer()
+{
+    //fflush(stdout);
+     myRedirector.doRedirection();
+    qDebug("time");
 }
 
 // Event Werte aus Dialog sollen übernommen werden

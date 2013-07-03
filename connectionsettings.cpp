@@ -8,7 +8,38 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     // Userinterface aufbauen
     ui->setupUi(this);
 
-    // ComboBox "Protokoll" mit den Einstellungen füllen
+
+    //Fill comboboxes for area and formats with data
+
+      QList<QComboBox*> comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
+      QList<QComboBox*> comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
+      QStringList comboItemsArea;
+      QStringList comboItemsFormat;
+      QList<int> comboValuesArea;
+      QList<int> comboValuesFormat;
+
+      comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z" << "IEC_T";
+      comboItemsFormat << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT" << "DINT" << "REAL";
+      comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB << daveCounter << daveTimer << daveCounter200 << daveTimer200;
+      comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatDezimal << AnzFormatDezimal << AnzFormatGleitpunkt;
+
+      int areaItemsCount = 0; //comboItemsArea.count();
+      int formatItemsCount = 0; //comboItemsFormat.count();
+
+      Q_FOREACH(QComboBox* areaBox,comboBoxesArea)
+      {
+          areaBox->addItems(comboItemsArea);
+          areaBox->itemData(areaItemsCount,comboValuesArea.value(areaItemsCount));
+          areaItemsCount++;
+      }
+      Q_FOREACH (QComboBox* formatBox,comboBoxesFormat) {
+          formatBox->addItems(comboItemsFormat);
+          formatBox->itemData(formatItemsCount,comboValuesFormat.value(formatItemsCount));
+          formatItemsCount++;
+      }
+
+
+ // ComboBox "Protokoll" mit den Einstellungen füllen
     ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
     ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
     ui->ComboBox_Protokoll->addItem("S5 programming port protocol", daveProtoAS511);

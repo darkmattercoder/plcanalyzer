@@ -3,6 +3,7 @@
 #include "ui_connectionsettings.h"
 #include "s7connection.h"
 #include <QDialog>
+#include <QRegExp>
 
 namespace Ui {
 class ConnectionSettings;

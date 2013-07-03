@@ -10,6 +10,8 @@
 #include "connectionsettings.h"
 #include "mainwindow.h"
 #include <QTextEdit>
+#include "stdoutredirector.h"
+#include <QDebug>
 
 
 namespace Ui {
@@ -25,7 +27,8 @@ public:
     ~MainWindow();
     S7Connection MyS7Connection;
     void customMessageHandler();
-    
+
+
 private slots:
     void on_actionNeues_Projekt_triggered();
     void on_actionProjekt_ffnen_triggered();
@@ -35,12 +38,13 @@ private slots:
     void ChangeSettings(ConSets NewConSets);
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
-
+    void redirectTimer();
 
 private:
     Ui::MainWindow *ui;
     ConnectionSettings ConDiag;
     QTextEdit* debugText;
+    stdoutRedirector myRedirector;
     };
 
 #endif // MAINWINDOW_H
