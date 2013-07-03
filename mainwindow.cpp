@@ -16,10 +16,10 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //MyRedirector.setOutputTF(ui->textEdit);
 
+    // Start the timer
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
     timer->start(100);
-
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
 
     // Validator für die Eingabe der Aufnahmedauer
@@ -95,7 +95,7 @@ void MainWindow::on_Button_Get_Val_clicked()
 void MainWindow::TimeOut()
 {
     // Zyklisches lesen
-    if (recordings < ui->lineEdit_Duration->text().toInt() * 10)
+    if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
         // Read new values to slots
         MyS7Connection.readSlots(&MySlot[0], numberOfSlots);
@@ -111,6 +111,7 @@ void MainWindow::TimeOut()
 
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
+
         }
         ui->customPlot->replot();
         recordings++;
@@ -141,6 +142,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[0].iDBnummer = 0;
     MySlot[0].iBitnummer = 0;
     MySlot[0].iAnzFormat = AnzFormatGleitpunkt;
+    MySlot[0].graphColor = Qt::black;
 
     // Slot 2
     MySlot[1].iAdrBereich = daveFlags;
@@ -149,6 +151,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[1].iDBnummer = 0;
     MySlot[1].iBitnummer = 7;
     MySlot[1].iAnzFormat = AnzFormatDezimal;
+    MySlot[1].graphColor = Qt::red;
 
     // Slot 3
     MySlot[2].iAdrBereich = daveFlags;
@@ -157,6 +160,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[2].iDBnummer = 0;
     MySlot[2].iBitnummer = 0;
     MySlot[2].iAnzFormat = AnzFormatBinaer;
+    MySlot[2].graphColor = Qt::green;
 
     // Slot 4
     MySlot[3].iAdrBereich = daveFlags;
@@ -165,6 +169,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[3].iDBnummer = 0;
     MySlot[3].iBitnummer = 0;
     MySlot[3].iAnzFormat = AnzFormatHexadezimal;
+    MySlot[3].graphColor = Qt::blue;
 
 // Slot 4
     MySlot[4].iAdrBereich = daveFlags;
@@ -173,6 +178,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[4].iDBnummer = 0;
     MySlot[4].iBitnummer = 0;
     MySlot[4].iAnzFormat = AnzFormatZeichen;
+    MySlot[4].graphColor = Qt::magenta;
 
     // Reset recording couter
     recordings = 0;
@@ -181,6 +187,19 @@ void MainWindow::on_Button_read_slots_clicked()
     int numberOfGraphs = ui->customPlot->graphCount();
     qDebug("Number of Graphs is: %i", numberOfGraphs);
 
+    // If numberOfGraphs < numberOfSlots -> add graphs
+    for (int i = numberOfGraphs; i < numberOfSlots; i++)
+    {
+        // Add new graphs
+        ui->customPlot->addGraph();
+        ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
+        qDebug("Adding Graph number %i", i);
+    }
+
+    // refresh numberOfGraphs
+    numberOfGraphs = ui->customPlot->graphCount();
+
+    // If numberOfGraphs > numberOFSlots -> remove graphs
     for (int i = numberOfGraphs; i > numberOfSlots; i--)
     {
         // Remove not needed graphs
@@ -188,15 +207,8 @@ void MainWindow::on_Button_read_slots_clicked()
         qDebug("Remove Graph: %i", i);
     }
 
-    for (int i = 0; i < numberOfSlots; i++)
-    {
-        // Add new graphs
-        ui->customPlot->addGraph();
-        qDebug("Adding Graph number %i", i);
-    }
-
     // Resize vectors
-    int amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10; //Abtastung mit 10 Hz
+    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10; //Abtastung mit 10 Hz
     x.resize(amountOfPoints);
     y.resize(numberOfSlots);
 
@@ -207,8 +219,8 @@ void MainWindow::on_Button_read_slots_clicked()
     }
 
     // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("[Zeit] s");
-    ui->customPlot->yAxis->setLabel("Wert");
+    ui->customPlot->xAxis->setLabel("[time] s");
+    ui->customPlot->yAxis->setLabel("value");
 
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
@@ -221,3 +233,4 @@ void MainWindow::on_pushButton_clicked()
 {
     ui->customPlot->rescaleAxes();
 }
+

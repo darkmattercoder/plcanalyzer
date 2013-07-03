@@ -42,6 +42,7 @@ private:
     ConSlot MySlot[5];
     int numberOfSlots;
     int recordings;
+    int amountOfPoints;
     QVector<double> x;          // 1d Vector
     QVector<QVector<double>> y; // 2d Vectot
 

@@ -73,6 +73,7 @@ struct ConSlot
     int iBitnummer;
     int iDatenlaenge;
     int iAnzFormat;
+    QColor graphColor;
     OutputTypes RetVal;
 };
 
