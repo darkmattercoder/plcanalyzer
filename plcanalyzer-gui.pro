@@ -5,8 +5,9 @@
 #-------------------------------------------------
 
 #Change Linux to BCCWIN here
-CONFIG += LINUX
 
+unix: CONFIG += LINUX
+win32: CONFIG += BCCWIN
 QT       += core gui
 
 TARGET = plcanalyzer-gui
