@@ -24,7 +24,8 @@ void stdoutRedirector::run()
     res=read(fds[0],buf,sizeof(buf)-1);
     assert(res>=0 && res<sizeof(buf));
     buf[res]=0;
-    fprintf(stderr,"printf: %s\n",buf);
+    qDebug() << QString(buf);
+    //fprintf(stderr,"printf: %s\n",buf);
     if (terminate_)
     {
         return;

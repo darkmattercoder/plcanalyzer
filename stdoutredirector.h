@@ -2,6 +2,7 @@
 #define STDOUTREDIRECTOR_H
 #include <QObject>
 #include <QThread>
+#include <QDebug>
 #include <QMainWindow>
 #include <fcntl.h>
 #include <stdlib.h>

@@ -22,8 +22,7 @@ SOURCES += main.cpp\
 
 HEADERS  += mainwindow.h \
     s7connection.h \
-    log2.h \
-    connectionsettings.h \
+        connectionsettings.h \
     stdoutredirector.h
 
 FORMS    += mainwindow.ui \
