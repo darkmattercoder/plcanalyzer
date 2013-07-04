@@ -1,5 +1,4 @@
-    #include "mainwindow.h"
-//uncommented for strange linux compile errrors and mpoved to mainwindow.h
+#include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include <QFileDialog>
 #include <QMessageBox>
@@ -19,14 +18,19 @@ MainWindow::MainWindow(QWidget *parent) :
     timer->start(100);
 
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
+    stdoutRedirector * myRedirector = new stdoutRedirector;
 
-    myRedirector.start();
-    myFflushThread.start();
+    connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
+    myRedirector->start();
+
 }
 
 MainWindow::~MainWindow()
 {
+       emit threadTerminator();
     delete ui;
+
+
 }
 
 

@@ -1,9 +1,10 @@
 #ifndef CONNECTIONSETTINGS_H
 #define CONNECTIONSETTINGS_H
-#include "ui_connectionsettings.h"
-#include "s7connection.h"
 #include <QDialog>
 #include <QRegExp>
+#include "ui_connectionsettings.h"
+#include "s7connection.h"
+
 
 namespace Ui {
 class ConnectionSettings;

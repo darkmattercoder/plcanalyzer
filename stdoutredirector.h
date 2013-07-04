@@ -2,6 +2,7 @@
 #define STDOUTREDIRECTOR_H
 #include <QObject>
 #include <QThread>
+#include <QMainWindow>
 #include <fcntl.h>
 #include <stdlib.h>
 #include <stdio.h>
@@ -29,26 +30,18 @@ public:
     ~stdoutRedirector();
     void run();
 
+public slots:
+    void terminate();
+
 private:
 
     int fds[2];
     int res;
     char buf[256];
     int so;
+    bool terminate_;
 
 };
 
-class fflushThread : public QThread
-{
-      Q_OBJECT
-public:
 
-    fflushThread();
-    ~fflushThread();
-    void run();
-
-private:
-
-
-};
 #endif // STDOUTREDIRECTOR_H

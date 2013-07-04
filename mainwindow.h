@@ -43,12 +43,14 @@ private slots:
 
     void on_pushButton_clicked();
 
+signals:
+    void threadTerminator();
+
 private:
     Ui::MainWindow *ui;
     ConnectionSettings ConDiag;
     QTextEdit* debugText;
-    stdoutRedirector myRedirector;
-    fflushThread myFflushThread;
+
     };
 
 #endif // MAINWINDOW_H

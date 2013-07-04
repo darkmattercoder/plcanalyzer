@@ -1,15 +1,13 @@
 #ifndef S7CONNECTION_H
 #define S7CONNECTION_H
-
+#include <QMessageBox>
+#include <QDebug>
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
-#include <QMessageBox>
-#include <QDebug>
+
 #include <cstdint>
-#include <nodave.h>
-#include <openS7online.h>
-#include <openSocket.h>
+
 
 #ifdef LINUX
 #include <unistd.h>
@@ -26,6 +24,10 @@
 #define WIN32_LEAN_AND_MEAN
 #define WIN_STYLE
 #endif
+
+#include <nodave.h>
+#include <openS7online.h>
+#include <openSocket.h>
 
 // Verfügbare Anzeigeformate
 #define AnzFormatBinaer 1
