@@ -18,12 +18,14 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     s7connection.cpp \
     connectionsettings.cpp \
-    stdoutredirector.cpp
+    stdoutredirector.cpp \
+    logtoparent.cpp
 
 HEADERS  += mainwindow.h \
     s7connection.h \
         connectionsettings.h \
-    stdoutredirector.h
+    stdoutredirector.h \
+    logtoparent.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui

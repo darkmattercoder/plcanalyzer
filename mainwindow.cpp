@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "logtoparent.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
@@ -159,4 +160,6 @@ void MainWindow::on_Button_read_slots_clicked()
 void MainWindow::on_pushButton_clicked()
 {
     printf("hallohallo\n");
+    logToParent* testWrite = new logToParent(this);
+    testWrite->updateParentLog("hund");
    }

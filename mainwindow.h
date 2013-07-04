@@ -29,6 +29,7 @@ public:
     ~MainWindow();
     S7Connection MyS7Connection;
     void customMessageHandler();
+    Ui::MainWindow *ui;
 
 
 private slots:
@@ -47,7 +48,7 @@ signals:
     void threadTerminator();
 
 private:
-    Ui::MainWindow *ui;
+
     ConnectionSettings ConDiag;
     QTextEdit* debugText;
 
