@@ -8,10 +8,9 @@
 #include <QProcess>
 #include <QDebug>
 #include <QTextEdit>
+#include <iostream>
 #include "mainwindow.h"
-
 #include "stdoutredirector.h"
-
 #include "s7connection.h"
 #include "connectionsettings.h"
 
@@ -37,15 +36,13 @@ private slots:
     void on_actionProjekt_ffnen_triggered();
     void on_Button_Connect_clicked();
     void on_Button_Get_Val_clicked();
-    void TimeOut();
     void ChangeSettings(ConSets NewConSets);
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
 
-    void on_pushButton_clicked();
 
 signals:
-    void threadTerminator();
+
 
 private:
 

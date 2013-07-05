@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
+    <width>478</width>
     <height>308</height>
    </rect>
   </property>
@@ -152,7 +152,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>400</width>
+     <width>478</width>
      <height>25</height>
     </rect>
    </property>
@@ -176,7 +176,14 @@
     <bool>false</bool>
    </attribute>
   </widget>
-  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QStatusBar" name="statusBar">
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+  </widget>
   <action name="actionNeues_Projekt">
    <property name="text">
     <string>neues Projekt</string>

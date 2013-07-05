@@ -31,10 +31,6 @@ FORMS    += mainwindow.ui \
     connectionsettings.ui
 
 OTHER_FILES += \
-    lib/s7onlinx.dll \
-    lib/libnodave.lib \
-    lib/libnodave.dll \
-    lib/libnodave64.so \
     README.md
 
 #DEFINES depend on CONFIG above
@@ -57,7 +53,7 @@ LIBS += -L$$PWD/lib/ -llibnodave
 LINUX {
 LIBS += -L$$PWD/lib/ -lnodave64
 }
-INCLUDEPATH += $$PWD/
+INCLUDEPATH += $$PWD/include/libnodave/
 DEPENDPATH += $$PWD/lib/
 
 PRE_TARGETDEPS += $$PWD/lib/libnodave.lib

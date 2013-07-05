@@ -22,7 +22,7 @@
 #include <assert.h>
 
 
-class stdoutRedirector : public QThread 
+class stdoutRedirector :  public QThread
 {
       Q_OBJECT
 public:
@@ -30,7 +30,8 @@ public:
     stdoutRedirector();
     ~stdoutRedirector();
     void run();
-
+signals:
+    void writeOut(QString);
 public slots:
     void terminate();
 

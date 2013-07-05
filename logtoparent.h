@@ -3,16 +3,16 @@
 #include "mainwindow.h"
 #include <QMainWindow>
 #include <QString>
-#include "logtoparent.h"
 
 class logToParent : public QMainWindow
 {
     Q_OBJECT
 public:
     explicit logToParent(MainWindow *parent = 0);
-    QTextEdit *parentLog;
+    ~logToParent();
+    QStatusBar *parentStatbar;
 signals:
-    
+    void threadTerminator();
 public slots:
 
     void updateParentLog(QString logString);

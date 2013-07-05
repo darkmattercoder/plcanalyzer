@@ -24,6 +24,7 @@ void stdoutRedirector::run()
     res=read(fds[0],buf,sizeof(buf)-1);
     assert(res>=0 && res<sizeof(buf));
     buf[res]=0;
+    emit writeOut(buf);
     qDebug() << buf;
     //fprintf(stderr,"printf: %s\n",buf);
     if (terminate_)
@@ -38,4 +39,6 @@ void stdoutRedirector::terminate()
 {
     terminate_ = true;
 }
+
+
 

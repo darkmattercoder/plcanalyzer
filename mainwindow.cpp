@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+using namespace std;
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -14,44 +15,26 @@ MainWindow::MainWindow(QWidget *parent) :
 
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
 
-    QTimer *timer = new QTimer(this);
-    connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
-    timer->start(100);
-
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
-    stdoutRedirector * myRedirector = new stdoutRedirector;
-
-    connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
-    myRedirector->start();
+    logToParent* logger = new logToParent(this);
 
 }
 
 MainWindow::~MainWindow()
 {
-       emit threadTerminator();
     delete ui;
-
-
 }
-
 
 void MainWindow::on_actionNeues_Projekt_triggered()
 {
-    qDebug("Gewaehltes Protokoll: %i", MyS7Connection.MyConSet.useProto);
-
-
+    cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet.useProto << endl;
 }
 
 
 void MainWindow::on_actionProjekt_ffnen_triggered()
 {
    QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt oeffnen"), "", tr("Files (*.xml)"));
-
-    QMessageBox::information(
-            this,
-            tr("Gewaehlter Pfad"),
-                tr(fileName.toUtf8().constData()));
-
+   QMessageBox::information(this, tr("Gewaehlter Pfad"), tr(fileName.toUtf8().constData()));
 }
 
 // Button Verbinden / Trennen
@@ -80,12 +63,6 @@ void MainWindow::on_Button_Get_Val_clicked()
     {
         ui->lcdNumber->display(MyS7Connection.getValue());
     }
-}
-
-// Zyklisches Event
-void MainWindow::TimeOut()
-{
-    // Zyklisches lesen
 }
 
 
@@ -155,11 +132,3 @@ void MainWindow::on_Button_read_slots_clicked()
     }
 }
 
-
-
-void MainWindow::on_pushButton_clicked()
-{
-    printf("hallohallo\n");
-    logToParent* testWrite = new logToParent(this);
-    testWrite->updateParentLog("hund");
-   }
