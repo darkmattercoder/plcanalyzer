@@ -12,10 +12,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
-
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
+
+    //The "logger" starts a thread which delivers stdout content to a pipe and
+    //reads from it to push it to the debug console and/or a logging widget (e.g. the Statusbar)
+    //in the main window
     logToParent* logger = new logToParent(this);
 
 }

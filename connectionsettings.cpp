@@ -1,4 +1,6 @@
 #include "connectionsettings.h"
+#include <iostream>
+using namespace std;
 
 
 ConnectionSettings::ConnectionSettings(QWidget *parent):
@@ -8,38 +10,46 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     // Userinterface aufbauen
     ui->setupUi(this);
 
+    //setup a signal mapper for comboBox conditional signals
+ //   signalMapper = new QSignalMapper(this);
 
     //Fill comboboxes for area and formats with data
 
-      QList<QComboBox*> comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
-      QList<QComboBox*> comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
-      QStringList comboItemsArea;
-      QStringList comboItemsFormat;
-      QList<int> comboValuesArea;
-      QList<int> comboValuesFormat;
+      comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
+   comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
+   lineEditsBits = findChildren<QLineEdit*>(QRegExp("lineEditBit_.*"));
+
 
       comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z" << "IEC_T";
       comboItemsFormat << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT" << "DINT" << "REAL";
       comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB << daveCounter << daveTimer << daveCounter200 << daveTimer200;
       comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatDezimal << AnzFormatDezimal << AnzFormatGleitpunkt;
 
-      int areaItemsCount = 0; //comboItemsArea.count();
-      int formatItemsCount = 0; //comboItemsFormat.count();
-
-      Q_FOREACH(QComboBox* areaBox,comboBoxesArea)
+      //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and faster but then an additional iterator
+      //value declaration outside the loop was necessary.
+      for(int i=0;i<comboBoxesArea.count();++i)
       {
-          areaBox->addItems(comboItemsArea);
-          areaBox->itemData(areaItemsCount,comboValuesArea.value(areaItemsCount));
-          areaItemsCount++;
-      }
-      Q_FOREACH (QComboBox* formatBox,comboBoxesFormat) {
-          formatBox->addItems(comboItemsFormat);
-          formatBox->itemData(formatItemsCount,comboValuesFormat.value(formatItemsCount));
-          formatItemsCount++;
+          for(int j=0;j<comboItemsArea.count();++j)
+              comboBoxesArea[i]->addItem(comboItemsArea[j],comboValuesArea[j]);
       }
 
+      for(int i=0;i<comboBoxesFormat.count();++i)
+      {
+          for(int j=0;j<comboItemsFormat.count();++j)
+          comboBoxesFormat[i]->addItem(comboItemsFormat[j],comboValuesFormat[j]);
+      }
 
- // ComboBox "Protokoll" mit den Einstellungen füllen
+      //Connect the format-combo boxes' indexChanged signal to the handling
+      //Slot for conditional disabling of Bit field
+
+      for(int i=0;i<comboBoxesArea.count();++i)
+      {
+          connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxAreaIndexChanged(int)));
+ //         signalMapper->setMapping();
+        }
+//connect(signalMapper, SIGNAL(mapped(int)), this, SLOT(comboBoxAreaIndexChanged(int)));
+
+              // ComboBox "Protokoll" mit den Einstellungen füllen
     ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
     ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
     ui->ComboBox_Protokoll->addItem("S5 programming port protocol", daveProtoAS511);
@@ -144,4 +154,40 @@ void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
         ui->lineEdit_Slot->setEnabled(false);
         break;
     }
+}
+
+void ConnectionSettings::comboBoxAreaIndexChanged(int index)
+{
+    QComboBox *sendingBox = (QComboBox *)sender();
+    int dataItem = sendingBox->itemData(index).toInt();
+    int lineNumber = 0;
+    lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
+
+    switch (dataItem)
+    {
+    case daveCounter:
+    case daveTimer:
+    case daveCounter200:
+    case daveTimer200:
+       lineEditsBits[lineNumber]->clear();
+        lineEditsBits[lineNumber]->setDisabled(true);
+break;
+     default:
+        lineEditsBits[lineNumber]->setEnabled(true);
+    }
+
+
+ }
+
+int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,QComboBox* sendingBox)
+{
+    int lineNumber = 0;
+    int count = 0;
+
+    Q_FOREACH(QComboBox *areaBox,areaBoxes)
+    {
+        if(areaBox == sendingBox) {lineNumber = count;}
+        count++;
+    }
+    return lineNumber;
 }

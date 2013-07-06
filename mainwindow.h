@@ -27,7 +27,6 @@ public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     S7Connection MyS7Connection;
-    void customMessageHandler();
     Ui::MainWindow *ui;
 
 

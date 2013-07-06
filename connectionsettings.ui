@@ -273,52 +273,31 @@
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="3" column="3">
-     <widget class="QComboBox" name="comboBox_5">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BOOL</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BYTE</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>WORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DWORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>INT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DINT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>REAL</string>
-       </property>
-      </item>
+    <item row="0" column="0">
+     <widget class="QLabel" name="label_8">
+      <property name="text">
+       <string>Speicherbereich</string>
+      </property>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="lineEdit_8"/>
+    <item row="1" column="0">
+     <widget class="QComboBox" name="comboBoxArea_0"/>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Adresse</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="2">
+     <widget class="QLineEdit" name="lineEditBit_0"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="lineEditAddress_0"/>
+    </item>
+    <item row="1" column="3">
+     <widget class="QComboBox" name="comboBoxFormat_0"/>
     </item>
     <item row="0" column="3">
      <widget class="QLabel" name="label_10">
@@ -334,467 +313,53 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="2">
-     <widget class="QLineEdit" name="lineEdit_5"/>
-    </item>
-    <item row="2" column="2">
-     <widget class="QLineEdit" name="lineEdit_3"/>
-    </item>
     <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEdit_4"/>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLineEdit" name="lineEdit_7"/>
-    </item>
-    <item row="0" column="0">
-     <widget class="QLabel" name="label_8">
-      <property name="text">
-       <string>Speicherbereich</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QComboBox" name="comboBox">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>A</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DB</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>M</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T_IEC</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z_IEC</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Adresse</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLineEdit" name="lineEdit_2"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLineEdit" name="lineEdit"/>
+     <widget class="QLineEdit" name="lineEditAddress_1"/>
     </item>
     <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEdit_6"/>
+     <widget class="QLineEdit" name="lineEditAddress_2"/>
     </item>
-    <item row="2" column="0">
-     <widget class="QComboBox" name="comboBox_4">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>A</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DB</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>M</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T_IEC</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z_IEC</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QComboBox" name="comboBox_2">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BOOL</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BYTE</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>WORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DWORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>INT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DINT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>REAL</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="3" column="0">
-     <widget class="QComboBox" name="comboBox_6">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>A</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DB</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>M</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T_IEC</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z_IEC</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="2" column="3">
-     <widget class="QComboBox" name="comboBox_3">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BOOL</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BYTE</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>WORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DWORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>INT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DINT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>REAL</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QComboBox" name="comboBox_8">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>A</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DB</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>M</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T_IEC</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z_IEC</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="4" column="3">
-     <widget class="QComboBox" name="comboBox_7">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BOOL</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BYTE</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>WORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DWORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>INT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DINT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>REAL</string>
-       </property>
-      </item>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QComboBox" name="comboBox_10">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>E</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>A</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DB</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>M</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>T_IEC</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>Z_IEC</string>
-       </property>
-      </item>
-     </widget>
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="lineEditAddress_3"/>
     </item>
     <item row="5" column="1">
-     <widget class="QLineEdit" name="lineEdit_10"/>
+     <widget class="QLineEdit" name="lineEditAddress_4"/>
+    </item>
+    <item row="2" column="2">
+     <widget class="QLineEdit" name="lineEditBit_1"/>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLineEdit" name="lineEditBit_2"/>
+    </item>
+    <item row="4" column="2">
+     <widget class="QLineEdit" name="lineEditBit_3"/>
     </item>
     <item row="5" column="2">
-     <widget class="QLineEdit" name="lineEdit_9"/>
+     <widget class="QLineEdit" name="lineEditBit_4"/>
+    </item>
+    <item row="2" column="0">
+     <widget class="QComboBox" name="comboBoxArea_1"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QComboBox" name="comboBoxArea_2"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QComboBox" name="comboBoxArea_3"/>
+    </item>
+    <item row="5" column="0">
+     <widget class="QComboBox" name="comboBoxArea_4"/>
+    </item>
+    <item row="2" column="3">
+     <widget class="QComboBox" name="comboBoxFormat_1"/>
+    </item>
+    <item row="3" column="3">
+     <widget class="QComboBox" name="comboBoxFormat_2"/>
+    </item>
+    <item row="4" column="3">
+     <widget class="QComboBox" name="comboBoxFormat_3"/>
     </item>
     <item row="5" column="3">
-     <widget class="QComboBox" name="comboBox_9">
-      <item>
-       <property name="text">
-        <string/>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BOOL</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>BYTE</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>WORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DWORD</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>INT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>DINT</string>
-       </property>
-      </item>
-      <item>
-       <property name="text">
-        <string>REAL</string>
-       </property>
-      </item>
-     </widget>
+     <widget class="QComboBox" name="comboBoxFormat_4"/>
     </item>
    </layout>
   </widget>
