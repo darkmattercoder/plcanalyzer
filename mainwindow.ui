@@ -210,6 +210,19 @@
      <string>s</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="checkBox">
+    <property name="geometry">
+     <rect>
+      <x>160</x>
+      <y>70</y>
+      <width>97</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>CheckBox</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -217,16 +230,16 @@
      <x>0</x>
      <y>0</y>
      <width>606</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
     <property name="title">
      <string>Datei</string>
     </property>
-    <addaction name="actionNeues_Projekt"/>
-    <addaction name="actionProjekt_ffnen"/>
-    <addaction name="actionProjekt_speichern"/>
+    <addaction name="actionNewProject"/>
+    <addaction name="actionOpenProject"/>
+    <addaction name="actionSaveProject"/>
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
    </widget>
@@ -241,7 +254,7 @@
    </attribute>
   </widget>
   <widget class="QStatusBar" name="statusBar"/>
-  <action name="actionNeues_Projekt">
+  <action name="actionNewProject">
    <property name="text">
     <string>neues Projekt</string>
    </property>
@@ -249,7 +262,7 @@
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionProjekt_ffnen">
+  <action name="actionOpenProject">
    <property name="text">
     <string>Projekt öffnen</string>
    </property>
@@ -257,7 +270,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionProjekt_speichern">
+  <action name="actionSaveProject">
    <property name="text">
     <string>Projekt speichern</string>
    </property>

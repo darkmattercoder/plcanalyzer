@@ -1,18 +1,49 @@
+/*******************************************************************************
+ *   *File: xmlsettingshandler.cpp                                             *
+ *   *Date: 2013-06-01                                                         *
+ *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+ *               Lukas Kern <lukas.kern@online.de>                             *
+ *               Carsten Klein <hook-the-master@gmx.net>                       *
+ *                                                                             *
+ *   *License information:                                                     *
+ *                                                                             *
+ *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+ *                                                                             *
+ *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+ *   redistribute it and/or modify it under the terms of the GNU General       *
+ *   Public License as published by the Free Software Foundation; either       *
+ *   version 2 of the License, or (at your option) any later version.          *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful, but       *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program; if not, write to the Free Software               *
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+ *   02110-1301, USA.                                                          *
+ *                                                                             *
+ *   *Program name: PLCANALYZER                                                *
+ *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+ *                               * Reads memory areas                          *
+ *                               * Draws a graph over time for operands        *
+ *   *Have fun!                                                                *
+ ******************************************************************************/
+
 #include<QFileDialog>
 //#include <mainwindow.h>
 #include "xmlsettingshandler.h"
 #include <iostream>
 
-
 xmlSettingsHandler::xmlSettingsHandler(QMainWindow *parent)
     : QMainWindow(parent)
 {
- openedConSets = new ConSets;
+    openedConSets = new ConSets;
 }
 
 xmlSettingsHandler::~xmlSettingsHandler()
 {
-delete openedConSets;
+
 }
 
 void xmlSettingsHandler::newProject()
@@ -22,87 +53,70 @@ void xmlSettingsHandler::newProject()
 
 void xmlSettingsHandler::openProject()
 {
-   filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-Projekte (*.plcproj)");
-   QFile file(filename);
-       if (!file.open(QFile::ReadOnly | QFile::Text))
-   {
-       std::cout << "Error: Cannot read file " << qPrintable(filename)
-                 << ": " << qPrintable(file.errorString())
-                 << std::endl;
+    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-Projekte (*.plcproj)");
+    QFile file(filename);
+    if (!file.open(QFile::ReadOnly | QFile::Text))
+    {
+        std::cout << "Error: Cannot read file " << qPrintable(filename)
+                  << ": " << qPrintable(file.errorString())
+                  << std::endl;
 
-   }
+    }
 
-           xmlReader.setDevice(&file);
-           openedConSlots.clear();
-           ConSlot tempSlot;
-           while(!xmlReader.atEnd())
-           {
-               xmlReader.readNext();
-               if(xmlReader.isStartElement() && xmlReader.name()=="IP_ADDR")
-               {
+    xmlReader.setDevice(&file);
+    openedConSlots.clear();
+    ConSlot tempSlot;
+    while(!xmlReader.atEnd())
+    {
+        xmlReader.readNext();
+        if(xmlReader.isStartElement() && xmlReader.name()=="IP_ADDR")
+        {
 
-                                     openedConSets->IP_Adr = xmlReader.readElementText();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->useProto = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->localMPI = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->plcMPI = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->plc2MPI = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->rack = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->slot = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-                                     openedConSets->speed = xmlReader.readElementText().toInt();
-                                     xmlReader.readNextStartElement();
-               }else if(xmlReader.isStartElement() && xmlReader.name().contains("SLOT_")){
+            openedConSets->IP_Adr = xmlReader.readElementText();
+            xmlReader.readNextStartElement();
+            openedConSets->useProto = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            openedConSets->localMPI = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            openedConSets->plcMPI = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            openedConSets->plc2MPI = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            openedConSets->rack = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            openedConSets->slot = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            openedConSets->speed = xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+        }else if(xmlReader.isStartElement() && xmlReader.name().contains("SLOT_")){
 
+            xmlReader.readNextStartElement();
+            tempSlot.iAdrBereich=xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            tempSlot.iStartAdr=xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            tempSlot.iAnzFormat=xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            tempSlot.iBitnummer=xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            tempSlot.iDatenlaenge=xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            tempSlot.iDBnummer=xmlReader.readElementText().toInt();
+            openedConSlots.append(tempSlot);
+        }
+    }
 
+    if(xmlReader.hasError())
+    {
+        std::cout << "XML-READER Error: " << xmlReader.errorString().toStdString() << std::endl;
+        QMessageBox *msgBoxOpenError = new QMessageBox(this);
+        msgBoxOpenError->setIcon(QMessageBox::Critical);
+        msgBoxOpenError->setText("Fehler beim oeffnen");
+        msgBoxOpenError->show();
 
-                           xmlReader.readNextStartElement();
-                           std::cout << xmlReader.name().toString().toStdString() << std::endl;
+    }else emit newSlotsOpened(openedConSlots);
 
-                        tempSlot.iAdrBereich=xmlReader.readElementText().toInt();
-                        xmlReader.readNextStartElement();
-                         std::cout << xmlReader.name().toString().toStdString() << std::endl;
-                        tempSlot.iStartAdr=xmlReader.readElementText().toInt();
-                        xmlReader.readNextStartElement();
-                         std::cout << xmlReader.name().toString().toStdString() << std::endl;
-                        tempSlot.iAnzFormat=xmlReader.readElementText().toInt();
-                        xmlReader.readNextStartElement();
-                         std::cout << xmlReader.name().toString().toStdString() << std::endl;
-                        tempSlot.iBitnummer=xmlReader.readElementText().toInt();
-                        xmlReader.readNextStartElement();
-                         std::cout << xmlReader.name().toString().toStdString() << std::endl;
-                        tempSlot.iDatenlaenge=xmlReader.readElementText().toInt();
-                        xmlReader.readNextStartElement();
-                         std::cout << xmlReader.name().toString().toStdString() << std::endl;
-                        tempSlot.iDBnummer=xmlReader.readElementText().toInt();
-                        openedConSlots.append(tempSlot);
-
-
-
-               }
-
-
-
-
-
-           }
-
-           if(xmlReader.hasError())
-           {
-               std::cout << "XML-READER Error: " << xmlReader.errorString().toStdString() << std::endl;
-               QMessageBox *msgBoxOpenError = new QMessageBox(this);
-               msgBoxOpenError->setIcon(QMessageBox::Critical);
-               msgBoxOpenError->setText("Fehler beim oeffnen");
-               msgBoxOpenError->show();
-
-           }else emit newSlotsOpened(openedConSlots);
-
-file.close();
+    file.close();
 
 }
 
@@ -118,7 +132,7 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets, QVector<ConSlot> c
     xmlWriter.setAutoFormatting(true);
     xmlWriter.writeStartDocument();
     xmlWriter.writeStartElement("DATA");
-        xmlWriter.writeStartElement("SETTINGS");
+    xmlWriter.writeStartElement("SETTINGS");
     xmlWriter.writeTextElement("IP_ADDR", currentConSets->IP_Adr);
     xmlWriter.writeTextElement("PROTOCOL",QString::number(currentConSets->useProto));
     xmlWriter.writeTextElement("LOCAL_MPI",QString::number(currentConSets->localMPI));

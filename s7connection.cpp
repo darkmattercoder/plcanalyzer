@@ -1,7 +1,38 @@
+/*******************************************************************************
+ *   *File: s7connection.cpp                                                   *
+ *   *Date: 2013-06-01                                                         *
+ *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+ *               Lukas Kern <lukas.kern@online.de>                             *
+ *               Carsten Klein <hook-the-master@gmx.net>                       *
+ *                                                                             *
+ *   *License information:                                                     *
+ *                                                                             *
+ *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+ *                                                                             *
+ *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+ *   redistribute it and/or modify it under the terms of the GNU General       *
+ *   Public License as published by the Free Software Foundation; either       *
+ *   version 2 of the License, or (at your option) any later version.          *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful, but       *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program; if not, write to the Free Software               *
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+ *   02110-1301, USA.                                                          *
+ *                                                                             *
+ *   *Program name: PLCANALYZER                                                *
+ *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+ *                               * Reads memory areas                          *
+ *                               * Draws a graph over time for operands        *
+ *   *Have fun!                                                                *
+ ******************************************************************************/
+
 #include "s7connection.h"
 #include <iostream>
-using namespace std;
-// Konstruktor
+
 S7Connection::S7Connection()
 {
 
@@ -19,7 +50,6 @@ S7Connection::S7Connection()
     initSuccess = 0;
 }
 
-// Destructor
 S7Connection::~S7Connection()
 {
     // Disconnect from PLC
@@ -31,7 +61,6 @@ S7Connection::~S7Connection()
 }
 
 // Opens the Connection
-
 bool S7Connection::startConnection(WId WndHandle)
 {
     if(!isConnected())
@@ -49,7 +78,7 @@ bool S7Connection::startConnection(WId WndHandle)
 #ifdef BCCWIN
         case daveProtoS7online:
             fds.rfd = openS7online("/S7ONLINE", WndHandle);
-            cout << "OpenS7online Handle:" << fds.rfd << endl;
+            std::cout << "OpenS7online Handle:" << fds.rfd << std::endl;
             break;
 #endif
         case daveProtoISOTCP:
@@ -58,18 +87,15 @@ bool S7Connection::startConnection(WId WndHandle)
             fds.rfd=openSocket(102, MyConSet->IP_Adr.toUtf8());
             break;
         default:
-            cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" << endl;
+            std::cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" << std::endl;
             return false;
             break;
         }
-
-
 
         fds.wfd=fds.rfd;
         if (((int)fds.rfd)>=0) { 	// had Problems here: HANDLE is unsigned, 0 is a valid HANDLE for s7onlinx
 
             //daveSetDebug(daveDebugListReachables);
-
             di = daveNewInterface(fds, "IF1", MyConSet->localMPI, MyConSet->useProto, MyConSet->speed);
 
             daveSetTimeout(di,1000000);
@@ -83,11 +109,11 @@ bool S7Connection::startConnection(WId WndHandle)
                     if (0==daveInitAdapter(di)) {
                         initSuccess=1;
                         a= daveListReachablePartners(di,buf1);
-                        cout << "daveListReachablePartners List length: %d\n" << a << endl;
+                        std::cout << "daveListReachablePartners List length: %d\n" << a << std::endl;
                         if (a>0) {
                             for (int j=0;j<a;j++) {
-                                if (buf1[j]==daveMPIReachable) cout << "Aktiver Teilnehmer mit Adresse:%d\n" << j << endl;
-                                if (buf1[j]==daveMPIPassive) cout << "Passiver Teilnehmer mit Adresse:%d\n" << j << endl;
+                                if (buf1[j]==daveMPIReachable) std::cout << "Aktiver Teilnehmer mit Adresse:%d\n" << j << std::endl;
+                                if (buf1[j]==daveMPIPassive) std::cout << "Passiver Teilnehmer mit Adresse:%d\n" << j << std::endl;
                             }
                         }
                         break;
@@ -97,7 +123,7 @@ bool S7Connection::startConnection(WId WndHandle)
 
                 if (!initSuccess)
                 {
-                    cout << "Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal." << endl;
+                    std::cout << "Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal." << std::endl;
                 }
             }
 
@@ -112,7 +138,7 @@ bool S7Connection::startConnection(WId WndHandle)
 
             if (0==daveConnectPLC(dc))
             {
-                cout << "Verbindung erfolgreich hergestellt." << endl;
+                std::cout << "Verbindung erfolgreich hergestellt." << std::endl;
                 initSuccess=1;
 
                 if(MyConSet->plc2MPI>=0)
@@ -126,7 +152,7 @@ bool S7Connection::startConnection(WId WndHandle)
             }
             else
             {
-                cout << "Es konnte keine Verbinung aufgebaut werden.\n" << endl;
+                std::cout << "Es konnte keine Verbinung aufgebaut werden.\n" << std::endl;
                 daveDisconnectAdapter(di);
 
                 switch(MyConSet->useProto)
@@ -148,23 +174,19 @@ bool S7Connection::startConnection(WId WndHandle)
                     break;
                 default:
                     // Unbekannter Protokolltyp gewählt
-                    cout << "Unbekannter Protokolltyp!" << endl;
+                    std::cout << "Unbekannter Protokolltyp!" << std::endl;
                     return false;
                     break;
                 }
-
-
             }
-
         } else {
-            cout << "Couldn't open access point S7ONLINE." << endl;
+            std::cout << "Couldn't open access point S7ONLINE." << std::endl;
             //return -1;
         }
     }
     else
     {
-        cout << "Connection already exists!" << endl;
-
+        std::cout << "Connection already exists!" << std::endl;
     }
     return isConnected();
 }
@@ -204,18 +226,16 @@ void S7Connection::disconnect()
             break;
         default:
             // Unbekannter Protokolltyp gewählt
-            cout << "Unbekannter Protokolltyp!" << endl;
+            std::cout << "Unbekannter Protokolltyp!" << std::endl;
             break;
         }
 
         daveFree(di);
         initSuccess = 0;
 
-        cout << "Verbindung wurde getrennt." << endl;
+        std::cout << "Verbindung wurde getrennt." << std::endl;
     }
 }
-
-
 
 int S7Connection::getValue()
 {
@@ -285,14 +305,14 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
                 cSlot[i].RetVal.DInt = daveGetU32(dc);
                 break;
             default:
-                cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << endl;
+                std::cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << std::endl;
                 break;
             }
         }
         else
         {
             // Ausgabe des Fehlercodes
-            cout << "*** Error: %s\n" << daveStrerror(res) << endl;
+            std::cout << "*** Error: %s\n" << daveStrerror(res) << std::endl;
         }
     }
 
@@ -307,7 +327,7 @@ QString S7Connection::interpret(ConSlot cSlot)
     switch(cSlot.iDatenlaenge)
     {
     case DatLenBit:
-           switch(cSlot.iAnzFormat)
+        switch(cSlot.iAnzFormat)
         {
         case AnzFormatBinaer:
             szRetVal  = QString::number(cSlot.RetVal.Bit, 2).right(DatLenBit);
@@ -398,7 +418,7 @@ QString S7Connection::interpret(ConSlot cSlot)
         break;
 
     default:
-        cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << endl;
+        std::cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << std::endl;
         break;
     }
     return szRetVal;

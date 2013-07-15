@@ -1,62 +1,78 @@
+/*******************************************************************************
+ *   *File: connectionsettings.cpp                                             *
+ *   *Date: 2013-06-01                                                         *
+ *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+ *               Lukas Kern <lukas.kern@online.de>                             *
+ *               Carsten Klein <hook-the-master@gmx.net>                       *
+ *                                                                             *
+ *   *License information:                                                     *
+ *                                                                             *
+ *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+ *                                                                             *
+ *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+ *   redistribute it and/or modify it under the terms of the GNU General       *
+ *   Public License as published by the Free Software Foundation; either       *
+ *   version 2 of the License, or (at your option) any later version.          *
+ *                                                                             *
+ *   This program is distributed in the hope that it will be useful, but       *
+ *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+ *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+ *   GNU General Public License for more details.                              *
+ *   You should have received a copy of the GNU General Public License         *
+ *   along with this program; if not, write to the Free Software               *
+ *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+ *   02110-1301, USA.                                                          *
+ *                                                                             *
+ *   *Program name: PLCANALYZER                                                *
+ *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+ *                               * Reads memory areas                          *
+ *                               * Draws a graph over time for operands        *
+ *   *Have fun!                                                                *
+ ******************************************************************************/
+
 #include "connectionsettings.h"
 #include <iostream>
-using namespace std;
-
 
 ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
     ui(new Ui::ConnectionSettings)
 {
-
     // Userinterface aufbauen
     ui->setupUi(this);
 
-    //setup a signal mapper for comboBox conditional signals
- //   signalMapper = new QSignalMapper(this);
-
     //Fill comboboxes for area and formats with data
+    comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
+    comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
+    lineEditsBits = findChildren<QLineEdit*>(QRegExp("lineEditBit_.*"));
+    lineEditsAddress = findChildren<QLineEdit*>(QRegExp("lineEditAddress_.*"));
 
-      comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
-   comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
-   lineEditsBits = findChildren<QLineEdit*>(QRegExp("lineEditBit_.*"));
-   lineEditsAddress = findChildren<QLineEdit*>(QRegExp("lineEditAddress_.*"));
+    comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z" << "IEC_T";
+    comboItemsFormat << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT" << "DINT" << "REAL";
+    comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB << daveCounter << daveTimer << daveCounter200 << daveTimer200;
+    comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatDezimal << AnzFormatDezimal << AnzFormatGleitpunkt;
 
-      comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z" << "IEC_T";
-      comboItemsFormat << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT" << "DINT" << "REAL";
-      comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB << daveCounter << daveTimer << daveCounter200 << daveTimer200;
-      comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatDezimal << AnzFormatDezimal << AnzFormatGleitpunkt;
+    //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and faster but then an additional iterator
+    //value declaration outside the loop was necessary.
+    for(int i=0;i<comboBoxesArea.count();++i)
+    {
+        for(int j=0;j<comboItemsArea.count();++j)
+            comboBoxesArea[i]->addItem(comboItemsArea[j],comboValuesArea[j]);
+    }
 
-      //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and faster but then an additional iterator
-      //value declaration outside the loop was necessary.
-      for(int i=0;i<comboBoxesArea.count();++i)
-      {
-          for(int j=0;j<comboItemsArea.count();++j)
-              comboBoxesArea[i]->addItem(comboItemsArea[j],comboValuesArea[j]);
-      }
+    for(int i=0;i<comboBoxesFormat.count();++i)
+    {
+        for(int j=0;j<comboItemsFormat.count();++j)
+            comboBoxesFormat[i]->addItem(comboItemsFormat[j],comboValuesFormat[j]);
+    }
 
-      for(int i=0;i<comboBoxesFormat.count();++i)
-      {
-          for(int j=0;j<comboItemsFormat.count();++j)
-          comboBoxesFormat[i]->addItem(comboItemsFormat[j],comboValuesFormat[j]);
-      }
+    //Connect the format-combo boxes' indexChanged signal to the handling
+    //Slot for conditional disabling of Bit field
+    for(int i=0;i<comboBoxesArea.count();++i)
+    {
+        connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxIndexChanged(int)));
+    }
 
-
-      //Connect the format-combo boxes' indexChanged signal to the handling
-      //Slot for conditional disabling of Bit field
-
-      for(int i=0;i<comboBoxesArea.count();++i)
-      {
-          connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxIndexChanged(int)));
-    //         signalMapper->setMapping();
-        }
-/*
-      for(int i = 0; i < comboBoxesFormat.count();++i)
-      {
-          connect(comboBoxesFormat[i],SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxIndexChanged(int)));
-      }*/
-
-
-              // ComboBox "Protokoll" mit den Einstellungen füllen
+    // ComboBox "Protokoll" mit den Einstellungen füllen
     ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
     ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
     ui->ComboBox_Protokoll->addItem("S5 programming port protocol", daveProtoAS511);
@@ -100,12 +116,12 @@ void ConnectionSettings::on_buttonBox_accepted()
 
     // Signal "Einstellungen geändert" auslösen
     emit SettingsChanged(m_DiagSets);
-    if(newSlots.isEmpty() || !newSlots.size()==comboBoxesArea.count()){
+
+    if(newSlots.isEmpty() || !newSlots.size()==comboBoxesArea.count())
+    {
         //initialize the conslot vector with the number of slots
         newSlots.resize(comboBoxesArea.count());
     }
-
-
 
     //Insert Slot data in Vector
     for(int i=0;i<lineEditsBits.count();++i){
@@ -114,7 +130,6 @@ void ConnectionSettings::on_buttonBox_accepted()
         newSlots[i].iAnzFormat = comboBoxesFormat[i]->itemData(comboBoxesFormat[i]->currentIndex()).toInt();
         newSlots[i].iAdrBereich = comboBoxesArea[i]->itemData(comboBoxesArea[i]->currentIndex()).toInt();
     }
-
 
     emit SlotsChanged(newSlots);
 }
@@ -132,8 +147,6 @@ void ConnectionSettings::SetSettings(ConSets *CurrentSets)
     ui->ComboBox_Protokoll->setCurrentIndex(ui->ComboBox_Protokoll->findData(m_DiagSets->useProto));
     ui->lineEdit_Rack->setText(QString::number(m_DiagSets->rack));
     ui->lineEdit_Slot->setText(QString::number(m_DiagSets->slot));
-
-
 }
 
 void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
@@ -189,7 +202,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     int lineNumber = 0;
 
     if(comboBoxesArea.contains(sendingBox)){
-       lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
+        lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
     }else if(comboBoxesFormat.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesFormat,sendingBox);
     }
@@ -201,17 +214,13 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     case daveCounter200:
     case daveTimer200:
     case AnzFormatHexadezimal:
-       lineEditsBits[lineNumber]->clear();
+        lineEditsBits[lineNumber]->clear();
         lineEditsBits[lineNumber]->setDisabled(true);
-
-break;
-
-     default:
+        break;
+    default:
         lineEditsBits[lineNumber]->setEnabled(true);
     }
-
-
- }
+}
 
 int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,QComboBox* sendingBox)
 {

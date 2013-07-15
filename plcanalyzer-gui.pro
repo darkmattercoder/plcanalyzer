@@ -4,8 +4,6 @@
 #
 #-------------------------------------------------
 
-#Change Linux to BCCWIN here
-
 unix: CONFIG += LINUX
 win32: CONFIG += BCCWIN
 QT       += core gui
@@ -24,18 +22,19 @@ SOURCES += main.cpp\
     xmlsettingshandler.cpp
 
 HEADERS  += mainwindow.h \
-    s7connection.h \
-   
+    s7connection.h \   
     connectionsettings.h \
       stdoutredirector.h \
     logtoparent.h \
-    xmlsettingshandler.h
+    xmlsettingshandler.h \
+    qcustomplot.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui
 
 OTHER_FILES += \
-    README.md
+    README \
+    LICENSE
 
 #DEFINES depend on CONFIG above
 LINUX {
