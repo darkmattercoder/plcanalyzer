@@ -160,9 +160,10 @@
     <property name="title">
      <string>Datei</string>
     </property>
-    <addaction name="actionNeues_Projekt"/>
-    <addaction name="actionProjekt_ffnen"/>
-    <addaction name="actionProjekt_speichern"/>
+    <addaction name="actionNewProject"/>
+    <addaction name="actionopenProject"/>
+    <addaction name="actionSaveProject"/>
+    <addaction name="actionSaveProjectAs"/>
     <addaction name="separator"/>
     <addaction name="actionBeenden"/>
    </widget>
@@ -184,15 +185,18 @@
     </sizepolicy>
    </property>
   </widget>
-  <action name="actionNeues_Projekt">
+  <action name="actionNewProject">
    <property name="text">
-    <string>neues Projekt</string>
+    <string>Neues Projekt</string>
+   </property>
+   <property name="toolTip">
+    <string>Neues Projekt</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+N</string>
    </property>
   </action>
-  <action name="actionProjekt_ffnen">
+  <action name="actionopenProject">
    <property name="text">
     <string>Projekt öffnen</string>
    </property>
@@ -200,7 +204,7 @@
     <string>Ctrl+O</string>
    </property>
   </action>
-  <action name="actionProjekt_speichern">
+  <action name="actionSaveProject">
    <property name="text">
     <string>Projekt speichern</string>
    </property>
@@ -214,6 +218,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Q</string>
+   </property>
+  </action>
+  <action name="actionSaveProjectAs">
+   <property name="text">
+    <string>Projekt speichern unter</string>
    </property>
   </action>
  </widget>

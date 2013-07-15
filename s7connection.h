@@ -104,7 +104,7 @@ public:
     QString interpret(ConSlot cSlot);
 
     // Public Variables
-    ConSets MyConSet;
+    ConSets* MyConSet;
 };
 
 

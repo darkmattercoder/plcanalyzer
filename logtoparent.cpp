@@ -6,7 +6,7 @@ using namespace std;
 logToParent::logToParent(MainWindow *parent) :
     QMainWindow(parent)
 {
-    stdoutRedirector * myRedirector = new stdoutRedirector;
+    myRedirector = new stdoutRedirector;
     connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
     cout << "Debug: Qthread for logging run: " << myRedirector->isRunning() << endl;
     myRedirector->start();
@@ -18,6 +18,7 @@ logToParent::logToParent(MainWindow *parent) :
 
 logToParent::~logToParent()
 {
+
 emit threadTerminator();
 }
 

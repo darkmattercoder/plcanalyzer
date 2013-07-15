@@ -4,6 +4,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include "xmlsettingshandler.h"
 using namespace std;
 
 
@@ -13,30 +14,50 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
-    connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
-
-    //The "logger" starts a thread which delivers stdout content to a pipe and
+    connect(&ConDiag, SIGNAL(SettingsChanged(ConSets*)), this, SLOT(ChangeSettings(ConSets*)));
+    connect(&ConDiag, SIGNAL(SlotsChanged(QVector<ConSlot>)), this, SLOT(changeSlots(QVector<ConSlot>)));
+            //The "logger" starts a thread which delivers stdout content to a pipe and
     //reads from it to push it to the debug console and/or a logging widget (e.g. the Statusbar)
     //in the main window
     logToParent* logger = new logToParent(this);
+    xmlSettings = new xmlSettingsHandler(this);
+    connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,SLOT(changeSlots(QVector<ConSlot>)));
+currentConsets = new ConSets;
+    /*numberOfSlots = 5;
+   //Initialize MySlot Array
+   for(int i = 0;i<numberOfSlots;++i)
+   {
+       MySlot[i].iAdrBereich = 0;
+       MySlot[i].iAnzFormat = 0;
+       MySlot[i].iBitnummer = 0;
+       MySlot[i].iDatenlaenge = 0;
+       MySlot[i].iDBnummer = 0;
+       MySlot[i].iStartAdr = 0;
+       MySlot[i].RetVal.Bit = false;
+       MySlot[i].RetVal.Byte = ' ';
+       MySlot[i].RetVal.DInt = 0;
+       MySlot[i].RetVal.Int = 0;
+       MySlot[i].RetVal.Real = 0.0;
+       ConDiag.SetSlots(MySlot);
+
+   }*/
+   currentConsets = MyS7Connection.MyConSet;
+    ConDiag.SetSettings(MyS7Connection.MyConSet);
 
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
-}
 
-void MainWindow::on_actionNeues_Projekt_triggered()
-{
-    cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet.useProto << endl;
 }
 
 
-void MainWindow::on_actionProjekt_ffnen_triggered()
+void MainWindow::on_actionopenProject_triggered()
 {
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt oeffnen"), "", tr("Files (*.xml)"));
-   QMessageBox::information(this, tr("Gewaehlter Pfad"), tr(fileName.toUtf8().constData()));
+  xmlSettings->openProject();
+  currentConsets = xmlSettings->openedConSets;
+  ConDiag.SetSettings(xmlSettings->openedConSets);
+  ConDiag.newSlots = MySlot;
 }
 
 // Button Verbinden / Trennen
@@ -69,23 +90,35 @@ void MainWindow::on_Button_Get_Val_clicked()
 
 
 // Event Werte aus Dialog sollen übernommen werden
-void MainWindow::ChangeSettings(ConSets NewConSets)
+void MainWindow::ChangeSettings(ConSets* NewConSets)
 {
     MyS7Connection.MyConSet = NewConSets;
+            currentConsets = NewConSets;
 
-}
+ }
+
+ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
+ {
+
+currentConsets = xmlSettings->openedConSets;
+         MySlot = newConSlots;
+         ConDiag.SetSlots(MySlot);
+
+
+
+ }
 
 // Button Verbindungseinstellungen
 void MainWindow::on_pushButton_ConSets_clicked()
 {
-    ConDiag.SetSettings(MyS7Connection.MyConSet);
-    ConDiag.show();
+       ConDiag.show();
+
 }
 
 
 void MainWindow::on_Button_read_slots_clicked()
 {
-    ConSlot MySlot[5];
+
     // Slot 1
     MySlot[0].iAdrBereich = daveFlags;
     MySlot[0].iDatenlaenge = DatLenDWord;
@@ -134,3 +167,17 @@ void MainWindow::on_Button_read_slots_clicked()
     }
 }
 
+
+void MainWindow::on_actionNewProject_triggered()
+{
+
+        cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->useProto << endl;
+
+}
+
+
+void MainWindow::on_actionSaveProject_triggered()
+{
+
+    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot);
+}

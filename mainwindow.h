@@ -9,9 +9,12 @@
 #include <QDebug>
 #include <QTextEdit>
 #include <iostream>
-#include "mainwindow.h"
+
+
 #include "stdoutredirector.h"
+
 #include "s7connection.h"
+#include "xmlsettingshandler.h"
 #include "connectionsettings.h"
 
 
@@ -26,27 +29,38 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
+    ConSets* currentConsets;
     S7Connection MyS7Connection;
     Ui::MainWindow *ui;
-
+ ConnectionSettings ConDiag;
+ //int numberOfSlots;
+QVector<ConSlot> MySlot;
 
 private slots:
-    void on_actionNeues_Projekt_triggered();
-    void on_actionProjekt_ffnen_triggered();
+
+
     void on_Button_Connect_clicked();
     void on_Button_Get_Val_clicked();
-    void ChangeSettings(ConSets NewConSets);
+    void ChangeSettings(ConSets* NewConSets);
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
+    void changeSlots(QVector<ConSlot> newConSlots);
 
+
+    void on_actionNewProject_triggered();
+
+    void on_actionopenProject_triggered();
+
+    void on_actionSaveProject_triggered();
 
 signals:
 
 
 private:
 
-    ConnectionSettings ConDiag;
+    xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
+
 
     };
 

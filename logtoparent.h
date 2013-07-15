@@ -10,13 +10,15 @@ class logToParent : public QMainWindow
 public:
     explicit logToParent(MainWindow *parent = 0);
     ~logToParent();
-    QStatusBar *parentStatbar;
+
 signals:
     void threadTerminator();
 public slots:
 
     void updateParentLog(QString logString);
-    
+private:
+    QStatusBar *parentStatbar;
+    stdoutRedirector * myRedirector;
 };
 
 #endif // LOGTOPARENT_H

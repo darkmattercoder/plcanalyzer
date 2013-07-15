@@ -19,13 +19,15 @@ SOURCES += main.cpp\
     s7connection.cpp \
     connectionsettings.cpp \
     stdoutredirector.cpp \
-    logtoparent.cpp
+    logtoparent.cpp \
+    xmlsettingshandler.cpp
 
 HEADERS  += mainwindow.h \
     s7connection.h \
         connectionsettings.h \
     stdoutredirector.h \
-    logtoparent.h
+    logtoparent.h \
+    xmlsettingshandler.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui

@@ -4,15 +4,18 @@ using namespace std;
 // Konstruktor
 S7Connection::S7Connection()
 {
+
+    MyConSet = new ConSets;
+
     // Initialisize Variables
-    MyConSet.localMPI = 0;
-    MyConSet.useProto = daveProtoISOTCP;
-    MyConSet.speed = daveSpeed187k;
-    MyConSet.plcMPI = 2;
-    MyConSet.plc2MPI = -1;
-    MyConSet.IP_Adr = "192.168.40.77";
-    MyConSet.rack = 0;
-    MyConSet.slot = 2;
+    MyConSet->localMPI = 0;
+    MyConSet->useProto = daveProtoISOTCP;
+    MyConSet->speed = daveSpeed187k;
+    MyConSet->plcMPI = 2;
+    MyConSet->plc2MPI = -1;
+    MyConSet->IP_Adr = "192.168.40.77";
+    MyConSet->rack = 0;
+    MyConSet->slot = 2;
     initSuccess = 0;
 }
 
@@ -24,6 +27,7 @@ S7Connection::~S7Connection()
     {
         disconnect();
     }
+    delete MyConSet;
 }
 
 // Opens the Connection
@@ -34,7 +38,7 @@ bool S7Connection::startConnection(WId WndHandle)
     {
         fds.rfd = NULL;
 
-        switch(MyConSet.useProto)
+        switch(MyConSet->useProto)
         {
         case daveProtoMPI:
         case daveProtoPPI:
@@ -50,7 +54,7 @@ bool S7Connection::startConnection(WId WndHandle)
         case daveProtoISOTCP:
         case daveProtoISOTCP243:
         case daveProtoISOTCPR:
-            fds.rfd=openSocket(102, MyConSet.IP_Adr.toUtf8());
+            fds.rfd=openSocket(102, MyConSet->IP_Adr.toUtf8());
             break;
         default:
             cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" << endl;
@@ -65,13 +69,13 @@ bool S7Connection::startConnection(WId WndHandle)
 
             //daveSetDebug(daveDebugListReachables);
 
-            di = daveNewInterface(fds, "IF1", MyConSet.localMPI, MyConSet.useProto, MyConSet.speed);
+            di = daveNewInterface(fds, "IF1", MyConSet->localMPI, MyConSet->useProto, MyConSet->speed);
 
             daveSetTimeout(di,1000000);
 
             char buf1 [davePartnerListSize];
 
-            if (MyConSet.useProto == daveProtoS7online)
+            if (MyConSet->useProto == daveProtoS7online)
             {
                 int a;
                 for (int i=0; i<3; i++) {
@@ -97,10 +101,10 @@ bool S7Connection::startConnection(WId WndHandle)
             }
 
             // Try to Connect
-            dc = daveNewConnection(di, MyConSet.plcMPI, MyConSet.rack, MyConSet.slot);
+            dc = daveNewConnection(di, MyConSet->plcMPI, MyConSet->rack, MyConSet->slot);
 
-            if(MyConSet.plc2MPI>=0)
-                dc2 =daveNewConnection(di,MyConSet.plc2MPI,0,0);
+            if(MyConSet->plc2MPI>=0)
+                dc2 =daveNewConnection(di,MyConSet->plc2MPI,0,0);
             else
                 dc2=NULL;
 
@@ -110,7 +114,7 @@ bool S7Connection::startConnection(WId WndHandle)
                 cout << "Verbindung erfolgreich hergestellt." << endl;
                 initSuccess=1;
 
-                if(MyConSet.plc2MPI>=0)
+                if(MyConSet->plc2MPI>=0)
                 {
                     daveConnectPLC(dc2);
                 }
@@ -124,7 +128,7 @@ bool S7Connection::startConnection(WId WndHandle)
                 cout << "Es konnte keine Verbinung aufgebaut werden.\n" << endl;
                 daveDisconnectAdapter(di);
 
-                switch(MyConSet.useProto)
+                switch(MyConSet->useProto)
                 {
                 case daveProtoMPI:
                 case daveProtoPPI:
@@ -180,7 +184,7 @@ void S7Connection::disconnect()
 
         daveDisconnectAdapter(di);
 
-        switch(MyConSet.useProto)
+        switch(MyConSet->useProto)
         {
         case daveProtoMPI:
         case daveProtoPPI:
