@@ -1,17 +1,21 @@
 #include "s7connection.h"
-
+#include <iostream>
+using namespace std;
 // Konstruktor
 S7Connection::S7Connection()
 {
+
+    MyConSet = new ConSets;
+
     // Initialisize Variables
-    MyConSet.localMPI = 0;
-    MyConSet.useProto = daveProtoISOTCP;
-    MyConSet.speed = daveSpeed187k;
-    MyConSet.plcMPI = 2;
-    MyConSet.plc2MPI = -1;
-    MyConSet.IP_Adr = "192.168.40.77";
-    MyConSet.rack = 0;
-    MyConSet.slot = 2;
+    MyConSet->localMPI = 0;
+    MyConSet->useProto = daveProtoISOTCP;
+    MyConSet->speed = daveSpeed187k;
+    MyConSet->plcMPI = 2;
+    MyConSet->plc2MPI = -1;
+    MyConSet->IP_Adr = "192.168.40.77";
+    MyConSet->rack = 0;
+    MyConSet->slot = 2;
     initSuccess = 0;
 }
 
@@ -23,16 +27,18 @@ S7Connection::~S7Connection()
     {
         disconnect();
     }
+    delete MyConSet;
 }
 
 // Opens the Connection
+
 bool S7Connection::startConnection(WId WndHandle)
 {
     if(!isConnected())
     {
         fds.rfd = NULL;
 
-        switch(MyConSet.useProto)
+        switch(MyConSet->useProto)
         {
         case daveProtoMPI:
         case daveProtoPPI:
@@ -43,16 +49,16 @@ bool S7Connection::startConnection(WId WndHandle)
 #ifdef BCCWIN
         case daveProtoS7online:
             fds.rfd = openS7online("/S7ONLINE", WndHandle);
-            qDebug("OpenS7online Handle:",(int) fds.rfd);
+            cout << "OpenS7online Handle:" << fds.rfd << endl;
             break;
 #endif
         case daveProtoISOTCP:
         case daveProtoISOTCP243:
         case daveProtoISOTCPR:
-            fds.rfd=openSocket(102, MyConSet.IP_Adr.toUtf8());
+            fds.rfd=openSocket(102, MyConSet->IP_Adr.toUtf8());
             break;
         default:
-            qDebug("Abbruch!\nKeine gueltiges Protokoll gewaehlt!");
+            cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" << endl;
             return false;
             break;
         }
@@ -64,24 +70,24 @@ bool S7Connection::startConnection(WId WndHandle)
 
             //daveSetDebug(daveDebugListReachables);
 
-            di = daveNewInterface(fds, "IF1", MyConSet.localMPI, MyConSet.useProto, MyConSet.speed);
+            di = daveNewInterface(fds, "IF1", MyConSet->localMPI, MyConSet->useProto, MyConSet->speed);
 
             daveSetTimeout(di,1000000);
 
             char buf1 [davePartnerListSize];
 
-            if (MyConSet.useProto == daveProtoS7online)
+            if (MyConSet->useProto == daveProtoS7online)
             {
                 int a;
                 for (int i=0; i<3; i++) {
                     if (0==daveInitAdapter(di)) {
                         initSuccess=1;
                         a= daveListReachablePartners(di,buf1);
-                        qDebug("daveListReachablePartners List length: %d\n",a);
+                        cout << "daveListReachablePartners List length: %d\n" << a << endl;
                         if (a>0) {
                             for (int j=0;j<a;j++) {
-                                if (buf1[j]==daveMPIReachable) qDebug("Aktiver Teilnehmer mit Adresse:%d\n",j);
-                                if (buf1[j]==daveMPIPassive) qDebug("Passiver Teilnehmer mit Adresse:%d\n",j);
+                                if (buf1[j]==daveMPIReachable) cout << "Aktiver Teilnehmer mit Adresse:%d\n" << j << endl;
+                                if (buf1[j]==daveMPIPassive) cout << "Passiver Teilnehmer mit Adresse:%d\n" << j << endl;
                             }
                         }
                         break;
@@ -91,25 +97,25 @@ bool S7Connection::startConnection(WId WndHandle)
 
                 if (!initSuccess)
                 {
-                    qDebug("Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal.\n");
+                    cout << "Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal." << endl;
                 }
             }
 
             // Try to Connect
-            dc = daveNewConnection(di, MyConSet.plcMPI, MyConSet.rack, MyConSet.slot);
+            dc = daveNewConnection(di, MyConSet->plcMPI, MyConSet->rack, MyConSet->slot);
 
-            if(MyConSet.plc2MPI>=0)
-                dc2 =daveNewConnection(di,MyConSet.plc2MPI,0,0);
+            if(MyConSet->plc2MPI>=0)
+                dc2 =daveNewConnection(di,MyConSet->plc2MPI,0,0);
             else
                 dc2=NULL;
 
 
             if (0==daveConnectPLC(dc))
             {
-                qDebug("Verbindung erfolgreich hergestellt.\n");
+                cout << "Verbindung erfolgreich hergestellt." << endl;
                 initSuccess=1;
 
-                if(MyConSet.plc2MPI>=0)
+                if(MyConSet->plc2MPI>=0)
                 {
                     daveConnectPLC(dc2);
                 }
@@ -120,10 +126,10 @@ bool S7Connection::startConnection(WId WndHandle)
             }
             else
             {
-                qDebug("Es konnte keine Verbinung aufgebaut werden.\n");
+                cout << "Es konnte keine Verbinung aufgebaut werden.\n" << endl;
                 daveDisconnectAdapter(di);
 
-                switch(MyConSet.useProto)
+                switch(MyConSet->useProto)
                 {
                 case daveProtoMPI:
                 case daveProtoPPI:
@@ -142,7 +148,7 @@ bool S7Connection::startConnection(WId WndHandle)
                     break;
                 default:
                     // Unbekannter Protokolltyp gewählt
-                    qDebug("Unbekannter Protokolltyp!\n");
+                    cout << "Unbekannter Protokolltyp!" << endl;
                     return false;
                     break;
                 }
@@ -151,13 +157,13 @@ bool S7Connection::startConnection(WId WndHandle)
             }
 
         } else {
-            qDebug("Couldn't open access point S7ONLINE.\n");
+            cout << "Couldn't open access point S7ONLINE." << endl;
             //return -1;
         }
     }
     else
     {
-        qDebug("Connection already exists!\n");
+        cout << "Connection already exists!" << endl;
 
     }
     return isConnected();
@@ -179,7 +185,7 @@ void S7Connection::disconnect()
 
         daveDisconnectAdapter(di);
 
-        switch(MyConSet.useProto)
+        switch(MyConSet->useProto)
         {
         case daveProtoMPI:
         case daveProtoPPI:
@@ -198,14 +204,14 @@ void S7Connection::disconnect()
             break;
         default:
             // Unbekannter Protokolltyp gewählt
-            qDebug("Unbekannter Protokolltyp!\n");
+            cout << "Unbekannter Protokolltyp!" << endl;
             break;
         }
 
         daveFree(di);
         initSuccess = 0;
 
-        qDebug("Verbindung wurde getrennt.\n");
+        cout << "Verbindung wurde getrennt." << endl;
     }
 }
 
@@ -279,14 +285,14 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
                 cSlot[i].RetVal.DInt = daveGetU32(dc);
                 break;
             default:
-                qDebug("Länge muss in Bit angegeben werden und kann maximal 32 betragen.\n");
+                cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << endl;
                 break;
             }
         }
         else
         {
             // Ausgabe des Fehlercodes
-            qDebug("*** Error: %s\n",daveStrerror(res));
+            cout << "*** Error: %s\n" << daveStrerror(res) << endl;
         }
     }
 
@@ -392,7 +398,7 @@ QString S7Connection::interpret(ConSlot cSlot)
         break;
 
     default:
-        qDebug("Länge muss in Bit angegeben werden und kann maximal 32 betragen.\n");
+        cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << endl;
         break;
     }
     return szRetVal;

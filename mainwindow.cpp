@@ -1,39 +1,47 @@
     #include "mainwindow.h"
 //uncommented for strange linux compile errrors and mpoved to mainwindow.h
 //#include "ui_mainwindow.h"
+#include "logtoparent.h"
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
-
+#include "xmlsettingshandler.h"
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
-
-    //MyRedirector.setOutputTF(ui->textEdit);
-
-    // Start the timer
+connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
+connect(&ConDiag, SIGNAL(SlotsChanged(QVector<ConSlot>)), this, SLOT(changeSlots(QVector<ConSlot>)));
+            //The "logger" starts a thread which delivers stdout content to a pipe and
+    //reads from it to push it to the debug console and/or a logging widget (e.g. the Statusbar)
+    //in the main window
+    logToParent* logger = new logToParent(this);
+    xmlSettings = new xmlSettingsHandler(this);
+    connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,SLOT(changeSlots(QVector<ConSlot>)));
+currentConsets = new ConSets;   
+ //MyRedirector.setOutputTF(ui->textEdit);
+// Start the timer
     QTimer *timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
     timer->start(100);
-    connect(&ConDiag, SIGNAL(SettingsChanged(ConSets)), this, SLOT(ChangeSettings(ConSets)));
-
-    // Validator für die Eingabe der Aufnahmedauer
+currentConsets = MyS7Connection.MyConSet;
+    ConDiag.SetSettings(MyS7Connection.MyConSet);
+    
+// Validator für die Eingabe der Aufnahmedauer
     QRegExpValidator *RegExp_Duration = new QRegExpValidator(this);
     QRegExp rx("[0-9]{0,2}|1{1,1}0{0,2}");
     RegExp_Duration->setRegExp(rx);
     ui->lineEdit_Duration->setValidator(RegExp_Duration);
 
-    recordings = MAXINT;
+}  recordings = MAXINT;
 
     //####################ZU BEARBEITEN######################################
     numberOfSlots = 2;
     //#######################################################################
-}
 
 MainWindow::~MainWindow()
 {
@@ -41,23 +49,15 @@ MainWindow::~MainWindow()
 }
 
 
-void MainWindow::on_actionNeues_Projekt_triggered()
+
+
+
+void MainWindow::on_actionopenProject_triggered()
 {
-    qDebug("Gewaehltes Protokoll: %i", MyS7Connection.MyConSet.useProto);
-
-
-}
-
-
-void MainWindow::on_actionProjekt_ffnen_triggered()
-{
-   QString fileName = QFileDialog::getOpenFileName(this, tr("Projekt oeffnen"), "", tr("Files (*.xml)"));
-
-    QMessageBox::information(
-            this,
-            tr("Gewaehlter Pfad"),
-                tr(fileName.toUtf8().constData()));
-
+  xmlSettings->openProject();
+  currentConsets = xmlSettings->openedConSets;
+  ConDiag.SetSettings(xmlSettings->openedConSets);
+  ConDiag.newSlots = MySlot;
 }
 
 // Button Verbinden / Trennen
@@ -68,8 +68,8 @@ void MainWindow::on_Button_Connect_clicked()
         if(MyS7Connection.startConnection(this->winId()))
         {
             ui->Button_Get_Val->setEnabled(true);
-            ui->Button_read_slots->setEnabled(true);
-            ui->Button_Connect->setText("Disconnect");
+ui->Button_read_slots->setEnabled(true);           
+ ui->Button_Connect->setText("Disconnect");
         }
     }
     else
@@ -77,17 +77,16 @@ void MainWindow::on_Button_Connect_clicked()
         MyS7Connection.disconnect();
         ui->Button_Get_Val->setEnabled(false);
         ui->Button_read_slots->setEnabled(false);
-        ui->Button_Connect->setText("Connect");
+ui->Button_Connect->setText("Connect");
     }
 }
 
-// Neunen Wert aus der SPS anfordern
+// Neuen Wert aus der SPS anfordern
 void MainWindow::on_Button_Get_Val_clicked()
 {
     if (MyS7Connection.isConnected())
     {
         ui->lcdNumber->display(MyS7Connection.getValue());
-
     }
 }
 
@@ -119,11 +118,23 @@ void MainWindow::TimeOut()
 }
 
 // Event Werte aus Dialog sollen übernommen werden
-void MainWindow::ChangeSettings(ConSets NewConSets)
+void MainWindow::ChangeSettings(ConSets* NewConSets)
 {
     MyS7Connection.MyConSet = NewConSets;
+            currentConsets = NewConSets;
 
-}
+ }
+
+ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
+ {
+
+currentConsets = xmlSettings->openedConSets;
+         MySlot = newConSlots;
+         ConDiag.SetSlots(MySlot);
+
+
+
+ }
 
 // Button Verbindungseinstellungen
 void MainWindow::on_pushButton_ConSets_clicked()
@@ -180,7 +191,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[4].iAnzFormat = AnzFormatZeichen;
     MySlot[4].graphColor = Qt::magenta;
 
-    // Reset recording couter
+       // Reset recording couter
     recordings = 0;
 
     //Delete old graphs
@@ -226,6 +237,7 @@ void MainWindow::on_Button_read_slots_clicked()
     ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
     ui->customPlot->yAxis->setRange(-1.0, 1.0);
 
+
 }
 
 // Autoscale axes
@@ -234,3 +246,16 @@ void MainWindow::on_pushButton_clicked()
     ui->customPlot->rescaleAxes();
 }
 
+void MainWindow::on_actionNewProject_triggered()
+{
+
+        cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->useProto << endl;
+
+}
+
+
+void MainWindow::on_actionSaveProject_triggered()
+{
+
+    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot);
+}

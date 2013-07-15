@@ -5,8 +5,9 @@
 #-------------------------------------------------
 
 #Change Linux to BCCWIN here
-CONFIG += BCCWIN
 
+unix: CONFIG += LINUX
+win32: CONFIG += BCCWIN
 QT       += core gui
 
 TARGET = plcanalyzer-gui
@@ -17,24 +18,24 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     s7connection.cpp \
     connectionsettings.cpp \
-    qcustomplot.cpp
+    qcustomplot.cpp \
+   stdoutredirector.cpp \
+    logtoparent.cpp \
+    xmlsettingshandler.cpp
 
 HEADERS  += mainwindow.h \
-    nodave.h \
     s7connection.h \
-    log2.h \
+   
     connectionsettings.h \
-    openSocket.h \
-    qcustomplot.h
+      stdoutredirector.h \
+    logtoparent.h \
+    xmlsettingshandler.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui
 
 OTHER_FILES += \
-    lib/s7onlinx.dll \
-    lib/libnodave.lib \
-    lib/libnodave.dll \
-    lib/libnodave64.so
+    README.md
 
 #DEFINES depend on CONFIG above
 LINUX {
@@ -56,7 +57,9 @@ LIBS += -L$$PWD/lib/ -llibnodave
 LINUX {
 LIBS += -L$$PWD/lib/ -lnodave64
 }
-INCLUDEPATH += $$PWD/
+INCLUDEPATH += $$PWD/include/libnodave/
 DEPENDPATH += $$PWD/lib/
 
 PRE_TARGETDEPS += $$PWD/lib/libnodave.lib
+
+QMAKE_CXXFLAGS += -std=c++0x
