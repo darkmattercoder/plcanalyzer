@@ -73,7 +73,12 @@ MainWindow::MainWindow(QWidget *parent) :
     QRegExp rx("[0-9]{0,2}|1{1,1}0{0,2}");
     RegExp_Duration->setRegExp(rx);
     ui->lineEdit_Duration->setValidator(RegExp_Duration);
+
+#ifdef LINUX
     recordings = std::numeric_limits<int>::max();
+#else
+    recordings = MAXINT;
+#endif
 
     //####################ZU BEARBEITEN######################################
     numberOfSlots = 2;
