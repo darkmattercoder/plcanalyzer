@@ -39,7 +39,11 @@ int main(int argc, char *argv[])
     QApplication a(argc, argv);
     MainWindow w;
 
+#ifdef LINUX
+    // This function causes in Windows a newline after the first letter and is not needed
     setvbuf(stdout, NULL, _IONBF, 0);
+#endif
+
     w.show();
 
     return a.exec();
