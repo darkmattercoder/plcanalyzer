@@ -37,7 +37,11 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+
+#ifdef LINUX
 #include <limits>
+#endif
+
 #include "xmlsettingshandler.h"
 
 MainWindow::MainWindow(QWidget *parent) :
