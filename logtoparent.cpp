@@ -47,7 +47,7 @@ logToParent::logToParent(MainWindow *parent) :
 
 logToParent::~logToParent()
 {
-
+//
     emit threadTerminator();
 }
 
