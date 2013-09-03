@@ -237,6 +237,7 @@ void S7Connection::disconnect()
     }
 }
 
+//Currently only a certain operand is read. To be thrown away or rewritten!
 int S7Connection::getValue()
 {
     // daveReadBytes(Connection, Adress, DB, Start, Bytes, Buffer)

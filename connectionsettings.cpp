@@ -45,13 +45,30 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
     lineEditsBits = findChildren<QLineEdit*>(QRegExp("lineEditBit_.*"));
     lineEditsAddress = findChildren<QLineEdit*>(QRegExp("lineEditAddress_.*"));
+    lineEditsDB = findChildren<QLineEdit*>(QRegExp("lineEditDB_.*"));
 
-    comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z" << "IEC_T";
-    comboItemsFormat << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT" << "DINT" << "REAL";
-    comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB << daveCounter << daveTimer << daveCounter200 << daveTimer200;
-    comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatHexadezimal << AnzFormatDezimal << AnzFormatDezimal << AnzFormatGleitpunkt;
+    //Sorting algorithms for the right order of the objects
+    qSort(comboBoxesArea.begin(), comboBoxesArea.end(),
+               comboBoxPointerLessThan);
+    qSort(comboBoxesFormat.begin(), comboBoxesFormat.end(),
+               comboBoxPointerLessThan);
+    qSort(lineEditsBits.begin(), lineEditsBits.end(),
+               lineEditPointerLessThan);
 
-    //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and faster but then an additional iterator
+    comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z"
+                   << "IEC_T";
+    comboItemsFormat << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT"
+                     << "DINT" << "REAL";
+    comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB
+                    << daveCounter << daveTimer << daveCounter200
+                    << daveTimer200;
+    comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatHexadezimal
+                      << AnzFormatHexadezimal << AnzFormatHexadezimal
+                      << AnzFormatDezimal << AnzFormatDezimal
+                      << AnzFormatGleitpunkt;
+
+    //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and
+    //faster but then an additional iterator
     //value declaration outside the loop was necessary.
     for(int i=0;i<comboBoxesArea.count();++i)
     {
@@ -62,30 +79,37 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     for(int i=0;i<comboBoxesFormat.count();++i)
     {
         for(int j=0;j<comboItemsFormat.count();++j)
-            comboBoxesFormat[i]->addItem(comboItemsFormat[j],comboValuesFormat[j]);
+            comboBoxesFormat[i]->addItem(comboItemsFormat[j],
+                                         comboValuesFormat[j]);
     }
 
     //Connect the format-combo boxes' indexChanged signal to the handling
     //Slot for conditional disabling of Bit field
     for(int i=0;i<comboBoxesArea.count();++i)
     {
-        connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),this,SLOT(comboBoxIndexChanged(int)));
+        connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),
+                this,SLOT(comboBoxIndexChanged(int)));
     }
 
     // ComboBox "Protokoll" mit den Einstellungen füllen
     ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
     ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
-    ui->ComboBox_Protokoll->addItem("S5 programming port protocol", daveProtoAS511);
+    ui->ComboBox_Protokoll->addItem("S5 programming port protocol",
+                                    daveProtoAS511);
 #ifdef BCCWIN
-    ui->ComboBox_Protokoll->addItem("use s7onlinx.dll for transport", daveProtoS7online);
+    ui->ComboBox_Protokoll->addItem("use s7onlinx.dll for transport",
+                                    daveProtoS7online);
 #endif
     ui->ComboBox_Protokoll->addItem("ISO over TCP", daveProtoISOTCP);
-    ui->ComboBox_Protokoll->addItem("ISO over TCP with CP243", daveProtoISOTCP243);
-    ui->ComboBox_Protokoll->addItem("ISO over TCP with Routing", daveProtoISOTCPR);
+    ui->ComboBox_Protokoll->addItem("ISO over TCP with CP243",
+                                    daveProtoISOTCP243);
+    ui->ComboBox_Protokoll->addItem("ISO over TCP with Routing",
+                                    daveProtoISOTCPR);
 
     // Validator für die Eingabe der IP Adresse
     QRegExpValidator *RegExp_IP = new QRegExpValidator(this);
-    QRegExp rx("((1{0,1}[0-9]{0,2}|2[0-4]{1,1}[0-9]{1,1}|25[0-5]{1,1})\\.){3,3}(1{0,1}[0-9]{0,2}|2[0-4]{1,1}[0-9]{1,1}|25[0-5]{1,1})");
+    QRegExp rx("((1{0,1}[0-9]{0,2}|2[0-4]{1,1}[0-9]{1,1}|25[0-5]{1,1})\\.)"\
+               "{3,3}(1{0,1}[0-9]{0,2}|2[0-4]{1,1}[0-9]{1,1}|25[0-5]{1,1})");
     RegExp_IP->setRegExp(rx);
     ui->lineEdit_IP->setValidator(RegExp_IP);
 
@@ -110,7 +134,8 @@ void ConnectionSettings::on_buttonBox_accepted()
     m_DiagSets->localMPI = ui->lineEdit_local_MPI->text().toInt();
     m_DiagSets->plcMPI = ui->lineEdit_CPU_MPI->text().toInt();
     m_DiagSets->speed = ui->comboBox_Speed->currentIndex();
-    m_DiagSets->useProto = ui->ComboBox_Protokoll->itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
+    m_DiagSets->useProto = ui->ComboBox_Protokoll->
+            itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
     m_DiagSets->rack = ui->lineEdit_Rack->text().toInt();
     m_DiagSets->slot = ui->lineEdit_Slot->text().toInt();
 
@@ -127,8 +152,10 @@ void ConnectionSettings::on_buttonBox_accepted()
     for(int i=0;i<lineEditsBits.count();++i){
         newSlots[i].iBitnummer = lineEditsBits[i]->text().toInt();
         newSlots[i].iStartAdr = lineEditsAddress[i]->text().toInt();
-        newSlots[i].iAnzFormat = comboBoxesFormat[i]->itemData(comboBoxesFormat[i]->currentIndex()).toInt();
-        newSlots[i].iAdrBereich = comboBoxesArea[i]->itemData(comboBoxesArea[i]->currentIndex()).toInt();
+        newSlots[i].iAnzFormat = comboBoxesFormat[i]->
+                itemData(comboBoxesFormat[i]->currentIndex()).toInt();
+        newSlots[i].iAdrBereich = comboBoxesArea[i]->
+                itemData(comboBoxesArea[i]->currentIndex()).toInt();
     }
 
     emit SlotsChanged(newSlots);
@@ -144,14 +171,16 @@ void ConnectionSettings::SetSettings(ConSets *CurrentSets)
     ui->lineEdit_local_MPI->setText(QString::number(m_DiagSets->localMPI));
     ui->lineEdit_CPU_MPI->setText(QString::number(m_DiagSets->plcMPI));
     ui->comboBox_Speed->setCurrentIndex(m_DiagSets->speed);
-    ui->ComboBox_Protokoll->setCurrentIndex(ui->ComboBox_Protokoll->findData(m_DiagSets->useProto));
+    ui->ComboBox_Protokoll->setCurrentIndex(ui->ComboBox_Protokoll->
+                                            findData(m_DiagSets->useProto));
     ui->lineEdit_Rack->setText(QString::number(m_DiagSets->rack));
     ui->lineEdit_Slot->setText(QString::number(m_DiagSets->slot));
 }
 
 void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
 {
-    // Setzt die Bedienbarkeit von Elementen in Abhängigkeit des gewählten Protokolltyps
+    // Setzt die Bedienbarkeit von Elementen in Abhängigkeit des gewählten
+    //Protokolltyps
     int iCurrProto = ui->ComboBox_Protokoll->itemData(index).toInt();
 
     switch(iCurrProto)
@@ -222,7 +251,8 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     }
 }
 
-int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,QComboBox* sendingBox)
+int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
+                                              QComboBox* sendingBox)
 {
     int lineNumber = 0;
     int count = 0;
@@ -238,9 +268,24 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,QCombo
 void ConnectionSettings::SetSlots(QVector<ConSlot> currentSlots)
 {
     for(int i=0; i<currentSlots.count();++i){
-        comboBoxesArea[i]->setCurrentIndex(comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
-        comboBoxesFormat[i]->setCurrentIndex(comboValuesFormat.indexOf(currentSlots[i].iAnzFormat));
+        comboBoxesArea[i]->setCurrentIndex(
+                    comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
+        comboBoxesFormat[i]->setCurrentIndex(
+                    comboValuesFormat.indexOf(currentSlots[i].iAnzFormat));
         lineEditsBits[i]->setText(QString::number(currentSlots[i].iBitnummer));
-        lineEditsAddress[i]->setText(QString::number(currentSlots[i].iStartAdr));
+        lineEditsAddress[i]->setText(QString::number(
+                                         currentSlots[i].iStartAdr));
     }
+}
+
+//LessThan Comparison for combo boxes
+bool ConnectionSettings::comboBoxPointerLessThan(QComboBox *cb1, QComboBox *cb2)
+{
+    return cb1->objectName() < cb2->objectName();
+}
+
+//LessThan Comparison for line edits
+bool ConnectionSettings::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
+{
+    return le1->objectName() < le2->objectName();
 }

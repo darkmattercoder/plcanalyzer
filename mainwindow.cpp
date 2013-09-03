@@ -109,7 +109,8 @@ void MainWindow::on_Button_Connect_clicked()
     {
         if(MyS7Connection.startConnection(this->winId()))
         {
-            ui->Button_Get_Val->setEnabled(true);
+            //uncommented due to obsolescence
+            //ui->Button_Get_Val->setEnabled(true);
             ui->Button_read_slots->setEnabled(true);
             ui->Button_Connect->setText("Disconnect");
         }
@@ -117,20 +118,24 @@ void MainWindow::on_Button_Connect_clicked()
     else
     {
         MyS7Connection.disconnect();
-        ui->Button_Get_Val->setEnabled(false);
+
+        // uncommented due to obsolescence
+        // ui->Button_Get_Val->setEnabled(false);
         ui->Button_read_slots->setEnabled(false);
         ui->Button_Connect->setText("Connect");
     }
 }
 
-// Neuen Wert aus der SPS anfordern
-void MainWindow::on_Button_Get_Val_clicked()
-{
-    if (MyS7Connection.isConnected())
-    {
-        ui->lcdNumber->display(MyS7Connection.getValue());
-    }
-}
+// Should be no need for that function later
+//// Neuen Wert aus der SPS anfordern
+//void MainWindow::on_Button_Get_Val_clicked()
+//{
+//    if (MyS7Connection.isConnected())
+//    {
+//       //Currently only Flag byte 1 is read!
+//        ui->lcdNumber->display(MyS7Connection.getValue());
+//    }
+//}
 
 // Zyklisches Event
 void MainWindow::TimeOut()

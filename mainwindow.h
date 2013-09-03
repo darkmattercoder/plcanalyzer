@@ -67,7 +67,8 @@ public:
 private slots:
 
     void on_Button_Connect_clicked();
-    void on_Button_Get_Val_clicked();    
+    // uncommented due to obsolescence
+    // void on_Button_Get_Val_clicked();
     void ChangeSettings(ConSets* NewConSets);
     void TimeOut();
     void on_pushButton_ConSets_clicked();

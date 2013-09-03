@@ -78,8 +78,10 @@ private:
     QList<QComboBox*> comboBoxesFormat;
     QList<QLineEdit*> lineEditsBits;
     QList<QLineEdit*> lineEditsAddress;
+    QList<QLineEdit*> lineEditsDB;
     int findCorrespondingLine(QList<QComboBox*> boxesArea,QComboBox* sendingBox);
-
+    static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
+    static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 };
 
 #endif // CONNECTIONSETTINGS_H
