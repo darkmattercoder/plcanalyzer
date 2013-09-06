@@ -54,6 +54,8 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                comboBoxPointerLessThan);
     qSort(lineEditsBits.begin(), lineEditsBits.end(),
                lineEditPointerLessThan);
+    qSort(lineEditsDB.begin(), lineEditsDB.end(),
+               lineEditPointerLessThan);
 
     comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z"
                    << "IEC_T";
@@ -156,6 +158,7 @@ void ConnectionSettings::on_buttonBox_accepted()
                 itemData(comboBoxesFormat[i]->currentIndex()).toInt();
         newSlots[i].iAdrBereich = comboBoxesArea[i]->
                 itemData(comboBoxesArea[i]->currentIndex()).toInt();
+        newSlots[i].iDBnummer = lineEditsDB[i]->text().toInt();
     }
 
     emit SlotsChanged(newSlots);
@@ -238,16 +241,41 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
 
     switch (dataItem)
     {
+    case daveInputs:
+        lineEditsDB[lineNumber]->clear();
+        lineEditsDB[lineNumber]->setDisabled(true);
+        lineEditsBits[lineNumber]->setEnabled(true);
+        break;
+    case daveOutputs:
+        lineEditsDB[lineNumber]->clear();
+        lineEditsDB[lineNumber]->setDisabled(true);
+        lineEditsBits[lineNumber]->setEnabled(true);
+        break;
+    case daveFlags:
+        lineEditsDB[lineNumber]->clear();
+        lineEditsDB[lineNumber]->setDisabled(true);
+        lineEditsBits[lineNumber]->setEnabled(true);
+        break;
+    case daveDB:
+        lineEditsDB[lineNumber]->setEnabled(true);
+        lineEditsBits[lineNumber]->setEnabled(true);
+        break;
     case daveCounter:
     case daveTimer:
     case daveCounter200:
     case daveTimer200:
+        lineEditsBits[lineNumber]->clear();
+        lineEditsBits[lineNumber]->setDisabled(true);
+        lineEditsDB[lineNumber]->clear();
+        lineEditsDB[lineNumber]->setDisabled(true);
+        break;
     case AnzFormatHexadezimal:
         lineEditsBits[lineNumber]->clear();
         lineEditsBits[lineNumber]->setDisabled(true);
         break;
     default:
         lineEditsBits[lineNumber]->setEnabled(true);
+        lineEditsDB[lineNumber]->setEnabled(true);
     }
 }
 
