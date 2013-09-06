@@ -1,6 +1,6 @@
 /*******************************************************************************
  *   *File: connectionsettings.h                                               *
- *   *Date: 2013-06-01                                                         *
+ *   *Date: 2013-09-04                                                        *
  *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
  *               Lukas Kern <lukas.kern@online.de>                             *
  *               Carsten Klein <hook-the-master@gmx.net>                       *
@@ -79,7 +79,8 @@ private:
     QList<QLineEdit*> lineEditsBits;
     QList<QLineEdit*> lineEditsAddress;
     QList<QLineEdit*> lineEditsDB;
-    int findCorrespondingLine(QList<QComboBox*> boxesArea,QComboBox* sendingBox);
+    int findCorrespondingLine(QList<QComboBox*> boxesArea,
+                              QComboBox* sendingBox);
     static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 };

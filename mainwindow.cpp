@@ -50,18 +50,22 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     ui->textEdit->append(QString().sprintf("Willkommen\n"));
-    connect(&ConDiag, SIGNAL(SettingsChanged(ConSets*)), this, SLOT(ChangeSettings(ConSets*)));
-    connect(&ConDiag, SIGNAL(SlotsChanged(QVector<ConSlot>)), this, SLOT(changeSlots(QVector<ConSlot>)));
+    connect(&ConDiag, SIGNAL(SettingsChanged(ConSets*)), this,
+            SLOT(ChangeSettings(ConSets*)));
+    connect(&ConDiag, SIGNAL(SlotsChanged(QVector<ConSlot>)), this,
+            SLOT(changeSlots(QVector<ConSlot>)));
 
     //The "logger" starts a thread which delivers stdout content to a pipe and
-    //reads from it to push it to the debug console and/or a logging widget (e.g. the Statusbar)
-    //in the main window. At least this is needed to catch the plain c printf-statements
-    //somewhere on the console
+    //reads from it to push it to the debug console and/or a logging widget
+    //(e.g. the Statusbar) in the main window. At least this is needed to catch
+    //the plain c printf-statements somewhere on the console
     logToParent* logger = new logToParent(this);
 
-    //The xml settings handler provides mechanisms to read and write settings files for the project
+    //The xml settings handler provides mechanisms to read and write settings
+    // files for the project
     xmlSettings = new xmlSettingsHandler(this);
-    connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,SLOT(changeSlots(QVector<ConSlot>)));
+    connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,
+            SLOT(changeSlots(QVector<ConSlot>)));
 
     currentConsets = new ConSets;
 
@@ -261,7 +265,9 @@ void MainWindow::on_Button_read_slots_clicked()
     }
 
     // Resize vectors
-    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10; //Abtastung mit 10 Hz
+
+    // Abtastung mit 10 Hz
+    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
     x.resize(amountOfPoints);
     y.resize(numberOfSlots);
 
@@ -288,7 +294,8 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_actionNewProject_triggered()
 {    
-    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->useProto << std::endl;
+    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
+                 useProto << std::endl;
 }
 
 void MainWindow::on_actionSaveProject_triggered()

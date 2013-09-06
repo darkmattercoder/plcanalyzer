@@ -37,12 +37,15 @@ logToParent::logToParent(MainWindow *parent) :
 {
     myRedirector = new stdoutRedirector;
     connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
-    std::cout << "Debug: Qthread for logging run: " << myRedirector->isRunning() << std::endl;
+    std::cout << "Debug: Qthread for logging run: " << myRedirector->
+                 isRunning() << std::endl;
     myRedirector->start();
     std::cout << "Debug: Logger constructed" << std::endl;
-    std::cout << "Debug: Qthread for logging run: " << myRedirector->isRunning() << std::endl;
+    std::cout << "Debug: Qthread for logging run: " << myRedirector->
+                 isRunning() << std::endl;
     parentStatbar = parent->ui->statusBar;
-    connect(myRedirector, SIGNAL(writeOut(QString)),this,SLOT(updateParentLog(QString)));
+    connect(myRedirector, SIGNAL(writeOut(QString)),
+            this,SLOT(updateParentLog(QString)));
 }
 
 logToParent::~logToParent()

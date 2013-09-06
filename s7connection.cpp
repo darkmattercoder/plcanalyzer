@@ -87,16 +87,19 @@ bool S7Connection::startConnection(WId WndHandle)
             fds.rfd=openSocket(102, MyConSet->IP_Adr.toUtf8());
             break;
         default:
-            std::cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" << std::endl;
+            std::cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" <<
+                         std::endl;
             return false;
             break;
         }
 
         fds.wfd=fds.rfd;
-        if (((int)fds.rfd)>=0) { 	// had Problems here: HANDLE is unsigned, 0 is a valid HANDLE for s7onlinx
+        if (((int)fds.rfd)>=0) { 	// had Problems here: HANDLE is unsigned,
+                                    //0 is a valid HANDLE for s7onlinx
 
             //daveSetDebug(daveDebugListReachables);
-            di = daveNewInterface(fds, "IF1", MyConSet->localMPI, MyConSet->useProto, MyConSet->speed);
+            di = daveNewInterface(fds, "IF1", MyConSet->localMPI, MyConSet->
+                                  useProto, MyConSet->speed);
 
             daveSetTimeout(di,1000000);
 
@@ -109,11 +112,20 @@ bool S7Connection::startConnection(WId WndHandle)
                     if (0==daveInitAdapter(di)) {
                         initSuccess=1;
                         a= daveListReachablePartners(di,buf1);
-                        std::cout << "daveListReachablePartners List length: %d\n" << a << std::endl;
+                        std::cout << "daveListReachablePartners"
+                                     "List length: %d\n" << a << std::endl;
                         if (a>0) {
                             for (int j=0;j<a;j++) {
-                                if (buf1[j]==daveMPIReachable) std::cout << "Aktiver Teilnehmer mit Adresse:%d\n" << j << std::endl;
-                                if (buf1[j]==daveMPIPassive) std::cout << "Passiver Teilnehmer mit Adresse:%d\n" << j << std::endl;
+                                if (buf1[j]==daveMPIReachable) {
+                                    std::cout << "Aktiver Teilnehmer mit"
+                                                 "Adresse:%d\n" << j <<
+                                                 std::endl;
+                                }
+                                if (buf1[j]==daveMPIPassive) {
+                                    std::cout << "Passiver Teilnehmer mit"
+                                                 "Adresse:%d\n" << j <<
+                                                 std::endl;
+                                }
                             }
                         }
                         break;
@@ -123,12 +135,15 @@ bool S7Connection::startConnection(WId WndHandle)
 
                 if (!initSuccess)
                 {
-                    std::cout << "Konnte keine Verbindung mit dem Adapter herstellen!\n Bitte versuchen sie es nocheinmal." << std::endl;
+                    std::cout << "Konnte keine Verbindung mit dem Adapter"
+                                 "herstellen!\n Bitte versuchen sie es"
+                                 "nocheinmal." << std::endl;
                 }
             }
 
             // Try to Connect
-            dc = daveNewConnection(di, MyConSet->plcMPI, MyConSet->rack, MyConSet->slot);
+            dc = daveNewConnection(di, MyConSet->plcMPI, MyConSet->rack,
+                                   MyConSet->slot);
 
             if(MyConSet->plc2MPI>=0)
                 dc2 =daveNewConnection(di,MyConSet->plc2MPI,0,0);
@@ -152,7 +167,8 @@ bool S7Connection::startConnection(WId WndHandle)
             }
             else
             {
-                std::cout << "Es konnte keine Verbinung aufgebaut werden.\n" << std::endl;
+                std::cout << "Es konnte keine Verbinung aufgebaut werden.\n"
+                          << std::endl;
                 daveDisconnectAdapter(di);
 
                 switch(MyConSet->useProto)
@@ -269,14 +285,17 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
         if (cSlot[i].iDatenlaenge != DatLenBit)
         {
             // Read Byte(s)
-            daveAddVarToReadRequest(&p, cSlot[i].iAdrBereich, cSlot[i].iDBnummer, cSlot[i].iStartAdr, cSlot[i].iDatenlaenge / 8);
+            daveAddVarToReadRequest(&p, cSlot[i].iAdrBereich,
+                                    cSlot[i].iDBnummer, cSlot[i].iStartAdr,
+                                    cSlot[i].iDatenlaenge / 8);
         }
         else
         {
             // Read Bit
             // Das Bit ab Adresse 0.0
             int iBit = cSlot[i].iStartAdr * 8 + cSlot[i].iBitnummer;
-            daveAddBitVarToReadRequest(&p, cSlot[i].iAdrBereich, cSlot[i].iDBnummer, iBit , 1);
+            daveAddBitVarToReadRequest(&p, cSlot[i].iAdrBereich,
+                                       cSlot[i].iDBnummer, iBit , 1);
         }
     }
 
@@ -306,7 +325,8 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
                 cSlot[i].RetVal.DInt = daveGetU32(dc);
                 break;
             default:
-                std::cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << std::endl;
+                std::cout << "Länge muss in Bit angegeben werden und kann"
+                             "maximal 32 betragen." << std::endl;
                 break;
             }
         }
@@ -419,7 +439,8 @@ QString S7Connection::interpret(ConSlot cSlot)
         break;
 
     default:
-        std::cout << "Länge muss in Bit angegeben werden und kann maximal 32 betragen." << std::endl;
+        std::cout << "Länge muss in Bit angegeben werden und kann maximal 32"
+                     "betragen." << std::endl;
         break;
     }
     return szRetVal;

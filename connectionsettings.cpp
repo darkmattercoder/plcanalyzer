@@ -1,6 +1,6 @@
 /*******************************************************************************
  *   *File: connectionsettings.cpp                                             *
- *   *Date: 2013-06-01                                                         *
+ *   *Date: 2013-09-04                                                         *
  *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
  *               Lukas Kern <lukas.kern@online.de>                             *
  *               Carsten Klein <hook-the-master@gmx.net>                       *

@@ -40,7 +40,8 @@ int main(int argc, char *argv[])
     MainWindow w;
 
 #ifdef LINUX
-    // This function causes in Windows a newline after the first letter and is not needed
+    // This function causes in Windows a newline after the first letter and is
+    // not needed there
     setvbuf(stdout, NULL, _IONBF, 0);
 #endif
 

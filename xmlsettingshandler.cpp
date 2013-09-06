@@ -53,7 +53,8 @@ void xmlSettingsHandler::newProject()
 
 void xmlSettingsHandler::openProject()
 {
-    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-Projekte (*.plcproj)");
+    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-"
+                                            "Projekte (*.plcproj)");
     QFile file(filename);
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
@@ -88,7 +89,8 @@ void xmlSettingsHandler::openProject()
             xmlReader.readNextStartElement();
             openedConSets->speed = xmlReader.readElementText().toInt();
             xmlReader.readNextStartElement();
-        }else if(xmlReader.isStartElement() && xmlReader.name().contains("SLOT_")){
+        }else if(xmlReader.isStartElement() &&
+                 xmlReader.name().contains("SLOT_")){
 
             xmlReader.readNextStartElement();
             tempSlot.iAdrBereich=xmlReader.readElementText().toInt();
@@ -108,7 +110,8 @@ void xmlSettingsHandler::openProject()
 
     if(xmlReader.hasError())
     {
-        std::cout << "XML-READER Error: " << xmlReader.errorString().toStdString() << std::endl;
+        std::cout << "XML-READER Error: " <<
+                     xmlReader.errorString().toStdString() << std::endl;
         QMessageBox *msgBoxOpenError = new QMessageBox(this);
         msgBoxOpenError->setIcon(QMessageBox::Critical);
         msgBoxOpenError->setText("Fehler beim oeffnen");
@@ -120,10 +123,12 @@ void xmlSettingsHandler::openProject()
 
 }
 
-void xmlSettingsHandler::saveProject(ConSets* currentConSets, QVector<ConSlot> currentConSlots)
+void xmlSettingsHandler::saveProject(ConSets* currentConSets,
+                                     QVector<ConSlot> currentConSlots)
 {
 
-    filename = QFileDialog::getSaveFileName(this,"Speichern",".","PLCANALYZER-Projekte (*.plcproj)");
+    filename = QFileDialog::getSaveFileName(this,"Speichern",".",
+                                            "PLCANALYZER-Projekte (*.plcproj)");
     if(!filename.contains(".plcproj")) {filename.append(".plcproj");}
     QFile file(filename);
     file.open(QIODevice::WriteOnly);
@@ -134,13 +139,20 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets, QVector<ConSlot> c
     xmlWriter.writeStartElement("DATA");
     xmlWriter.writeStartElement("SETTINGS");
     xmlWriter.writeTextElement("IP_ADDR", currentConSets->IP_Adr);
-    xmlWriter.writeTextElement("PROTOCOL",QString::number(currentConSets->useProto));
-    xmlWriter.writeTextElement("LOCAL_MPI",QString::number(currentConSets->localMPI));
-    xmlWriter.writeTextElement("PLC_MPI",QString::number(currentConSets->plcMPI));
-    xmlWriter.writeTextElement("PLC_2_MPI",QString::number(currentConSets->plc2MPI));
-    xmlWriter.writeTextElement("RACK",QString::number(currentConSets->rack));
-    xmlWriter.writeTextElement("SLOT",QString::number(currentConSets->slot));
-    xmlWriter.writeTextElement("SPEED",QString::number(currentConSets->speed));
+    xmlWriter.writeTextElement("PROTOCOL",
+                               QString::number(currentConSets->useProto));
+    xmlWriter.writeTextElement("LOCAL_MPI",
+                               QString::number(currentConSets->localMPI));
+    xmlWriter.writeTextElement("PLC_MPI",
+                               QString::number(currentConSets->plcMPI));
+    xmlWriter.writeTextElement("PLC_2_MPI",
+                               QString::number(currentConSets->plc2MPI));
+    xmlWriter.writeTextElement("RACK",
+                               QString::number(currentConSets->rack));
+    xmlWriter.writeTextElement("SLOT",
+                               QString::number(currentConSets->slot));
+    xmlWriter.writeTextElement("SPEED",
+                               QString::number(currentConSets->speed));
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("SLOTS");
@@ -148,12 +160,18 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets, QVector<ConSlot> c
     {
         QString slotDescriptor = "SLOT_" + QString::number(i);
         xmlWriter.writeStartElement(slotDescriptor);
-        xmlWriter.writeTextElement("AREA",QString::number(currentConSlots[i].iAdrBereich));
-        xmlWriter.writeTextElement("START_ADDRESS",QString::number(currentConSlots[i].iStartAdr));
-        xmlWriter.writeTextElement("FORMAT",QString::number(currentConSlots[i].iAnzFormat));
-        xmlWriter.writeTextElement("BIT",QString::number(currentConSlots[i].iBitnummer));
-        xmlWriter.writeTextElement("LENGTH",QString::number(currentConSlots[i].iDatenlaenge));
-        xmlWriter.writeTextElement("DB_NUMBER",QString::number(currentConSlots[i].iDBnummer));
+        xmlWriter.writeTextElement("AREA",QString::number(
+                                       currentConSlots[i].iAdrBereich));
+        xmlWriter.writeTextElement("START_ADDRESS",QString::number(
+                                       currentConSlots[i].iStartAdr));
+        xmlWriter.writeTextElement("FORMAT",QString::number(
+                                       currentConSlots[i].iAnzFormat));
+        xmlWriter.writeTextElement("BIT",QString::number(
+                                       currentConSlots[i].iBitnummer));
+        xmlWriter.writeTextElement("LENGTH",QString::number(
+                                       currentConSlots[i].iDatenlaenge));
+        xmlWriter.writeTextElement("DB_NUMBER",QString::number(
+                                       currentConSlots[i].iDBnummer));
 
         xmlWriter.writeEndElement();
     }
