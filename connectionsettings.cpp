@@ -303,6 +303,7 @@ void ConnectionSettings::SetSlots(QVector<ConSlot> currentSlots)
         lineEditsBits[i]->setText(QString::number(currentSlots[i].iBitnummer));
         lineEditsAddress[i]->setText(QString::number(
                                          currentSlots[i].iStartAdr));
+        lineEditsDB[i]->setText(QString::number(currentSlots[i].iDBnummer));
     }
 }
 

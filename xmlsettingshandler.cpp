@@ -51,16 +51,26 @@ void xmlSettingsHandler::newProject()
 
 }
 
-void xmlSettingsHandler::openProject()
+bool xmlSettingsHandler::openProject(bool lastSets)
 {
-    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-"
-                                            "Projekte (*.plcproj)");
+    if(!lastSets)
+    {
+        filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-"
+                                                "Projekte (*.plcproj)");
+    }else
+    {
+        filename = "lastSettings.plcproj";
+
+    }
     QFile file(filename);
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
-        std::cout << "Error: Cannot read file " << qPrintable(filename)
-                  << ": " << qPrintable(file.errorString())
-                  << std::endl;
+        if(!lastSets)
+        {
+            std::cout << "Error: Cannot read file " << qPrintable(filename)
+                      << ": " << qPrintable(file.errorString())
+                      << std::endl;
+        }else return false;
 
     }
 
@@ -106,6 +116,7 @@ void xmlSettingsHandler::openProject()
             tempSlot.iDBnummer=xmlReader.readElementText().toInt();
             openedConSlots.append(tempSlot);
         }
+
     }
 
     if(xmlReader.hasError())
@@ -120,15 +131,23 @@ void xmlSettingsHandler::openProject()
     }else emit newSlotsOpened(openedConSlots);
 
     file.close();
+    return true;
 
 }
 
 void xmlSettingsHandler::saveProject(ConSets* currentConSets,
-                                     QVector<ConSlot> currentConSlots)
+                                     QVector<ConSlot> currentConSlots,
+                                     bool lastSets)
 {
 
-    filename = QFileDialog::getSaveFileName(this,"Speichern",".",
-                                            "PLCANALYZER-Projekte (*.plcproj)");
+    if(!lastSets)
+    {
+        filename = QFileDialog::getSaveFileName(this,"Speichern",".",
+                                                "PLCANALYZER-Projekte (*.plcproj)");
+    }else
+    {
+        filename = "lastSettings.plcproj";
+    }
     if(!filename.contains(".plcproj")) {filename.append(".plcproj");}
     QFile file(filename);
     file.open(QIODevice::WriteOnly);

@@ -44,7 +44,7 @@ S7Connection::S7Connection()
     MyConSet->speed = daveSpeed187k;
     MyConSet->plcMPI = 2;
     MyConSet->plc2MPI = -1;
-    MyConSet->IP_Adr = "192.168.40.77";
+    MyConSet->IP_Adr = "0.0.0.0";
     MyConSet->rack = 0;
     MyConSet->slot = 2;
     initSuccess = 0;

@@ -54,8 +54,9 @@ signals:
 public slots:
 
     void newProject();
-    void saveProject(ConSets* currentConSets, QVector<ConSlot> currentConSlots);
-    void openProject();
+    void saveProject(ConSets* currentConSets, QVector<ConSlot> currentConSlots,
+                     bool lastSets);
+    bool openProject(bool lastSets = false);
     void saveProjectAs();
 
 private:
