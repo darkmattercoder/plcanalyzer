@@ -159,7 +159,7 @@ void ConnectionSettings::on_buttonBox_accepted()
         newSlots[i].iAdrBereich = comboBoxesArea[i]->
                 itemData(comboBoxesArea[i]->currentIndex()).toInt();
         newSlots[i].iDBnummer = lineEditsDB[i]->text().toInt();
-    }
+      }
 
     emit SlotsChanged(newSlots);
 }
