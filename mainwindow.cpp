@@ -93,7 +93,9 @@ MainWindow::MainWindow(QWidget *parent) :
     {
         currentConsets = xmlSettings->openedConSets;
         ConDiag.SetSettings(xmlSettings->openedConSets);
+        MySlot = xmlSettings->openedConSlots;
         ConDiag.newSlots = MySlot;
+
     }
 
 
@@ -111,8 +113,10 @@ void MainWindow::on_actionOpenProject_triggered()
 {
     xmlSettings->openProject();
     currentConsets = xmlSettings->openedConSets;
-    ConDiag.SetSettings(xmlSettings->openedConSets);
-    ConDiag.newSlots = MySlot;
+    ConDiag.SetSettings(currentConsets);
+    MySlot = xmlSettings->openedConSlots;
+    ConDiag.SetSlots(MySlot);
+
 }
 
 // Button Verbinden / Trennen
@@ -208,52 +212,6 @@ void MainWindow::on_pushButton_ConSets_clicked()
 void MainWindow::on_Button_read_slots_clicked()
 {
 
-//////////     Slot 1
-////        MySlot[0].iAdrBereich = daveDB;
-////        MySlot[0].iDatenlaenge = DatLenWord;
-////        MySlot[0].iStartAdr = 12;
-////        MySlot[0].iDBnummer = 8;
-////        MySlot[0].iBitnummer = 0;
-////        MySlot[0].iAnzFormat = AnzFormatDezimal;
-//    MySlot[2].graphColor = Qt::black;
-
-////////    // Slot 2
-////        MySlot[1].iAdrBereich = daveFlags;
-////        MySlot[1].iDatenlaenge = DatLenDWord;
-////        MySlot[1].iStartAdr = 15;
-////        MySlot[1].iDBnummer = 0;
-////        MySlot[1].iBitnummer = 0;
-////        MySlot[1].iAnzFormat = AnzFormatGleitpunkt;
-//    MySlot[1].graphColor = Qt::red;
-
-//////    // Slot 3
-////        MySlot[0].iAdrBereich = daveInputs;
-////        MySlot[0].iDatenlaenge = DatLenBit;
-////        MySlot[0].iStartAdr = 0;
-////        MySlot[0].iDBnummer = 0;
-////        MySlot[0].iBitnummer = 0;
-////        MySlot[0].iAnzFormat = AnzFormatBinaer;
-//    MySlot[0].graphColor = Qt::green;
-
-//////    // Slot 4
-////        MySlot[3].iAdrBereich = daveFlags;
-////        MySlot[3].iDatenlaenge = DatLenWord;
-////        MySlot[3].iStartAdr = 8;
-////        MySlot[3].iDBnummer = 0;
-////        MySlot[3].iBitnummer = 0;
-////        MySlot[3].iAnzFormat = AnzFormatHexadezimal;
-//    MySlot[3].graphColor = Qt::blue;
-
-//////    // Slot 4
-////        MySlot[4].iAdrBereich = daveFlags;
-////        MySlot[4].iDatenlaenge = DatLenByte;
-////        MySlot[4].iStartAdr = 10;
-////        MySlot[4].iDBnummer = 0;
-////        MySlot[4].iBitnummer = 0;
-////        MySlot[4].iAnzFormat = AnzFormatZeichen;
-//  MySlot[4].graphColor = Qt::magenta;
-////MySlot[5].graphColor = Qt::blue;
-//    // Reset recording couter
     recordings = 0;
 
     //Delete old graphs

@@ -91,7 +91,6 @@ private:
     int amountOfPoints;
     QVector<double> x;          // 1d Vector
     QVector<QVector<double>> y; // 2d Vectot
-
     xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
 

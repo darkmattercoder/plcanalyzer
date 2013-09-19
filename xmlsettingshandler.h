@@ -46,6 +46,7 @@ public:
    explicit xmlSettingsHandler(QMainWindow *parent=0);
    ~xmlSettingsHandler();
     ConSets* openedConSets;
+    QVector<ConSlot> openedConSlots;
 
 signals:
 
@@ -63,7 +64,7 @@ private:
 
     QString filename;
     QXmlStreamReader xmlReader;
-    QVector<ConSlot> openedConSlots;
+
 
 };
 

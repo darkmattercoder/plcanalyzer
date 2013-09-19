@@ -34,30 +34,36 @@
     <rect>
      <x>290</x>
      <y>7</y>
-     <width>499</width>
+     <width>500</width>
      <height>215</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout">
-    <item row="5" column="4">
-     <widget class="QComboBox" name="comboBoxFormat_3"/>
-    </item>
-    <item row="2" column="1">
-     <widget class="QLineEdit" name="lineEditDB_0"/>
-    </item>
-    <item row="3" column="3">
-     <widget class="QLineEdit" name="lineEditBit_1">
-      <property name="toolTip">
-       <string>lineEditBit_1</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="3">
-     <widget class="QLabel" name="label_11">
+    <item row="1" column="2">
+     <widget class="QLabel" name="label_13">
       <property name="text">
-       <string>Bit</string>
+       <string>DB-Nr.</string>
       </property>
      </widget>
+    </item>
+    <item row="6" column="3">
+     <widget class="QLineEdit" name="lineEditAddress_4"/>
+    </item>
+    <item row="3" column="2">
+     <widget class="QLineEdit" name="lineEditDB_1"/>
+    </item>
+    <item row="4" column="3">
+     <widget class="QLineEdit" name="lineEditAddress_2"/>
+    </item>
+    <item row="2" column="4">
+     <widget class="QLineEdit" name="lineEditBit_0">
+      <property name="toolTip">
+       <string>lineEditBit_0</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="3">
+     <widget class="QLineEdit" name="lineEditAddress_0"/>
     </item>
     <item row="0" column="0">
      <widget class="QLabel" name="label_12">
@@ -74,78 +80,6 @@
       </property>
      </widget>
     </item>
-    <item row="5" column="3">
-     <widget class="QLineEdit" name="lineEditBit_3">
-      <property name="toolTip">
-       <string>lineEditBit_3</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="3">
-     <widget class="QLineEdit" name="lineEditBit_0">
-      <property name="toolTip">
-       <string>lineEditBit_0</string>
-      </property>
-     </widget>
-    </item>
-    <item row="2" column="2">
-     <widget class="QLineEdit" name="lineEditAddress_0"/>
-    </item>
-    <item row="1" column="2">
-     <widget class="QLabel" name="label_9">
-      <property name="text">
-       <string>Adresse</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="4">
-     <widget class="QLabel" name="label_10">
-      <property name="text">
-       <string>Repräsentation</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="4">
-     <widget class="QComboBox" name="comboBoxFormat_2"/>
-    </item>
-    <item row="2" column="4">
-     <widget class="QComboBox" name="comboBoxFormat_0"/>
-    </item>
-    <item row="3" column="1">
-     <widget class="QLineEdit" name="lineEditDB_1"/>
-    </item>
-    <item row="4" column="2">
-     <widget class="QLineEdit" name="lineEditAddress_2"/>
-    </item>
-    <item row="5" column="1">
-     <widget class="QLineEdit" name="lineEditDB_3"/>
-    </item>
-    <item row="2" column="0">
-     <widget class="QComboBox" name="comboBoxArea_0">
-      <property name="toolTip">
-       <string>comboBoxArea_0</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="2">
-     <widget class="QLineEdit" name="lineEditAddress_3"/>
-    </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="lineEditDB_2"/>
-    </item>
-    <item row="6" column="4">
-     <widget class="QComboBox" name="comboBoxFormat_4"/>
-    </item>
-    <item row="4" column="0">
-     <widget class="QComboBox" name="comboBoxArea_2">
-      <property name="toolTip">
-       <string>comboBoxArea_2</string>
-      </property>
-     </widget>
-    </item>
-    <item row="3" column="4">
-     <widget class="QComboBox" name="comboBoxFormat_1"/>
-    </item>
     <item row="6" column="0">
      <widget class="QComboBox" name="comboBoxArea_4">
       <property name="toolTip">
@@ -153,16 +87,19 @@
       </property>
      </widget>
     </item>
-    <item row="3" column="2">
+    <item row="3" column="3">
      <widget class="QLineEdit" name="lineEditAddress_1"/>
     </item>
-    <item row="4" column="3">
-     <widget class="QLineEdit" name="lineEditBit_2">
-      <property name="acceptDrops">
-       <bool>true</bool>
-      </property>
+    <item row="5" column="2">
+     <widget class="QLineEdit" name="lineEditDB_3"/>
+    </item>
+    <item row="5" column="5">
+     <widget class="QComboBox" name="comboBoxFormat_3"/>
+    </item>
+    <item row="3" column="0">
+     <widget class="QComboBox" name="comboBoxArea_1">
       <property name="toolTip">
-       <string>lineEditBit_2</string>
+       <string>comboBoxArea_1</string>
       </property>
      </widget>
     </item>
@@ -173,30 +110,10 @@
       </property>
      </widget>
     </item>
-    <item row="6" column="3">
+    <item row="6" column="4">
      <widget class="QLineEdit" name="lineEditBit_4">
       <property name="toolTip">
        <string>lineEditBit_4</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="1">
-     <widget class="QLineEdit" name="lineEditDB_4"/>
-    </item>
-    <item row="1" column="1">
-     <widget class="QLabel" name="label_13">
-      <property name="text">
-       <string>DB-Nr.</string>
-      </property>
-     </widget>
-    </item>
-    <item row="6" column="2">
-     <widget class="QLineEdit" name="lineEditAddress_4"/>
-    </item>
-    <item row="3" column="0">
-     <widget class="QComboBox" name="comboBoxArea_1">
-      <property name="toolTip">
-       <string>comboBoxArea_1</string>
       </property>
      </widget>
     </item>
@@ -204,6 +121,111 @@
      <widget class="QComboBox" name="comboBoxArea_3">
       <property name="toolTip">
        <string>comboBoxArea_3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="6" column="2">
+     <widget class="QLineEdit" name="lineEditDB_4"/>
+    </item>
+    <item row="4" column="5">
+     <widget class="QComboBox" name="comboBoxFormat_2"/>
+    </item>
+    <item row="4" column="4">
+     <widget class="QLineEdit" name="lineEditBit_2">
+      <property name="acceptDrops">
+       <bool>true</bool>
+      </property>
+      <property name="toolTip">
+       <string>lineEditBit_2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="2">
+     <widget class="QLineEdit" name="lineEditDB_0"/>
+    </item>
+    <item row="1" column="3">
+     <widget class="QLabel" name="label_9">
+      <property name="text">
+       <string>Adresse</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="5">
+     <widget class="QLabel" name="label_10">
+      <property name="text">
+       <string>Repräsentation</string>
+      </property>
+     </widget>
+    </item>
+    <item row="3" column="4">
+     <widget class="QLineEdit" name="lineEditBit_1">
+      <property name="toolTip">
+       <string>lineEditBit_1</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="4">
+     <widget class="QLabel" name="label_11">
+      <property name="text">
+       <string>Bit</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="2">
+     <widget class="QLineEdit" name="lineEditDB_2"/>
+    </item>
+    <item row="2" column="5">
+     <widget class="QComboBox" name="comboBoxFormat_0"/>
+    </item>
+    <item row="3" column="5">
+     <widget class="QComboBox" name="comboBoxFormat_1"/>
+    </item>
+    <item row="6" column="5">
+     <widget class="QComboBox" name="comboBoxFormat_4"/>
+    </item>
+    <item row="4" column="0">
+     <widget class="QComboBox" name="comboBoxArea_2">
+      <property name="toolTip">
+       <string>comboBoxArea_2</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="4">
+     <widget class="QLineEdit" name="lineEditBit_3">
+      <property name="toolTip">
+       <string>lineEditBit_3</string>
+      </property>
+     </widget>
+    </item>
+    <item row="2" column="0">
+     <widget class="QComboBox" name="comboBoxArea_0">
+      <property name="toolTip">
+       <string>comboBoxArea_0</string>
+      </property>
+     </widget>
+    </item>
+    <item row="5" column="3">
+     <widget class="QLineEdit" name="lineEditAddress_3"/>
+    </item>
+    <item row="2" column="1">
+     <widget class="QComboBox" name="comboBoxLength_0"/>
+    </item>
+    <item row="6" column="1">
+     <widget class="QComboBox" name="comboBoxLength_4"/>
+    </item>
+    <item row="5" column="1">
+     <widget class="QComboBox" name="comboBoxLength_3"/>
+    </item>
+    <item row="4" column="1">
+     <widget class="QComboBox" name="comboBoxLength_2"/>
+    </item>
+    <item row="3" column="1">
+     <widget class="QComboBox" name="comboBoxLength_1"/>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLabel" name="label_15">
+      <property name="text">
+       <string>Größe</string>
       </property>
      </widget>
     </item>
@@ -230,13 +252,13 @@
     <string>Einstellungen</string>
    </property>
   </widget>
-  <widget class="QWidget" name="">
+  <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>10</x>
-     <y>61</y>
+     <x>13</x>
+     <y>63</y>
      <width>261</width>
-     <height>161</height>
+     <height>160</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
@@ -391,11 +413,9 @@
     </item>
    </layout>
   </widget>
+  <zorder>layoutWidget</zorder>
   <zorder>buttonBox</zorder>
-  <zorder>ComboBox_Protokoll</zorder>
-  <zorder>lineEdit_CPU_MPI</zorder>
   <zorder>gridLayoutWidget</zorder>
-  <zorder>label_14</zorder>
   <zorder>label_14</zorder>
  </widget>
  <layoutdefault spacing="6" margin="9"/>

@@ -42,13 +42,16 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
 
     //Fill comboboxes for area and formats with data
     comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
-    comboBoxesLength = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
+    comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
+    comboBoxesLength = findChildren<QComboBox*>(QRegExp("comboBoxLength_.*"));
     lineEditsBits = findChildren<QLineEdit*>(QRegExp("lineEditBit_.*"));
     lineEditsAddress = findChildren<QLineEdit*>(QRegExp("lineEditAddress_.*"));
     lineEditsDB = findChildren<QLineEdit*>(QRegExp("lineEditDB_.*"));
 
     //Sorting algorithms for the right order of the objects
     qSort(comboBoxesArea.begin(), comboBoxesArea.end(),
+          comboBoxPointerLessThan);
+    qSort(comboBoxesFormat.begin(), comboBoxesFormat.end(),
           comboBoxPointerLessThan);
     qSort(comboBoxesLength.begin(), comboBoxesLength.end(),
           comboBoxPointerLessThan);
@@ -61,14 +64,17 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
 
     comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z"
                    << "IEC_T";
-    comboItemsLength << " " << "BOOL" << "BYTE" << "WORD" << "DWORD" << "INT"
-                     << "DINT" << "REAL";
+    comboItemsLength << " " << "BIT" << "BYTE" << "WORD" << "DWORD";
+    comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT"
+                     << "CHAR";
     comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB
                     << daveCounter << daveTimer << daveCounter200
                     << daveTimer200;
     comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord
-                      << DatLenDWord << DatLenWord << DatLenDWord
                       << DatLenDWord;
+    comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatBinaer
+                      << AnzFormatDezimal << AnzFormatHexadezimal
+                      << AnzFormatGleitpunkt << AnzFormatZeichen;
 
     //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and
     //faster but then an additional iterator
@@ -79,13 +85,18 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
             comboBoxesArea[i]->addItem(comboItemsArea[j],comboValuesArea[j]);
     }
 
+    for(int i=0;i<comboBoxesFormat.count();++i)
+    {
+        for(int j=0;j<comboItemsFormat.count();++j)
+            comboBoxesFormat[i]->addItem(comboItemsFormat[j],
+                                         comboValuesFormat[j]);
+    }
     for(int i=0;i<comboBoxesLength.count();++i)
     {
         for(int j=0;j<comboItemsLength.count();++j)
             comboBoxesLength[i]->addItem(comboItemsLength[j],
                                          comboValuesLength[j]);
     }
-
     //Connect the format-combo boxes' indexChanged signal to the handling
     //Slot for conditional disabling of Bit field
     for(int i=0;i<comboBoxesArea.count();++i)
@@ -158,24 +169,14 @@ void ConnectionSettings::on_buttonBox_accepted()
     for(int i=0;i<lineEditsBits.count();++i){
         newSlots[i].iBitnummer = lineEditsBits[i]->text().toInt();
         newSlots[i].iStartAdr = lineEditsAddress[i]->text().toInt();
-        newSlots[i].iDatenlaenge = comboBoxesLength[i]->
-                itemData(comboBoxesLength[i]->currentIndex()).toInt();
+        newSlots[i].iAnzFormat = comboBoxesFormat[i]->
+                itemData(comboBoxesFormat[i]->currentIndex()).toInt();
         newSlots[i].iAdrBereich = comboBoxesArea[i]->
                 itemData(comboBoxesArea[i]->currentIndex()).toInt();
         newSlots[i].iDBnummer = lineEditsDB[i]->text().toInt();
         newSlots[i].graphColor = graphColors[i % moduloValue];
-        switch(newSlots[i].iDatenlaenge)
-        {
-        case DatLenWord: newSlots[i].iAnzFormat = AnzFormatDezimal;
-            break;
-        case DatLenByte:   newSlots[i].iAnzFormat = AnzFormatHexadezimal;
-            break;
-        case DatLenBit:  newSlots[i].iAnzFormat = AnzFormatBinaer;
-            break;
-        case DatLenDWord:  newSlots[i].iAnzFormat = AnzFormatDezimal;
-            break;
-        default: break;
-        }
+        newSlots[i].iDatenlaenge = comboBoxesLength[i]->
+                itemData(comboBoxesLength[i]->currentIndex()).toInt();
     }
 
     emit SlotsChanged(newSlots);
@@ -252,8 +253,8 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
 
     if(comboBoxesArea.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
-    }else if(comboBoxesLength.contains(sendingBox)){
-        lineNumber = findCorrespondingLine(comboBoxesLength,sendingBox);
+    }else if(comboBoxesFormat.contains(sendingBox)){
+        lineNumber = findCorrespondingLine(comboBoxesFormat,sendingBox);
     }
 
     switch (dataItem)
@@ -315,12 +316,14 @@ void ConnectionSettings::SetSlots(QVector<ConSlot> currentSlots)
     for(int i=0; i<currentSlots.count();++i){
         comboBoxesArea[i]->setCurrentIndex(
                     comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
-        comboBoxesLength[i]->setCurrentIndex(
-                    comboValuesLength.indexOf(currentSlots[i].iDatenlaenge));
+        comboBoxesFormat[i]->setCurrentIndex(
+                    comboValuesFormat.indexOf(currentSlots[i].iAnzFormat));
         lineEditsBits[i]->setText(QString::number(currentSlots[i].iBitnummer));
         lineEditsAddress[i]->setText(QString::number(
                                          currentSlots[i].iStartAdr));
         lineEditsDB[i]->setText(QString::number(currentSlots[i].iDBnummer));
+        comboBoxesLength[i]->setCurrentIndex(
+                    comboValuesLength.indexOf(currentSlots[i].iDatenlaenge));
     }
 }
 
