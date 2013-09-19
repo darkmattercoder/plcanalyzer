@@ -84,6 +84,8 @@ private:
     QList<QLineEdit*> lineEditsDB;
     int findCorrespondingLine(QList<QComboBox*> boxesArea,
                               QComboBox* sendingBox);
+
+    //Compare funqtions for the qsort algorithm
     static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 

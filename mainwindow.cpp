@@ -104,9 +104,9 @@ MainWindow::MainWindow(QWidget *parent) :
             (QRegExp("lineEditAddress_.*"));
 
     //Sorting algorithms for the right order of the objects
-    qSort(comboBoxesArea.begin(), comboBoxesArea.end(),
-          comboBoxPointerLessThan);
-    qSort(lineEditsDB.begin(), lineEditsDB.end(),
+    qSort(labelsOperand.begin(), labelsOperand.end(),
+          labelPointerLessThan);
+    qSort(lineEditsOperandValue.begin(), lineEditsOperandValue.end(),
           lineEditPointerLessThan);
 
 }
@@ -284,4 +284,16 @@ void MainWindow::on_actionNewProject_triggered()
 void MainWindow::on_actionSaveProject_triggered()
 {    
     xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+}
+
+//LessThan Comparison for labels
+bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
+{
+    return label1->objectName() < label2->objectName();
+}
+
+//LessThan Comparison for line edits
+bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
+{
+    return le1->objectName() < le2->objectName();
 }

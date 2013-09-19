@@ -98,6 +98,9 @@ private:
     QList<QLabel*> labelsOperand;
     QList<QLineEdit*> lineEditsOperandValue;
 
+    //Compare funqtions for the qsort algorithm
+    static bool labelPointerLessThan(QLabel* label1, QLabel* label2);
+    static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 
 };
 
