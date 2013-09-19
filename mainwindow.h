@@ -94,6 +94,10 @@ private:
     xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
 
+    //Lists for the OperandValues
+    QList<QLabel*> labelsOperand;
+    QList<QLineEdit*> lineEditsOperandValue;
+
 
 };
 

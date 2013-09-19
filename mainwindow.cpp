@@ -98,7 +98,16 @@ MainWindow::MainWindow(QWidget *parent) :
 
     }
 
+    //Fill comboboxes for area and formats with data
+    labelsOperand = findChildren<QLabel*>(QRegExp("operandLabel_.*"));
+    lineEditsOperandValue = findChildren<QLineEdit*>
+            (QRegExp("lineEditAddress_.*"));
 
+    //Sorting algorithms for the right order of the objects
+    qSort(comboBoxesArea.begin(), comboBoxesArea.end(),
+          comboBoxPointerLessThan);
+    qSort(lineEditsDB.begin(), lineEditsDB.end(),
+          lineEditPointerLessThan);
 
 }
 
