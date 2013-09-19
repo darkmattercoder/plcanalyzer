@@ -86,6 +86,7 @@ private:
 
     //Graph colors as a "resorted" int-vector of Qt::GlobalColors
     QVector<QColor> graphColors;
+//    Qt::GlobalColor /*graphColors[8]*/;
     //Modulo value for dynamic graphColor generation
     int moduloValue;
 };
