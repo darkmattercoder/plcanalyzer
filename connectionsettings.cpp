@@ -123,6 +123,9 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     ui->lineEdit_CPU_MPI->setValidator(RegExp_MPI);
     ui->lineEdit_local_MPI->setValidator(RegExp_MPI);
 
+    graphColors={7,8,2,9,10,18,11,13,16};
+    moduloValue=graphColors.size();
+
 }
 
 ConnectionSettings::~ConnectionSettings()
@@ -160,7 +163,7 @@ void ConnectionSettings::on_buttonBox_accepted()
         newSlots[i].iAdrBereich = comboBoxesArea[i]->
                 itemData(comboBoxesArea[i]->currentIndex()).toInt();
         newSlots[i].iDBnummer = lineEditsDB[i]->text().toInt();
-
+        newSlots[i].graphColor = graphColors[i % moduloValue];
         switch(newSlots[i].iDatenlaenge)
         {
         case DatLenWord: newSlots[i].iAnzFormat = AnzFormatDezimal;

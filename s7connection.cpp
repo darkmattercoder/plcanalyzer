@@ -274,7 +274,8 @@ bool S7Connection::isConnected()
     return bRet;
 }
 
-void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
+void S7Connection::readSlots(QVector<ConSlot> &cSlot, int iAmountSlots)
+//void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
 {
     PDU p;
     davePrepareReadRequest(dc, &p);
@@ -284,6 +285,7 @@ void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
         // Add Variables to Request
         if (cSlot[i].iDatenlaenge != DatLenBit)
         {
+
             // Read Byte(s)
             daveAddVarToReadRequest(&p, cSlot[i].iAdrBereich,
                                     cSlot[i].iDBnummer, cSlot[i].iStartAdr,

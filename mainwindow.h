@@ -45,6 +45,7 @@
 #include "s7connection.h"
 #include "xmlsettingshandler.h"
 #include "connectionsettings.h"
+#include <QColor>
 
 namespace Ui {
 class MainWindow;
@@ -93,6 +94,8 @@ private:
 
     xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
+
+
 };
 
 #endif // MAINWINDOW_H

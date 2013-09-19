@@ -83,6 +83,11 @@ private:
                               QComboBox* sendingBox);
     static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
+
+    //Graph colors as a "resorted" int-vector of Qt::GlobalColors
+    QVector<QColor> graphColors;
+    //Modulo value for dynamic graphColor generation
+    int moduloValue;
 };
 
 #endif // CONNECTIONSETTINGS_H

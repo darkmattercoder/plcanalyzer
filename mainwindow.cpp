@@ -157,7 +157,7 @@ void MainWindow::TimeOut()
     if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
         // Read new values to slots
-        MyS7Connection.readSlots(&MySlot[0], MySlot.size());
+        MyS7Connection.readSlots(MySlot, MySlot.size());
 
         // Write the time vector
         x[recordings] = 0.1 * recordings; //Abtastung alle 100ms
@@ -208,52 +208,52 @@ void MainWindow::on_pushButton_ConSets_clicked()
 void MainWindow::on_Button_read_slots_clicked()
 {
 
-//////     Slot 1
-        MySlot[0].iAdrBereich = daveDB;
-        MySlot[0].iDatenlaenge = DatLenWord;
-        MySlot[0].iStartAdr = 12;
-        MySlot[0].iDBnummer = 8;
-        MySlot[0].iBitnummer = 0;
-        MySlot[0].iAnzFormat = AnzFormatDezimal;
-    MySlot[2].graphColor = Qt::black;
+//////////     Slot 1
+////        MySlot[0].iAdrBereich = daveDB;
+////        MySlot[0].iDatenlaenge = DatLenWord;
+////        MySlot[0].iStartAdr = 12;
+////        MySlot[0].iDBnummer = 8;
+////        MySlot[0].iBitnummer = 0;
+////        MySlot[0].iAnzFormat = AnzFormatDezimal;
+//    MySlot[2].graphColor = Qt::black;
 
-////    // Slot 2
-        MySlot[1].iAdrBereich = daveFlags;
-        MySlot[1].iDatenlaenge = DatLenDWord;
-        MySlot[1].iStartAdr = 15;
-        MySlot[1].iDBnummer = 0;
-        MySlot[1].iBitnummer = 0;
-        MySlot[1].iAnzFormat = AnzFormatGleitpunkt;
-    MySlot[1].graphColor = Qt::red;
+////////    // Slot 2
+////        MySlot[1].iAdrBereich = daveFlags;
+////        MySlot[1].iDatenlaenge = DatLenDWord;
+////        MySlot[1].iStartAdr = 15;
+////        MySlot[1].iDBnummer = 0;
+////        MySlot[1].iBitnummer = 0;
+////        MySlot[1].iAnzFormat = AnzFormatGleitpunkt;
+//    MySlot[1].graphColor = Qt::red;
 
-//    // Slot 3
-        MySlot[0].iAdrBereich = daveInputs;
-        MySlot[0].iDatenlaenge = DatLenBit;
-        MySlot[0].iStartAdr = 0;
-        MySlot[0].iDBnummer = 0;
-        MySlot[0].iBitnummer = 0;
-        MySlot[0].iAnzFormat = AnzFormatBinaer;
-    MySlot[0].graphColor = Qt::green;
+//////    // Slot 3
+////        MySlot[0].iAdrBereich = daveInputs;
+////        MySlot[0].iDatenlaenge = DatLenBit;
+////        MySlot[0].iStartAdr = 0;
+////        MySlot[0].iDBnummer = 0;
+////        MySlot[0].iBitnummer = 0;
+////        MySlot[0].iAnzFormat = AnzFormatBinaer;
+//    MySlot[0].graphColor = Qt::green;
 
-//    // Slot 4
-        MySlot[3].iAdrBereich = daveFlags;
-        MySlot[3].iDatenlaenge = DatLenWord;
-        MySlot[3].iStartAdr = 8;
-        MySlot[3].iDBnummer = 0;
-        MySlot[3].iBitnummer = 0;
-        MySlot[3].iAnzFormat = AnzFormatHexadezimal;
-    MySlot[3].graphColor = Qt::blue;
+//////    // Slot 4
+////        MySlot[3].iAdrBereich = daveFlags;
+////        MySlot[3].iDatenlaenge = DatLenWord;
+////        MySlot[3].iStartAdr = 8;
+////        MySlot[3].iDBnummer = 0;
+////        MySlot[3].iBitnummer = 0;
+////        MySlot[3].iAnzFormat = AnzFormatHexadezimal;
+//    MySlot[3].graphColor = Qt::blue;
 
-//    // Slot 4
-        MySlot[4].iAdrBereich = daveFlags;
-        MySlot[4].iDatenlaenge = DatLenByte;
-        MySlot[4].iStartAdr = 10;
-        MySlot[4].iDBnummer = 0;
-        MySlot[4].iBitnummer = 0;
-        MySlot[4].iAnzFormat = AnzFormatZeichen;
-  MySlot[4].graphColor = Qt::magenta;
-//MySlot[5].graphColor = Qt::blue;
-    // Reset recording couter
+//////    // Slot 4
+////        MySlot[4].iAdrBereich = daveFlags;
+////        MySlot[4].iDatenlaenge = DatLenByte;
+////        MySlot[4].iStartAdr = 10;
+////        MySlot[4].iDBnummer = 0;
+////        MySlot[4].iBitnummer = 0;
+////        MySlot[4].iAnzFormat = AnzFormatZeichen;
+//  MySlot[4].graphColor = Qt::magenta;
+////MySlot[5].graphColor = Qt::blue;
+//    // Reset recording couter
     recordings = 0;
 
     //Delete old graphs

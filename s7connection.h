@@ -131,7 +131,8 @@ public:
     void disconnect();
     int getValue();
     bool isConnected();
-    void readSlots(ConSlot cSlot[], int iAmountSlots);
+    void readSlots(QVector<ConSlot> &cSlot, int iAmountSlots);
+//    void readSlots(ConSlot cSlot[], int iAmountSlots);
     QString interpret(ConSlot cSlot);
 
     // Public Variables
