@@ -97,9 +97,7 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
 
-    //####################ZU BEARBEITEN######################################
-    numberOfSlots = 2;
-    //#######################################################################
+
 }
 
 MainWindow::~MainWindow()
@@ -159,13 +157,13 @@ void MainWindow::TimeOut()
     if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
         // Read new values to slots
-        MyS7Connection.readSlots(&MySlot[0], numberOfSlots);
+        MyS7Connection.readSlots(&MySlot[0], MySlot.size());
 
         // Write the time vector
         x[recordings] = 0.1 * recordings; //Abtastung alle 100ms
 
         // Write all dimensions of value vector
-        for (int i = 0; i < numberOfSlots; i++)
+        for (int i = 0; i < MySlot.size(); i++)
         {
             // Write current value
             y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
@@ -209,51 +207,52 @@ void MainWindow::on_pushButton_ConSets_clicked()
 
 void MainWindow::on_Button_read_slots_clicked()
 {
-    // Slot 1
-    //    MySlot[0].iAdrBereich = daveFlags;
-    //    MySlot[0].iDatenlaenge = DatLenDWord;
-    //    MySlot[0].iStartAdr = 4;
-    //    MySlot[0].iDBnummer = 0;
-    //    MySlot[0].iBitnummer = 0;
-    //    MySlot[0].iAnzFormat = AnzFormatGleitpunkt;
-    MySlot[0].graphColor = Qt::black;
 
-    // Slot 2
-    //    MySlot[1].iAdrBereich = daveFlags;
-    //    MySlot[1].iDatenlaenge = DatLenBit;
-    //    MySlot[1].iStartAdr = 1;
-    //    MySlot[1].iDBnummer = 0;
-    //    MySlot[1].iBitnummer = 7;
-    //    MySlot[1].iAnzFormat = AnzFormatDezimal;
+//////     Slot 1
+        MySlot[0].iAdrBereich = daveDB;
+        MySlot[0].iDatenlaenge = DatLenWord;
+        MySlot[0].iStartAdr = 12;
+        MySlot[0].iDBnummer = 8;
+        MySlot[0].iBitnummer = 0;
+        MySlot[0].iAnzFormat = AnzFormatDezimal;
+    MySlot[2].graphColor = Qt::black;
+
+////    // Slot 2
+        MySlot[1].iAdrBereich = daveFlags;
+        MySlot[1].iDatenlaenge = DatLenDWord;
+        MySlot[1].iStartAdr = 15;
+        MySlot[1].iDBnummer = 0;
+        MySlot[1].iBitnummer = 0;
+        MySlot[1].iAnzFormat = AnzFormatGleitpunkt;
     MySlot[1].graphColor = Qt::red;
 
-    // Slot 3
-    //    MySlot[2].iAdrBereich = daveFlags;
-    //    MySlot[2].iDatenlaenge = DatLenDWord;
-    //    MySlot[2].iStartAdr = 4;
-    //    MySlot[2].iDBnummer = 0;
-    //    MySlot[2].iBitnummer = 0;
-    //    MySlot[2].iAnzFormat = AnzFormatBinaer;
-    MySlot[2].graphColor = Qt::green;
+//    // Slot 3
+        MySlot[0].iAdrBereich = daveInputs;
+        MySlot[0].iDatenlaenge = DatLenBit;
+        MySlot[0].iStartAdr = 0;
+        MySlot[0].iDBnummer = 0;
+        MySlot[0].iBitnummer = 0;
+        MySlot[0].iAnzFormat = AnzFormatBinaer;
+    MySlot[0].graphColor = Qt::green;
 
-    // Slot 4
-    //    MySlot[3].iAdrBereich = daveFlags;
-    //    MySlot[3].iDatenlaenge = DatLenWord;
-    //    MySlot[3].iStartAdr = 8;
-    //    MySlot[3].iDBnummer = 0;
-    //    MySlot[3].iBitnummer = 0;
-    //    MySlot[3].iAnzFormat = AnzFormatHexadezimal;
+//    // Slot 4
+        MySlot[3].iAdrBereich = daveFlags;
+        MySlot[3].iDatenlaenge = DatLenWord;
+        MySlot[3].iStartAdr = 8;
+        MySlot[3].iDBnummer = 0;
+        MySlot[3].iBitnummer = 0;
+        MySlot[3].iAnzFormat = AnzFormatHexadezimal;
     MySlot[3].graphColor = Qt::blue;
 
-    // Slot 4
-    //    MySlot[4].iAdrBereich = daveFlags;
-    //    MySlot[4].iDatenlaenge = DatLenByte;
-    //    MySlot[4].iStartAdr = 10;
-    //    MySlot[4].iDBnummer = 0;
-    //    MySlot[4].iBitnummer = 0;
-    //    MySlot[4].iAnzFormat = AnzFormatZeichen;
-    MySlot[4].graphColor = Qt::magenta;
-
+//    // Slot 4
+        MySlot[4].iAdrBereich = daveFlags;
+        MySlot[4].iDatenlaenge = DatLenByte;
+        MySlot[4].iStartAdr = 10;
+        MySlot[4].iDBnummer = 0;
+        MySlot[4].iBitnummer = 0;
+        MySlot[4].iAnzFormat = AnzFormatZeichen;
+  MySlot[4].graphColor = Qt::magenta;
+//MySlot[5].graphColor = Qt::blue;
     // Reset recording couter
     recordings = 0;
 
@@ -261,8 +260,8 @@ void MainWindow::on_Button_read_slots_clicked()
     int numberOfGraphs = ui->customPlot->graphCount();
     qDebug("Number of Graphs is: %i", numberOfGraphs);
 
-    // If numberOfGraphs < numberOfSlots -> add graphs
-    for (int i = numberOfGraphs; i < numberOfSlots; i++)
+    // If numberOfGraphs <  -> add graphs
+    for (int i = numberOfGraphs; i < MySlot.size(); i++)
     {
         // Add new graphs
         ui->customPlot->addGraph();
@@ -273,8 +272,8 @@ void MainWindow::on_Button_read_slots_clicked()
     // refresh numberOfGraphs
     numberOfGraphs = ui->customPlot->graphCount();
 
-    // If numberOfGraphs > numberOFSlots -> remove graphs
-    for (int i = numberOfGraphs; i > numberOfSlots; i--)
+    // If numberOfGraphs >  -> remove graphs
+    for (int i = numberOfGraphs; i > MySlot.size(); i--)
     {
         // Remove not needed graphs
         ui->customPlot->removeGraph(i);
@@ -286,10 +285,10 @@ void MainWindow::on_Button_read_slots_clicked()
     // Abtastung mit 10 Hz
     amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
     x.resize(amountOfPoints);
-    y.resize(numberOfSlots);
+    y.resize(MySlot.size());
 
     // Resize 2nd dimension
-    for (int i = 0; i < numberOfSlots; i++)
+    for (int i = 0; i <MySlot.size() ; i++)
     {
         y[i].resize(amountOfPoints);
     }
@@ -300,7 +299,7 @@ void MainWindow::on_Button_read_slots_clicked()
 
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
-    ui->customPlot->yAxis->setRange(-1.0, 1.0);
+    ui->customPlot->yAxis->setRange(-5.0, 5.0);
 }
 
 // Autoscale axes

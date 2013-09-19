@@ -71,11 +71,11 @@ private:
     Ui::ConnectionSettings *ui;
     QStringList szListConnection;
     QStringList comboItemsArea;
-    QStringList comboItemsFormat;
+    QStringList comboItemsLength;
     QList<int> comboValuesArea;
-    QList<int> comboValuesFormat;
+    QList<int> comboValuesLength;
     QList<QComboBox*> comboBoxesArea;
-    QList<QComboBox*> comboBoxesFormat;
+    QList<QComboBox*> comboBoxesLength;
     QList<QLineEdit*> lineEditsBits;
     QList<QLineEdit*> lineEditsAddress;
     QList<QLineEdit*> lineEditsDB;
