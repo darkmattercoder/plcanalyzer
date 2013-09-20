@@ -192,6 +192,7 @@ void MainWindow::TimeOut()
         }
         ui->customPlot->replot();
         recordings++;
+
         /*save data if the amount of points is reached*/
         if (recordings == amountOfPoints)
         {
@@ -202,9 +203,6 @@ void MainWindow::TimeOut()
             y.clear();
             x.clear();
         }
-
-
-
     }
     else
     {
@@ -376,7 +374,8 @@ void MainWindow::TimeOut()
         ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
         ui->customPlot->yAxis->setRange(-5.0, 5.0);
 
-    //    myWriter.OpenFileStream(TimeNDate::CreatePath(),true);
+        //open filewriter and write the number of slots
+        myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
     }
 
     // Autoscale axes
