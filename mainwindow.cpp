@@ -88,6 +88,18 @@ MainWindow::MainWindow(QWidget *parent) :
     recordings = MAXINT;
 #endif
 
+    //Get Labels and Operand value displays
+    labelsOperand = this->findChildren<QLabel*>(QRegExp("operandLabel_.*"));
+    lineEditsOperandValue = this->findChildren<QLineEdit*>
+            (QRegExp("operandValue_.*"));
+
+    //Sorting algorithms for the right order of the objects
+    qSort(labelsOperand.begin(), labelsOperand.end(),
+          labelPointerLessThan);
+    qSort(lineEditsOperandValue.begin(), lineEditsOperandValue.end(),
+          lineEditPointerLessThan);
+
+
     //Open last connection Settings if existent
     if(xmlSettings->openProject(true))
     {
@@ -98,16 +110,6 @@ MainWindow::MainWindow(QWidget *parent) :
 
     }
 
-    //Fill comboboxes for area and formats with data
-    labelsOperand = findChildren<QLabel*>(QRegExp("operandLabel_.*"));
-    lineEditsOperandValue = findChildren<QLineEdit*>
-            (QRegExp("lineEditAddress_.*"));
-
-    //Sorting algorithms for the right order of the objects
-    qSort(labelsOperand.begin(), labelsOperand.end(),
-          labelPointerLessThan);
-    qSort(lineEditsOperandValue.begin(), lineEditsOperandValue.end(),
-          lineEditPointerLessThan);
 
 }
 
@@ -209,6 +211,49 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
     ConDiag.SetSlots(MySlot);
+
+    //Get the operand labels and displays working
+    QVector<QString> opLabel (MySlot.size());
+    for(int i=0;i<MySlot.size();++i)
+    {
+        switch(MySlot[i].iAdrBereich)
+        {
+        case daveInputs: opLabel[i] = "E";
+            break;
+        case daveOutputs: opLabel[i] = "A";
+            break;
+        case daveFlags: opLabel[i] = "M";
+            break;
+        case daveTimer: opLabel[i] = "T ";
+            break;
+        case daveCounter:  opLabel[i] = "Z ";
+            break;
+        default:
+            opLabel[i] = "";
+        }
+        switch(MySlot[i].iDatenlaenge)
+        {
+        case DatLenBit:
+            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
+            break;
+        case DatLenWord:
+            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
+            break;
+        case DatLenByte:
+            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
+            break;
+        case DatLenDWord:
+            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
+            break;
+        default:
+            opLabel[i] += "";
+        }
+        opLabel[i] += QString::number(MySlot[i].iStartAdr);
+        opLabel[i] += ".";
+        opLabel[i] += QString::number(MySlot[i].iBitnummer);
+        labelsOperand[i]->setText(opLabel[i]);
+    }
+
 }
 
 // Button Verbindungseinstellungen

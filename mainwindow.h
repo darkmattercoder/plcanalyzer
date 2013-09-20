@@ -37,6 +37,8 @@
 #include "ui_mainwindow.h"
 
 #include <QMainWindow>
+#include <QLabel>
+#include <QLineEdit>
 #include <QProcess>
 #include <QDebug>
 #include <QTextEdit>
