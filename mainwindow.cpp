@@ -352,9 +352,9 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         // Resize vectors
 
         // Abtastung mit 10 Hz
-        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
+        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 5;
         x.resize(amountOfPoints);
-        y.resize(numberOfSlots);
+        y.resize(MySlot.size());
 
         // Resize 2nd dimension
         for (int i = 0; i <MySlot.size() ; i++)
