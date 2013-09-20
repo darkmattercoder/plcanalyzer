@@ -40,7 +40,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     // Build userinterface
     ui->setupUi(this);
 
-    //Fill comboboxes for area and formats with data
+    // Fill comboboxes for area and formats with data
     comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
     comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
     comboBoxesLength = findChildren<QComboBox*>(QRegExp("comboBoxLength_.*"));
@@ -48,7 +48,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     lineEditsAddress = findChildren<QLineEdit*>(QRegExp("lineEditAddress_.*"));
     lineEditsDB = findChildren<QLineEdit*>(QRegExp("lineEditDB_.*"));
 
-    //Sorting algorithms for the right order of the objects
+    // Sorting algorithms for the right order of the objects
     qSort(comboBoxesArea.begin(), comboBoxesArea.end(),
           comboBoxPointerLessThan);
     qSort(comboBoxesFormat.begin(), comboBoxesFormat.end(),
@@ -76,9 +76,9 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                       << AnzFormatDezimal << AnzFormatHexadezimal
                       << AnzFormatGleitpunkt << AnzFormatZeichen;
 
-    //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and
-    //faster but then an additional iterator
-    //value declaration outside the loop was necessary.
+    // Initialize with two for loops. Q_FOREACH would fit too, 
+    // seems simpler and faster but then an additional iterator 
+    // value declaration outside the loop was necessary.
     for(int i=0;i<comboBoxesArea.count();++i)
     {
         for(int j=0;j<comboItemsArea.count();++j)
@@ -137,13 +137,15 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                 << Qt::darkYellow
                 << Qt::magenta << Qt::darkRed << Qt::darkCyan;
     moduloValue=graphColors.size();
-
 }
+
+// Destructor of ConnectionSettings
 ConnectionSettings::~ConnectionSettings()
 {
     delete ui;
 }
 
+//
 void ConnectionSettings::on_buttonBox_accepted()
 {
     // Einstellungen in die Membervariable schreiben
@@ -151,8 +153,7 @@ void ConnectionSettings::on_buttonBox_accepted()
     m_DiagSets->localMPI = ui->lineEdit_local_MPI->text().toInt();
     m_DiagSets->plcMPI = ui->lineEdit_CPU_MPI->text().toInt();
     m_DiagSets->speed = ui->comboBox_Speed->currentIndex();
-    m_DiagSets->useProto = ui->ComboBox_Protokoll->
-            itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
+    m_DiagSets->useProto = ui->ComboBox_Protokoll->itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
     m_DiagSets->rack = ui->lineEdit_Rack->text().toInt();
     m_DiagSets->slot = ui->lineEdit_Slot->text().toInt();
 
@@ -200,8 +201,7 @@ void ConnectionSettings::SetSettings(ConSets *CurrentSets)
 
 void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
 {
-    // Setzt die Bedienbarkeit von Elementen in Abhängigkeit des gewählten
-    //Protokolltyps
+    // Setzt die Bedienbarkeit von Elementen in Abhängigkeit des Protokolltyps
     int iCurrProto = ui->ComboBox_Protokoll->itemData(index).toInt();
 
     switch(iCurrProto)

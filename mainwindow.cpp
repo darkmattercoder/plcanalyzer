@@ -154,26 +154,12 @@ void MainWindow::on_Button_Connect_clicked()
     }
 }
 
-// Should be no need for that function later
-//// Neuen Wert aus der SPS anfordern
-//void MainWindow::on_Button_Get_Val_clicked()
-//{
-//    if (MyS7Connection.isConnected())
-//    {
-//       //Currently only Flag byte 1 is read!
-//        ui->lcdNumber->display(MyS7Connection.getValue());
-//    }
-//}
-
 // Zyklisches Event
 void MainWindow::TimeOut()
 {
     // Zyklisches lesen
     if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
-
-
-
         // Read new values to slots
         MyS7Connection.readSlots(MySlot, MySlot.size());
 
@@ -185,7 +171,7 @@ void MainWindow::TimeOut()
         {
             // Write current value
             y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
-//also into the value displays
+            //also into the value displays
             lineEditsOperandValue[i]->setText(QString::number(y[i][recordings]));
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
@@ -237,6 +223,7 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         default:
             opLabel[i] = "";
         }
+
         if(opLabel[i] == "DB")
         {
             opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
@@ -265,7 +252,9 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
                 opLabel[i] += "";
 
             }
-        }else{
+        }
+        else if (opLabel[i] != "")
+        {
             switch(MySlot[i].iDatenlaenge)
             {
             case DatLenBit:
@@ -293,8 +282,19 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 
 
         }
-        QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
-    lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+
+        if(opLabel[i]!="")
+        {
+            QString lineeditStyle = "QLineEdit { color :" + MySlot[i].graphColor.name() + "; }";
+            lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+            lineEditsOperandValue[i]->show();
+        }
+        else
+        {
+             lineEditsOperandValue[i]->hide();
+        }
+
+
         labelsOperand[0]->colorCount();
 
         labelsOperand[i]->setText(opLabel[i]);
