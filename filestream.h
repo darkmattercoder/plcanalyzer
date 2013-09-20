@@ -42,6 +42,9 @@ class BinFile //: Datastructure
 
         /*function used for opening the filestream*/
         void OpenFileStream(QString szFilepath, bool bWrite);
+
+        /*closes the file and saves the data on disk*/
+        void CloseFile();
 		
 	public:
         /*standard constructor*/
@@ -52,6 +55,8 @@ class BinFile //: Datastructure
 
 		/*deconstructor, used for flushing and closing a file*/
 		~BinFile();
+
+
 };
 
 /*standard class for writing data to a binary file*/
@@ -80,6 +85,12 @@ public:
 
     /*function used for writing data from a vector to the file*/
     int WriteVector(QVector<QVector<double>> Data, QVector<double> Time);
+
+    /*returns true when the file is already opened*/
+    bool AlreadyOpen();
+
+    /*close the writer*/
+    void Close();
 };
 
 /*class used for creating a path using date and time*/

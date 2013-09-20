@@ -31,8 +31,14 @@ void BinFile::OpenFileStream(QString szFilepath, bool bWrite)
 /*standard deconstructor*/
 BinFile::~BinFile()
 {
-    /*close the file*/
-    myFile.close();
+    CloseFile();
+}
+
+/*closes the file if it is open*/
+void BinFile::CloseFile()
+{
+    if (myFile.isOpen())
+    { myFile.close(); }
 }
 /*************************************************************************/
 
@@ -50,6 +56,11 @@ BinWriter::BinWriter(QString szFilepath, int iSlots) : BinFile(szFilepath, true)
         /*write the number of slots into the file at the first place*/
         myFileStream << iSlots;
     }
+}
+
+void BinWriter::Close()
+{
+    CloseFile();
 }
 
 /*write the number of slots into the file after setting it to correct
@@ -110,7 +121,7 @@ bool BinWriter::CheckValues(QVector<QVector<double>> Data, int iIndex)
     if (LastVals.isEmpty())
     {
         /*save the new data*/
-        ValsChanged(Data, iIndex);
+        ValsChanged(Data, 0);
         /*return true because the data have changed*/
         return true;
     }
@@ -132,9 +143,17 @@ bool BinWriter::CheckValues(QVector<QVector<double>> Data, int iIndex)
     }
 }
 
+bool BinWriter::AlreadyOpen()
+{
+    return myFile.isOpen();
+}
+
 /*function used to write new vals to lastvals vector*/
 void BinWriter::ValsChanged(QVector<QVector<double>> Data, int iIndex)
 {
+    /*clear lastvals vector*/
+    LastVals.clear();
+
     /*transfer the data to the vector*/
     for (int i = 0; i < Data.size(); i++)
     {

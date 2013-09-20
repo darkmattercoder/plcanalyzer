@@ -153,6 +153,7 @@ void MainWindow::on_Button_Connect_clicked()
         // ui->Button_Get_Val->setEnabled(false);
         ui->Button_read_slots->setEnabled(false);
         ui->Button_Connect->setText("Connect");
+        myWriter.Close();
     }
 }
 
@@ -196,12 +197,15 @@ void MainWindow::TimeOut()
         /*save data if the amount of points is reached*/
         if (recordings == amountOfPoints)
         {
+            y.resize(5);
+
+            ui->textEdit->append(QString::number(y[0].size()));
+            ui->textEdit->append(QString::number(y.size()));
+
             /*save the data to the file*/
             myWriter.WriteVector(y, x);
 
-            /*clear the vectors*/
-            y.clear();
-            x.clear();
+            recordings = 0;
         }
     }
     else
@@ -225,7 +229,7 @@ void MainWindow::ChangeSettings(ConSets* NewConSets)
 }
 
 void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
-{
+    {
 
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
@@ -305,96 +309,99 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         labelsOperand[i]->setText(opLabel[i]);
     }
 
-}
-
-// Button Verbindungseinstellungen
-void MainWindow::on_pushButton_ConSets_clicked()
-{
-    //Fill the fields with data
-    ConDiag.SetSlots(MySlot);
-    ConDiag.show();
-
-
-}
-
-void MainWindow::on_Button_read_slots_clicked()
-{
-    recordings = 0;
-
-    //Delete old graphs
-    int numberOfGraphs = ui->customPlot->graphCount();
-    qDebug("Number of Graphs is: %i", numberOfGraphs);
-
-    // If numberOfGraphs <  -> add graphs
-    for (int i = numberOfGraphs; i < MySlot.size(); i++)
-    {
-        // Add new graphs
-        ui->customPlot->addGraph();
-        ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
-        qDebug("Adding Graph number %i", i);
     }
 
-    // refresh numberOfGraphs
-    numberOfGraphs = ui->customPlot->graphCount();
-
-    // If numberOfGraphs >  -> remove graphs
-    for (int i = numberOfGraphs; i > MySlot.size(); i--)
+    // Button Verbindungseinstellungen
+    void MainWindow::on_pushButton_ConSets_clicked()
     {
-        // Remove not needed graphs
-        ui->customPlot->removeGraph(i);
-        qDebug("Remove Graph: %i", i);
+        //Fill the fields with data
+        ConDiag.SetSlots(MySlot);
+        ConDiag.show();
+
+
     }
 
-    // Resize vectors
-
-    // Abtastung mit 10 Hz
-    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
-    x.resize(amountOfPoints);
-    y.resize(MySlot.size());
-
-    // Resize 2nd dimension
-    for (int i = 0; i <MySlot.size() ; i++)
+    void MainWindow::on_Button_read_slots_clicked()
     {
-        y[i].resize(amountOfPoints);
+        recordings = 0;
+
+        //Delete old graphs
+        int numberOfGraphs = ui->customPlot->graphCount();
+        qDebug("Number of Graphs is: %i", numberOfGraphs);
+
+        // If numberOfGraphs <  -> add graphs
+        for (int i = numberOfGraphs; i < MySlot.size(); i++)
+        {
+            // Add new graphs
+            ui->customPlot->addGraph();
+            ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
+            qDebug("Adding Graph number %i", i);
+        }
+
+        // refresh numberOfGraphs
+        numberOfGraphs = ui->customPlot->graphCount();
+
+        // If numberOfGraphs >  -> remove graphs
+        for (int i = numberOfGraphs; i > MySlot.size(); i--)
+        {
+            // Remove not needed graphs
+            ui->customPlot->removeGraph(i);
+            qDebug("Remove Graph: %i", i);
+        }
+
+        // Resize vectors
+
+        // Abtastung mit 10 Hz
+        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
+        x.resize(amountOfPoints);
+        y.resize(numberOfSlots);
+
+        // Resize 2nd dimension
+        for (int i = 0; i <MySlot.size() ; i++)
+        {
+            y[i].resize(amountOfPoints);
+        }
+
+        // give the axes some labels:
+        ui->customPlot->xAxis->setLabel("[time] s");
+        ui->customPlot->yAxis->setLabel("value");
+
+        // set axes ranges, so we see all data:
+        ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
+        ui->customPlot->yAxis->setRange(-5.0, 5.0);
+
+        //open filewriter and write the number of slots
+        if (!myWriter.AlreadyOpen())
+        {
+            myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+        }
     }
 
-    // give the axes some labels:
-    ui->customPlot->xAxis->setLabel("[time] s");
-    ui->customPlot->yAxis->setLabel("value");
+    // Autoscale axes
+    void MainWindow::on_pushButton_clicked()
+    {
+        ui->customPlot->rescaleAxes();
+    }
 
-    // set axes ranges, so we see all data:
-    ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
-    ui->customPlot->yAxis->setRange(-5.0, 5.0);
+    void MainWindow::on_actionNewProject_triggered()
+    {
+        std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
+                     useProto << std::endl;
+    }
 
-    //open filewriter and write the number of slots
-    myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
-}
+    void MainWindow::on_actionSaveProject_triggered()
+    {
+        xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+    }
 
-// Autoscale axes
-void MainWindow::on_pushButton_clicked()
-{
-    ui->customPlot->rescaleAxes();
-}
+    //LessThan Comparison for labels
+    bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
+    {
+        return label1->objectName() < label2->objectName();
+    }
 
-void MainWindow::on_actionNewProject_triggered()
-{
-    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
-                 useProto << std::endl;
-}
-
-void MainWindow::on_actionSaveProject_triggered()
-{
-    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
-}
-
-//LessThan Comparison for labels
-bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
-{
-    return label1->objectName() < label2->objectName();
-}
-
-//LessThan Comparison for line edits
-bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
-{
-    return le1->objectName() < le2->objectName();
-}
+    //LessThan Comparison for line edits
+    bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
+    {
+        return le1->objectName() < le2->objectName();
+    }
