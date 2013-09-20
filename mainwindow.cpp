@@ -334,6 +334,8 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         {
             // Add new graphs
             ui->customPlot->addGraph();
+            // We want to have nice steep edges in our plot, at least when we are not watching floating point operands!
+            if (!(MySlot[i].iAnzFormat == AnzFormatGleitpunkt)) ui->customPlot->graph(i)->setLineStyle(QCPGraph::lsStepCenter);
             ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
             qDebug("Adding Graph number %i", i);
         }
@@ -352,7 +354,7 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         // Resize vectors
 
         // Abtastung mit 10 Hz
-        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 5;
+        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
         x.resize(amountOfPoints);
         y.resize(MySlot.size());
 

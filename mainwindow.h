@@ -88,7 +88,7 @@ signals:
 
 private:
 
-    int numberOfSlots;
+
     int recordings;
     int amountOfPoints;
     QVector<double> x;          // 1d Vector
