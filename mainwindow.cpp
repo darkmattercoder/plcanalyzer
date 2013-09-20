@@ -66,7 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     xmlSettings = new xmlSettingsHandler(this);
     connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,
             SLOT(changeSlots(QVector<ConSlot>)));
-
+    connect(xmlSettings,SIGNAL(newSettingsOpened(ConSets*)),this,
+            SLOT(ChangeSettings(ConSets*)));
     currentConsets = new ConSets;
 
     // Start the timer for slot reading
