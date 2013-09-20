@@ -19,7 +19,8 @@ SOURCES += main.cpp\
     qcustomplot.cpp \
    stdoutredirector.cpp \
     logtoparent.cpp \
-    xmlsettingshandler.cpp
+    xmlsettingshandler.cpp \
+    filestream.cpp
 
 HEADERS  += mainwindow.h \
     s7connection.h \   
@@ -27,7 +28,8 @@ HEADERS  += mainwindow.h \
       stdoutredirector.h \
     logtoparent.h \
     xmlsettingshandler.h \
-    qcustomplot.h
+    qcustomplot.h \
+    filestream.h
 
 FORMS    += mainwindow.ui \
     connectionsettings.ui

@@ -43,6 +43,7 @@
 #endif
 
 #include "xmlsettingshandler.h"
+//#include "filestream.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -87,6 +88,11 @@ MainWindow::MainWindow(QWidget *parent) :
     //####################ZU BEARBEITEN######################################
     numberOfSlots = 2;
     //#######################################################################
+
+
+    /*set the filepath here*/
+
+    //myWriter.OpenFileStream(,true);
 }
 
 MainWindow::~MainWindow()
@@ -157,6 +163,11 @@ void MainWindow::TimeOut()
         ui->customPlot->replot();
         recordings++;
     }
+    else
+    {
+        //save the data to the file
+
+    }
 }
 
 // Event Werte aus Dialog sollen übernommen werden
@@ -177,12 +188,11 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 // Button Verbindungseinstellungen
 void MainWindow::on_pushButton_ConSets_clicked()
 {
-
     ConDiag.show();
 }
 
 void MainWindow::on_Button_read_slots_clicked()
-{
+{   
     // Slot 1
     MySlot[0].iAdrBereich = daveFlags;
     MySlot[0].iDatenlaenge = DatLenDWord;
@@ -219,7 +229,7 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[3].iAnzFormat = AnzFormatHexadezimal;
     MySlot[3].graphColor = Qt::blue;
 
-    // Slot 4
+    // Slot 5
     MySlot[4].iAdrBereich = daveFlags;
     MySlot[4].iDatenlaenge = DatLenByte;
     MySlot[4].iStartAdr = 10;
@@ -228,8 +238,21 @@ void MainWindow::on_Button_read_slots_clicked()
     MySlot[4].iAnzFormat = AnzFormatZeichen;
     MySlot[4].graphColor = Qt::magenta;
 
-    // Reset recording couter
+    // Reset recording counter
     recordings = 0;
+
+    ////////////////////////////////////////////////////////
+    /// Casis stuff
+    ///
+    ////////////////////////////////////////////////////////
+
+    string szPath = "Log" + DateAndTime.GetDate() + "__" + DateAndTime.GetTime() + ".bin";
+    myWriter.OpenFileStream(szPath);
+
+    ////////////////////////////////////////////////////////
+    ///
+    ///
+    ////////////////////////////////////////////////////////
 
     //Delete old graphs
     int numberOfGraphs = ui->customPlot->graphCount();
@@ -289,4 +312,91 @@ void MainWindow::on_actionNewProject_triggered()
 void MainWindow::on_actionSaveProject_triggered()
 {    
     xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot);
+}
+
+////////////////////////////////////////////////////////
+/// casis testbuttongedöhhns
+///
+////////////////////////////////////////////////////////
+
+//test for writing functions
+void MainWindow::on_Write_Test_clicked()
+{
+    string szPath = "release\\Test\\Log_";
+
+    //get the actual Date
+    szPath += GetDate() + " ";
+
+    //get the actual time
+    szPath += GetTime();
+
+    //append file extension
+    szPath.append(".txt");
+    BinWriter theWriter(szPath, MySlot.size());
+
+    ui->textEdit->append(QString::fromUtf8(szPath.c_str()));
+
+    WriteXY();
+
+    ui->textEdit->append(QString::number(y.size()));
+    ui->textEdit->append(QString::number(y[0].size()));
+
+    //string text = "Dies ist ein Test!";
+    //theWriter.WriteString(text);
+
+    /*write the datavector and the timevector*/
+    theWriter.WriteVector(y, x);
+}
+
+void MainWindow::WriteXY()
+{
+    //clear the x and y vectors
+    x.clear();
+    y.clear();
+
+    //temporaray vector
+    QVector<double> myTempVector;
+
+    //append 5 values to the x vector
+    for (int i = 0; i < 5; i++)
+    {
+        x.append(i);
+    }
+
+    for (int j = 0; j < 3; j++)
+    {
+        for (int i = 0; i < 5; i++)
+        {
+            myTempVector.append(j * 0.2);
+        }
+        y.append(myTempVector);
+        myTempVector.clear();
+    }
+}
+
+void MainWindow::on_Read_Test_clicked()
+{
+    QString filename;
+    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLC-Log (*.txt)");
+
+    string szPath = QString2String(filename);
+
+    //string szPath = "release\\Test\\Testfile.txt";
+    BinReader theReader(szPath);
+
+    ui->textEdit->append(QString::fromUtf8(szPath.c_str()));
+
+    y.clear();
+    x.clear();
+
+    theReader.ReadVector(5, 3, &y, &x);
+
+    for (int i = 0; i < 5; i++)
+    {
+        ui->textEdit->append(Double2String(x[i]));
+        for (int j = 0; j < 3; j++)
+        {
+            ui->textEdit->append(Double2String(y[i][j]));
+        }
+    }
 }

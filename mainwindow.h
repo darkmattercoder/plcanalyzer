@@ -45,6 +45,8 @@
 #include "s7connection.h"
 #include "xmlsettingshandler.h"
 #include "connectionsettings.h"
+#include "filestream.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -80,6 +82,10 @@ private slots:
     void on_actionOpenProject_triggered();
     void on_actionSaveProject_triggered();
 
+    void on_Write_Test_clicked();
+
+    void on_Read_Test_clicked();
+
 signals:
 
 private:
@@ -92,6 +98,11 @@ private:
 
     xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
+
+    void WriteXY();
+
+    //
+    BinWriter myWriter;
 };
 
 #endif // MAINWINDOW_H
