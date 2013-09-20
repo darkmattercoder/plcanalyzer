@@ -153,6 +153,7 @@ void MainWindow::on_Button_Connect_clicked()
         // ui->Button_Get_Val->setEnabled(false);
         ui->Button_read_slots->setEnabled(false);
         ui->Button_Connect->setText("Connect");
+        myWriter.Close();
     }
 }
 
@@ -196,12 +197,15 @@ void MainWindow::TimeOut()
         /*save data if the amount of points is reached*/
         if (recordings == amountOfPoints)
         {
+            y.resize(5);
+
+            ui->textEdit->append(QString::number(y[0].size()));
+            ui->textEdit->append(QString::number(y.size()));
+
             /*save the data to the file*/
             myWriter.WriteVector(y, x);
 
-            /*clear the vectors*/
-            y.clear();
-            x.clear();
+            recordings = 0;
         }
     }
     else
@@ -321,8 +325,6 @@ void MainWindow::TimeOut()
         //Fill the fields with data
         ConDiag.SetSlots(MySlot);
         ConDiag.show();
-
-
     }
 
     void MainWindow::on_Button_read_slots_clicked()
@@ -375,7 +377,10 @@ void MainWindow::TimeOut()
         ui->customPlot->yAxis->setRange(-5.0, 5.0);
 
         //open filewriter and write the number of slots
-        myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+        if (!myWriter.AlreadyOpen())
+        {
+            myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+        }
     }
 
     // Autoscale axes
