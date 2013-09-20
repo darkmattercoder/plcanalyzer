@@ -282,17 +282,20 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
             switch(MySlot[i].iDatenlaenge)
             {
             case DatLenBit:
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += " " + QString::number(MySlot[i].iStartAdr);
                 opLabel[i] += ".";
                 opLabel[i] += QString::number(MySlot[i].iBitnummer);
                 break;
             case DatLenWord:
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += "W ";
+                                opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
             case DatLenByte:
+                opLabel[i] += "B ";
                 opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
             case DatLenDWord:
+                opLabel[i] += "D ";
                 opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
             default:
