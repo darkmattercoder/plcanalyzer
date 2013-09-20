@@ -80,10 +80,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_Duration->setValidator(RegExp_Duration);
 
 #ifdef LINUX
-    recordings = std::numeric_limits<int>::max();
+#define MAXIMUMINT std::numeric_limits<int>::max()
 #else
-    recordings = MAXINT;
+#define MAXIMUMINT MAXINT
 #endif
+
+    recordings = MAXIMUMINT;
 
     //####################ZU BEARBEITEN######################################
     numberOfSlots = 2;
@@ -177,12 +179,12 @@ void MainWindow::TimeOut()
     else
     {
         /*save data if recordings started and connection is disconnected*/
-        if (recordings != MAXINT)
+        if (recordings != MAXIMUMINT)
         {
             /*write data to file*/
             myWriter.WriteVector(y, x);
             /*reset recordings to MAXINT*/
-            recordings = MAXINT;
+            recordings = MAXIMUMINT;
         }
     }
 }
@@ -331,7 +333,6 @@ void MainWindow::on_Write_Test_clicked()
     BinWriter theWriter(TimeNDate::CreatePath(), MySlot.size());
 
     ui->textEdit->append(QString::number(MySlot.size()));
-    ui->textEdit->append(szPath);
 
     WriteXY();
 
