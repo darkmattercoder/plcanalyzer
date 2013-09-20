@@ -22,6 +22,8 @@ using namespace std;			//use the standard namespace
 #include <QTime>                //used to get actual time
 #include <QDataStream>          //used to write data to a file
 #include <QFile>                //used to open and close a file
+#include <QDir>                 //used to get the current path
+#include <QCoreApplication>     //used to get the path of the executable
 
 /*defines: the size of datatypes in byte*/
 #define SIZEOFDOUBLE sizeof(double)
@@ -46,7 +48,7 @@ class BinFile //: Datastructure
         BinFile();
 
 		/*constructor with a filepath for opening the filestream*/
-		BinFile(string szFilepath, bool bWrite);
+        BinFile(QString szFilepath, bool bWrite);
 
 		/*deconstructor, used for flushing and closing a file*/
 		~BinFile();
@@ -57,6 +59,12 @@ class BinWriter : BinFile
 {
 private:
     QVector<double> LastVals;
+
+    /*function used to write new vals to lastvals vector*/
+    void ValsChanged(QVector<QVector<double>> Data, int iIndex);
+
+    /*function used for checking if data has changed*/
+    bool CheckValues(QVector<QVector<double>> Data, int iIndex);
 
 public:
     /*standard constructor*/
@@ -69,78 +77,56 @@ public:
 
     /*function used for writing data from a vector to the file*/
     int WriteVector(QVector<QVector<double>> Data, QVector<double> Time);
-
-    /*function used for checking if data has changed*/
-    bool CheckValues(QVector<QVector<double>> Data, int iIndex);
-
-	/*function used for writing a doublearray into a binary file*/
-	int WriteDoubleArray (double* pdPtr, int iLength);
-
-	/*function used for writing a string into a binary file*/
-	int WriteString (string szStringToWrite);
-
-	/*function used to write structured data to the binary file*/
-	int WriteData(char* pcPtr, int iLength);
-
-	/*function used for writing the Header of a file*/
-	int WriteHeader(int* iHead, int iLength);
-
-	/*function used for writing the header of the file*/
-    //int WriteDatastructureHeader(Datastructure dsHeader);
 };
 
-/*standard class for reading data from a binary file*/
-class BinReader : BinFile
+///*standard class for reading data from a binary file*/
+//class BinReader : BinFile
+//{
+//	/*this function reads data from a binary file
+//	length: indicates how much doublevalues should be read
+//	ptr: is a pointer to a doublearray which will contain
+//	the read values after this method*/
+
+//private:
+//    //variables
+//    int iNumberOfSlots;
+//    long lActualPosition;
+
+//    //functions
+//    void SavePos();
+//    void RetPos();
+
+//    //reads the filelength of the file in bytes
+//    long FileLength();
+
+//    //reads the number of slots that are saved in the file
+//    int GetSlots();
+
+//    //reads the last timestamp
+//    double LastTimestamp();
+
+//public:
+//	int ReadDoubleArray (double* ptr, int length);
+
+//    //construtor of this class used to open the filestream
+//    BinReader(string szPath);
+
+//    //reads the header from the file
+//	int ReadHeader(int* iHead, int* iLength);
+
+//	int ReadSlots(int iHead, char* cData);
+
+//    //reads the saved data from the file into the vectors data and time
+//    int ReadVector(int i, int j, QVector<QVector<double>>* Data, QVector<double>* Time);
+//};
+
+class TimeNDate
 {
-	/*this function reads data from a binary file
-	length: indicates how much doublevalues should be read
-	ptr: is a pointer to a doublearray which will contain
-	the read values after this method*/
-
 private:
-    //variables
-    int iNumberOfSlots = 0;
-    long lActualPosition;
-
-    //functions
-    void SavePos();
-    void RetPos();
-
-    //reads the filelength of the file in bytes
-    long FileLength();
-
-    //reads the number of slots that are saved in the file
-    int GetSlots();
-
-    //reads the last timestamp
-    double LastTimestamp();
-
-public: 
-	int ReadDoubleArray (double* ptr, int length);
-
-    //construtor of this class used to open the filestream
-    BinReader(string szPath);
-
-    //reads the header from the file
-	int ReadHeader(int* iHead, int* iLength);
-
-	int ReadSlots(int iHead, char* cData);
-
-    //reads the saved data from the file into the vectors data and time
-    int ReadVector(int i, int j, QVector<QVector<double>>* Data, QVector<double>* Time);
-};
-
-class DateAndTime
-{
-private:
-    static string AddZero(int iNumber);
-
-public:
-    static string GetDate();
-    static string GetTime();
-
     static QString GetDate();
     static QString GetTime();
+public:
+    static QString CreatePath();
 };
 
 #endif

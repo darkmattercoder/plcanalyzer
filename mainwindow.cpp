@@ -162,11 +162,28 @@ void MainWindow::TimeOut()
         }
         ui->customPlot->replot();
         recordings++;
+
+        /*save data if the amount of points is reached*/
+        if (recordings == amountOfPoints)
+        {
+            /*save the data to the file*/
+            myWriter.WriteVector(y, x);
+
+            /*clear the vectors*/
+            y.clear();
+            x.clear();
+        }
     }
     else
     {
-        //save the data to the file
-
+        /*save data if recordings started and connection is disconnected*/
+        if (recordings != MAXINT)
+        {
+            /*write data to file*/
+            myWriter.WriteVector(y, x);
+            /*reset recordings to MAXINT*/
+            recordings = MAXINT;
+        }
     }
 }
 
@@ -241,19 +258,6 @@ void MainWindow::on_Button_read_slots_clicked()
     // Reset recording counter
     recordings = 0;
 
-    ////////////////////////////////////////////////////////
-    /// Casis stuff
-    ///
-    ////////////////////////////////////////////////////////
-
-    string szPath = "Log" + DateAndTime.GetDate() + "__" + DateAndTime.GetTime() + ".bin";
-    myWriter.OpenFileStream(szPath);
-
-    ////////////////////////////////////////////////////////
-    ///
-    ///
-    ////////////////////////////////////////////////////////
-
     //Delete old graphs
     int numberOfGraphs = ui->customPlot->graphCount();
     qDebug("Number of Graphs is: %i", numberOfGraphs);
@@ -322,27 +326,17 @@ void MainWindow::on_actionSaveProject_triggered()
 //test for writing functions
 void MainWindow::on_Write_Test_clicked()
 {
-    string szPath = "release\\Test\\Log_";
+    MySlot.resize(5);
 
-    //get the actual Date
-    szPath += GetDate() + " ";
+    BinWriter theWriter(TimeNDate::CreatePath(), MySlot.size());
 
-    //get the actual time
-    szPath += GetTime();
-
-    //append file extension
-    szPath.append(".txt");
-    BinWriter theWriter(szPath, MySlot.size());
-
-    ui->textEdit->append(QString::fromUtf8(szPath.c_str()));
+    ui->textEdit->append(QString::number(MySlot.size()));
+    ui->textEdit->append(szPath);
 
     WriteXY();
 
     ui->textEdit->append(QString::number(y.size()));
     ui->textEdit->append(QString::number(y[0].size()));
-
-    //string text = "Dies ist ein Test!";
-    //theWriter.WriteString(text);
 
     /*write the datavector and the timevector*/
     theWriter.WriteVector(y, x);
@@ -372,31 +366,32 @@ void MainWindow::WriteXY()
         y.append(myTempVector);
         myTempVector.clear();
     }
+
 }
 
 void MainWindow::on_Read_Test_clicked()
 {
-    QString filename;
-    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLC-Log (*.txt)");
+//    QString filename;
+//    filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLC-Log (*.txt)");
 
-    string szPath = QString2String(filename);
+//    string szPath = QString2String(filename);
 
-    //string szPath = "release\\Test\\Testfile.txt";
-    BinReader theReader(szPath);
+//    //string szPath = "release\\Test\\Testfile.txt";
+//    BinReader theReader(szPath);
 
-    ui->textEdit->append(QString::fromUtf8(szPath.c_str()));
+//    ui->textEdit->append(QString::fromUtf8(szPath.c_str()));
 
-    y.clear();
-    x.clear();
+//    y.clear();
+//    x.clear();
 
-    theReader.ReadVector(5, 3, &y, &x);
+//    theReader.ReadVector(5, 3, &y, &x);
 
-    for (int i = 0; i < 5; i++)
-    {
-        ui->textEdit->append(Double2String(x[i]));
-        for (int j = 0; j < 3; j++)
-        {
-            ui->textEdit->append(Double2String(y[i][j]));
-        }
-    }
+//    for (int i = 0; i < 5; i++)
+//    {
+//        ui->textEdit->append(Double2String(x[i]));
+//        for (int j = 0; j < 3; j++)
+//        {
+//            ui->textEdit->append(Double2String(y[i][j]));
+//        }
+//    }
 }
