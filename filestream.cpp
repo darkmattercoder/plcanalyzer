@@ -52,6 +52,25 @@ BinWriter::BinWriter(QString szFilepath, int iSlots) : BinFile(szFilepath, true)
     }
 }
 
+/*write the number of slots into the file after setting it to correct
+path and openeing the file in writemode*/
+int BinWriter::WriteSlots(QString szFilepath, int iSlots)
+{
+    /*open file woith writeaccess*/
+    OpenFileStream(szFilepath, true);
+    if (myFile.isOpen())
+    {
+        /*write the number of slots into the file at the first place*/
+        myFileStream << iSlots;
+        return BINFILE_OPERATION_OK;
+    }
+    else
+    {
+        /*tell the user that the file is not ready for use*/
+        return BINFILE_STREAM_NOT_OPENED;
+    }
+}
+
 BinWriter::BinWriter(){}
 
 /*function used to write a complete data- and timestampvector*/
@@ -155,8 +174,7 @@ QString TimeNDate::CreatePath()
     QDir path(QCoreApplication::applicationDirPath());
 
     /*create the path for the logfile*/
-    QString szPath = ( path.absolutePath() + QDir::separator() + "Test" +
-                       QDir::separator() + "Log_" + GetDate() + "__" + GetTime() +".bin");
+    QString szPath = ( path.absolutePath() + QDir::separator() + "Log_" + GetDate() + "__" + GetTime() +".bin");
     return szPath;
 }
 /********************************************************************/

@@ -75,57 +75,23 @@ public:
 	/*constructor of class binfile used for setting the filepath*/
     BinWriter(QString szFilepath, int iSlots);
 
+    /*function used for writing the number of slots*/
+    int WriteSlots(QString szFilepath, int iSlots);
+
     /*function used for writing data from a vector to the file*/
     int WriteVector(QVector<QVector<double>> Data, QVector<double> Time);
 };
 
-///*standard class for reading data from a binary file*/
-//class BinReader : BinFile
-//{
-//	/*this function reads data from a binary file
-//	length: indicates how much doublevalues should be read
-//	ptr: is a pointer to a doublearray which will contain
-//	the read values after this method*/
-
-//private:
-//    //variables
-//    int iNumberOfSlots;
-//    long lActualPosition;
-
-//    //functions
-//    void SavePos();
-//    void RetPos();
-
-//    //reads the filelength of the file in bytes
-//    long FileLength();
-
-//    //reads the number of slots that are saved in the file
-//    int GetSlots();
-
-//    //reads the last timestamp
-//    double LastTimestamp();
-
-//public:
-//	int ReadDoubleArray (double* ptr, int length);
-
-//    //construtor of this class used to open the filestream
-//    BinReader(string szPath);
-
-//    //reads the header from the file
-//	int ReadHeader(int* iHead, int* iLength);
-
-//	int ReadSlots(int iHead, char* cData);
-
-//    //reads the saved data from the file into the vectors data and time
-//    int ReadVector(int i, int j, QVector<QVector<double>>* Data, QVector<double>* Time);
-//};
-
+/*class used for creating a path using date and time*/
 class TimeNDate
 {
 private:
+    /*gets the actual date as QString*/
     static QString GetDate();
+    /*gets the actual time as QString*/
     static QString GetTime();
 public:
+    /*creates a path relative to the executable with date and time in the name*/
     static QString CreatePath();
 };
 
