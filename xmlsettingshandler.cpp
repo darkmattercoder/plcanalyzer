@@ -35,6 +35,7 @@
 #include "xmlsettingshandler.h"
 #include <iostream>
 
+
 xmlSettingsHandler::xmlSettingsHandler(QMainWindow *parent)
     : QMainWindow(parent)
 {
