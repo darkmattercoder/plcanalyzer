@@ -33,7 +33,6 @@
 #include "connectionsettings.h"
 #include <iostream>
 
-
 ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
     ui(new Ui::ConnectionSettings)
@@ -148,12 +147,8 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
         lineEditsAddress[i]->setValidator(myByteAddressValidator);
         lineEditsDB[i]->setValidator(myByteAddressValidator);
     }
-
-
-
-
-
 }
+
 ConnectionSettings::~ConnectionSettings()
 {
     delete ui;
@@ -326,7 +321,7 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
     return lineNumber;
 }
 
-void ConnectionSettings::SetSlots(QVector<ConSlot> currentSlots)
+void ConnectionSettings::SetSlots(QVector<ConSlot> &currentSlots)
 {
     for(int i=0; i<currentSlots.count();++i){
         comboBoxesArea[i]->setCurrentIndex(
@@ -340,6 +335,7 @@ void ConnectionSettings::SetSlots(QVector<ConSlot> currentSlots)
         comboBoxesLength[i]->setCurrentIndex(
                     comboValuesLength.indexOf(currentSlots[i].iDatenlaenge));
     }
+
 }
 
 //LessThan Comparison for combo boxes

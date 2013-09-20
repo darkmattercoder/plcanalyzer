@@ -127,7 +127,7 @@ void MainWindow::on_actionOpenProject_triggered()
     currentConsets = xmlSettings->openedConSets;
     ConDiag.SetSettings(currentConsets);
     MySlot = xmlSettings->openedConSlots;
-    ConDiag.SetSlots(MySlot);
+
 
 }
 
@@ -186,7 +186,7 @@ void MainWindow::TimeOut()
         {
             // Write current value
             y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
-//also into the value displays
+            //also into the value displays
             lineEditsOperandValue[i]->setText(QString::number(y[i][recordings]));
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
@@ -215,9 +215,7 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
-    ConDiag.SetSlots(MySlot);
-
-    //Get the operand labels and displays working
+     //Get the operand labels and displays working
     QVector<QString> opLabel (MySlot.size());
     for(int i=0;i<MySlot.size();++i)
     {
@@ -278,10 +276,10 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
             case DatLenWord:
                 if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
                 opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                          break;
+                break;
             case DatLenByte:
                 if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
-               opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
             case DatLenDWord:
                 if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
@@ -295,7 +293,7 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 
         }
         QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
-    lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+        lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
         labelsOperand[0]->colorCount();
 
         labelsOperand[i]->setText(opLabel[i]);
@@ -306,8 +304,10 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 // Button Verbindungseinstellungen
 void MainWindow::on_pushButton_ConSets_clicked()
 {
-
+    //Fill the fields with data
+    ConDiag.SetSlots(MySlot);
     ConDiag.show();
+
 }
 
 void MainWindow::on_Button_read_slots_clicked()

@@ -133,7 +133,7 @@ bool xmlSettingsHandler::openProject(bool lastSets)
     }else
     {
         emit newSlotsOpened(openedConSlots);
-    emit newSettingsOpened(openedConSets);
+        emit newSettingsOpened(openedConSets);
     }
 
     file.close();
