@@ -62,14 +62,12 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     qSort(lineEditsAddress.begin(), lineEditsAddress.end(),
           lineEditPointerLessThan);
 
-    comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z"
-                   << "IEC_T";
+    comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T";
     comboItemsLength << " " << "BIT" << "BYTE" << "WORD" << "DWORD";
     comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT"
                      << "CHAR";
     comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB
-                    << daveCounter << daveTimer << daveCounter200
-                    << daveTimer200;
+                    << daveCounter << daveTimer;
     comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord
                       << DatLenDWord;
     comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatBinaer
@@ -290,16 +288,10 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         break;
     case daveCounter:
     case daveTimer:
-    case daveCounter200:
-    case daveTimer200:
         lineEditsBits[lineNumber]->clear();
         lineEditsBits[lineNumber]->setDisabled(true);
         lineEditsDB[lineNumber]->clear();
         lineEditsDB[lineNumber]->setDisabled(true);
-        break;
-    case AnzFormatHexadezimal:
-        lineEditsBits[lineNumber]->clear();
-        lineEditsBits[lineNumber]->setDisabled(true);
         break;
     default:
         lineEditsBits[lineNumber]->setEnabled(true);
