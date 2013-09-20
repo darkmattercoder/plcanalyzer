@@ -37,7 +37,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
     ui(new Ui::ConnectionSettings)
 {
-    // Userinterface aufbauen
+    // Build userinterface
     ui->setupUi(this);
 
     //Fill comboboxes for area and formats with data
@@ -133,8 +133,8 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     RegExp_MPI->setRegExp(rx);
     ui->lineEdit_CPU_MPI->setValidator(RegExp_MPI);
     ui->lineEdit_local_MPI->setValidator(RegExp_MPI);
-    graphColors={Qt::green,Qt::black,Qt::blue,Qt::cyan,Qt::darkYellow,
-                 Qt::magenta,Qt::darkRed,Qt::darkCyan};
+    graphColors << Qt::green << Qt::black << Qt::blue << Qt::cyan << Qt::darkYellow\
+                << Qt::magenta << Qt::darkRed << Qt::darkCyan;
     moduloValue=graphColors.size();
 
 }
