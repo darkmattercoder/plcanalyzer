@@ -217,192 +217,184 @@ void MainWindow::TimeOut()
     }
 }
 
-    // Event Werte aus Dialog sollen übernommen werden
-    void MainWindow::ChangeSettings(ConSets* NewConSets)
-    {
-        MyS7Connection.MyConSet = NewConSets;
-        currentConsets = NewConSets;
-    }
+// Event Werte aus Dialog sollen übernommen werden
+void MainWindow::ChangeSettings(ConSets* NewConSets)
+{
+    MyS7Connection.MyConSet = NewConSets;
+    currentConsets = NewConSets;
+}
 
-    void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
-    {
+void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
+{
 
-        currentConsets = xmlSettings->openedConSets;
-        MySlot = newConSlots;
-        //Get the operand labels and displays working
-        QVector<QString> opLabel (MySlot.size());
-        for(int i=0;i<MySlot.size();++i)
+    currentConsets = xmlSettings->openedConSets;
+    MySlot = newConSlots;
+    //Get the operand labels and displays working
+    QVector<QString> opLabel (MySlot.size());
+    for(int i=0;i<MySlot.size();++i)
+    {
+        switch(MySlot[i].iAdrBereich)
         {
-            switch(MySlot[i].iAdrBereich)
+        case daveInputs: opLabel[i] = "E";
+            break;
+        case daveOutputs: opLabel[i] = "A";
+            break;
+        case daveFlags: opLabel[i] = "M";
+            break;
+        case daveDB:    opLabel[i] = "DB";
+            break;
+        default:
+            opLabel[i] = "";
+        }
+        if(opLabel[i] == "DB")
+        {
+            opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
+
+            switch(MySlot[i].iDatenlaenge)
             {
-            case daveInputs: opLabel[i] = "E";
+            case DatLenBit:
+                opLabel[i] += "X ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += ".";
+                opLabel[i] += QString::number(MySlot[i].iBitnummer);
                 break;
-            case daveOutputs: opLabel[i] = "A";
+            case DatLenWord:
+                opLabel[i] += "W ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
-            case daveFlags: opLabel[i] = "M";
+            case DatLenByte:
+                opLabel[i] += "B ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
-//            case daveTimer: opLabel[i] = "T ";
-//                break;
-//            case daveCounter:  opLabel[i] = "Z ";
-//                break;
-            case daveDB:    opLabel[i] = "DB";
+            case DatLenDWord:
+                opLabel[i] += "D ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
                 break;
             default:
-                opLabel[i] = "";
+                opLabel[i] += "";
+
             }
-            if(opLabel[i] == "DB")
+        }else{
+            switch(MySlot[i].iDatenlaenge)
             {
-                opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
-
-                switch(MySlot[i].iDatenlaenge)
-                {
-                case DatLenBit:
-                    opLabel[i] += "X ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    opLabel[i] += ".";
-                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                    break;
-                case DatLenWord:
-                    opLabel[i] += "W ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenByte:
-                    opLabel[i] += "B ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenDWord:
-                    opLabel[i] += "D ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                default:
-                    opLabel[i] += "";
-
-                }
-            }else{
-                switch(MySlot[i].iDatenlaenge)
-                {
-                case DatLenBit:
-//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    opLabel[i] += ".";
-                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                    break;
-                case DatLenWord:
-//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenByte:
-//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenDWord:
-//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                default:
-                    opLabel[i] += "";
-                }
-
-
-
+            case DatLenBit:
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += ".";
+                opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                break;
+            case DatLenWord:
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenByte:
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenDWord:
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            default:
+                opLabel[i] += "";
             }
-            QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
-            lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
-            labelsOperand[0]->colorCount();
 
-            labelsOperand[i]->setText(opLabel[i]);
+
+
         }
+        QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
+        lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+        labelsOperand[0]->colorCount();
 
+        labelsOperand[i]->setText(opLabel[i]);
     }
 
-    // Button Verbindungseinstellungen
-    void MainWindow::on_pushButton_ConSets_clicked()
+}
+
+// Button Verbindungseinstellungen
+void MainWindow::on_pushButton_ConSets_clicked()
+{
+    //Fill the fields with data
+    ConDiag.SetSlots(MySlot);
+    ConDiag.show();
+
+
+}
+
+void MainWindow::on_Button_read_slots_clicked()
+{
+    recordings = 0;
+
+    //Delete old graphs
+    int numberOfGraphs = ui->customPlot->graphCount();
+    qDebug("Number of Graphs is: %i", numberOfGraphs);
+
+    // If numberOfGraphs <  -> add graphs
+    for (int i = numberOfGraphs; i < MySlot.size(); i++)
     {
-        //Fill the fields with data
-        ConDiag.SetSlots(MySlot);
-        ConDiag.show();
-
-
+        // Add new graphs
+        ui->customPlot->addGraph();
+        ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
+        qDebug("Adding Graph number %i", i);
     }
 
-    void MainWindow::on_Button_read_slots_clicked()
+    // refresh numberOfGraphs
+    numberOfGraphs = ui->customPlot->graphCount();
+
+    // If numberOfGraphs >  -> remove graphs
+    for (int i = numberOfGraphs; i > MySlot.size(); i--)
     {
-        recordings = 0;
-
-        //Delete old graphs
-        int numberOfGraphs = ui->customPlot->graphCount();
-        qDebug("Number of Graphs is: %i", numberOfGraphs);
-
-        // If numberOfGraphs <  -> add graphs
-        for (int i = numberOfGraphs; i < MySlot.size(); i++)
-        {
-            // Add new graphs
-            ui->customPlot->addGraph();
-            ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
-            qDebug("Adding Graph number %i", i);
-        }
-
-        // refresh numberOfGraphs
-        numberOfGraphs = ui->customPlot->graphCount();
-
-        // If numberOfGraphs >  -> remove graphs
-        for (int i = numberOfGraphs; i > MySlot.size(); i--)
-        {
-            // Remove not needed graphs
-            ui->customPlot->removeGraph(i);
-            qDebug("Remove Graph: %i", i);
-        }
-
-        // Resize vectors
-
-        // Abtastung mit 10 Hz
-        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
-        x.resize(amountOfPoints);
-        y.resize(numberOfSlots);
-
-        // Resize 2nd dimension
-        for (int i = 0; i <MySlot.size() ; i++)
-        {
-            y[i].resize(amountOfPoints);
-        }
-
-        // give the axes some labels:
-        ui->customPlot->xAxis->setLabel("[time] s");
-        ui->customPlot->yAxis->setLabel("value");
-
-        // set axes ranges, so we see all data:
-        ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
-        ui->customPlot->yAxis->setRange(-5.0, 5.0);
-
-        //open filewriter and write the number of slots
-        myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+        // Remove not needed graphs
+        ui->customPlot->removeGraph(i);
+        qDebug("Remove Graph: %i", i);
     }
 
-    // Autoscale axes
-    void MainWindow::on_pushButton_clicked()
+    // Resize vectors
+
+    // Abtastung mit 10 Hz
+    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
+    x.resize(amountOfPoints);
+    y.resize(MySlot.size());
+
+    // Resize 2nd dimension
+    for (int i = 0; i <MySlot.size() ; i++)
     {
-        ui->customPlot->rescaleAxes();
+        y[i].resize(amountOfPoints);
     }
 
-    void MainWindow::on_actionNewProject_triggered()
-    {
-        std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
-                     useProto << std::endl;
-    }
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("[time] s");
+    ui->customPlot->yAxis->setLabel("value");
 
-    void MainWindow::on_actionSaveProject_triggered()
-    {
-        xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
-    }
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
+    ui->customPlot->yAxis->setRange(-5.0, 5.0);
 
-    //LessThan Comparison for labels
-    bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
-    {
-        return label1->objectName() < label2->objectName();
-    }
+    //open filewriter and write the number of slots
+    myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+}
 
-    //LessThan Comparison for line edits
-    bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
-    {
-        return le1->objectName() < le2->objectName();
-    }
+// Autoscale axes
+void MainWindow::on_pushButton_clicked()
+{
+    ui->customPlot->rescaleAxes();
+}
+
+void MainWindow::on_actionNewProject_triggered()
+{
+    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
+                 useProto << std::endl;
+}
+
+void MainWindow::on_actionSaveProject_triggered()
+{
+    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+}
+
+//LessThan Comparison for labels
+bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
+{
+    return label1->objectName() < label2->objectName();
+}
+
+//LessThan Comparison for line edits
+bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
+{
+    return le1->objectName() < le2->objectName();
+}
