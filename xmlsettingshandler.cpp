@@ -35,6 +35,7 @@
 #include "xmlsettingshandler.h"
 #include <iostream>
 
+
 xmlSettingsHandler::xmlSettingsHandler(QMainWindow *parent)
     : QMainWindow(parent)
 {
@@ -114,6 +115,8 @@ bool xmlSettingsHandler::openProject(bool lastSets)
             tempSlot.iDatenlaenge=xmlReader.readElementText().toInt();
             xmlReader.readNextStartElement();
             tempSlot.iDBnummer=xmlReader.readElementText().toInt();
+            xmlReader.readNextStartElement();
+            tempSlot.graphColor=QColor(xmlReader.readElementText());
             openedConSlots.append(tempSlot);
         }
 
@@ -128,7 +131,11 @@ bool xmlSettingsHandler::openProject(bool lastSets)
         msgBoxOpenError->setText("Fehler beim oeffnen");
         msgBoxOpenError->show();
 
-    }else emit newSlotsOpened(openedConSlots);
+    }else
+    {
+        emit newSlotsOpened(openedConSlots);
+        emit newSettingsOpened(openedConSets);
+    }
 
     file.close();
     return true;
@@ -191,6 +198,7 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets,
                                        currentConSlots[i].iDatenlaenge));
         xmlWriter.writeTextElement("DB_NUMBER",QString::number(
                                        currentConSlots[i].iDBnummer));
+        xmlWriter.writeTextElement("GRAPH_COLOR",currentConSlots[i].graphColor.name());
 
         xmlWriter.writeEndElement();
     }

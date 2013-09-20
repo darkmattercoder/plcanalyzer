@@ -37,8 +37,6 @@
 #include "ui_mainwindow.h"
 
 #include <QMainWindow>
-#include <QLabel>
-#include <QLineEdit>
 #include <QProcess>
 #include <QDebug>
 #include <QTextEdit>
@@ -48,6 +46,8 @@
 #include "xmlsettingshandler.h"
 #include "connectionsettings.h"
 #include <QColor>
+#include "filestream.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -88,11 +88,12 @@ signals:
 
 private:
 
-    int numberOfSlots;
+
     int recordings;
     int amountOfPoints;
     QVector<double> x;          // 1d Vector
     QVector<QVector<double>> y; // 2d Vectot
+
     xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
 
@@ -104,6 +105,8 @@ private:
     static bool labelPointerLessThan(QLabel* label1, QLabel* label2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 
+    //
+    BinWriter myWriter;
 };
 
 #endif // MAINWINDOW_H
