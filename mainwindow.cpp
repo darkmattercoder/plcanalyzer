@@ -243,10 +243,10 @@ void MainWindow::TimeOut()
                 break;
             case daveFlags: opLabel[i] = "M";
                 break;
-            case daveTimer: opLabel[i] = "T ";
-                break;
-            case daveCounter:  opLabel[i] = "Z ";
-                break;
+//            case daveTimer: opLabel[i] = "T ";
+//                break;
+//            case daveCounter:  opLabel[i] = "Z ";
+//                break;
             case daveDB:    opLabel[i] = "DB";
                 break;
             default:
@@ -284,21 +284,21 @@ void MainWindow::TimeOut()
                 switch(MySlot[i].iDatenlaenge)
                 {
                 case DatLenBit:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
+//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
                     opLabel[i] += QString::number(MySlot[i].iStartAdr);
                     opLabel[i] += ".";
                     opLabel[i] += QString::number(MySlot[i].iBitnummer);
                     break;
                 case DatLenWord:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
+//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
                     opLabel[i] += QString::number(MySlot[i].iStartAdr);
                     break;
                 case DatLenByte:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
+//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
                     opLabel[i] += QString::number(MySlot[i].iStartAdr);
                     break;
                 case DatLenDWord:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
+//                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
                     opLabel[i] += QString::number(MySlot[i].iStartAdr);
                     break;
                 default:
