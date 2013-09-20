@@ -133,12 +133,12 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     RegExp_MPI->setRegExp(rx);
     ui->lineEdit_CPU_MPI->setValidator(RegExp_MPI);
     ui->lineEdit_local_MPI->setValidator(RegExp_MPI);
-    graphColors << Qt::green << Qt::black << Qt::blue << Qt::cyan << Qt::darkYellow\
+    graphColors << Qt::green << Qt::black << Qt::blue << Qt::cyan
+                << Qt::darkYellow
                 << Qt::magenta << Qt::darkRed << Qt::darkCyan;
     moduloValue=graphColors.size();
 
 }
-
 ConnectionSettings::~ConnectionSettings()
 {
     delete ui;

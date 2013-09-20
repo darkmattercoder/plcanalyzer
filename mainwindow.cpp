@@ -171,18 +171,22 @@ void MainWindow::TimeOut()
     // Zyklisches lesen
     if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
+
+
+
         // Read new values to slots
         MyS7Connection.readSlots(MySlot, MySlot.size());
 
         // Write the time vector
         x[recordings] = 0.1 * recordings; //Abtastung alle 100ms
 
-        // Write all dimensions of value vector
+        // Write all dimensions of value vector and the Operand Value text
         for (int i = 0; i < MySlot.size(); i++)
         {
             // Write current value
             y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
-
+//also into the value displays
+            lineEditsOperandValue[i]->setText(QString::number(y[i][recordings]));
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
 
@@ -228,29 +232,71 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
             break;
         case daveCounter:  opLabel[i] = "Z ";
             break;
+        case daveDB:    opLabel[i] = "DB";
+            break;
         default:
             opLabel[i] = "";
         }
-        switch(MySlot[i].iDatenlaenge)
+        if(opLabel[i] == "DB")
         {
-        case DatLenBit:
-            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
-            break;
-        case DatLenWord:
-            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
-            break;
-        case DatLenByte:
-            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
-            break;
-        case DatLenDWord:
-            if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
-            break;
-        default:
-            opLabel[i] += "";
+            opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
+
+            switch(MySlot[i].iDatenlaenge)
+            {
+            case DatLenBit:
+                opLabel[i] += "X ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += ".";
+                opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                break;
+            case DatLenWord:
+                opLabel[i] += "W ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenByte:
+                opLabel[i] += "B ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenDWord:
+                opLabel[i] += "D ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            default:
+                opLabel[i] += "";
+
+            }
+        }else{
+            switch(MySlot[i].iDatenlaenge)
+            {
+            case DatLenBit:
+                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += ".";
+                opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                break;
+            case DatLenWord:
+                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                          break;
+            case DatLenByte:
+                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
+               opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenDWord:
+                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            default:
+                opLabel[i] += "";
+            }
+
+
+
         }
-        opLabel[i] += QString::number(MySlot[i].iStartAdr);
-        opLabel[i] += ".";
-        opLabel[i] += QString::number(MySlot[i].iBitnummer);
+        QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
+    lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+        labelsOperand[0]->colorCount();
+
         labelsOperand[i]->setText(opLabel[i]);
     }
 
@@ -265,6 +311,7 @@ void MainWindow::on_pushButton_ConSets_clicked()
 
 void MainWindow::on_Button_read_slots_clicked()
 {
+
 
     recordings = 0;
 
