@@ -62,6 +62,12 @@ int BinWriter::WriteSlots(QString szFilepath, int iSlots)
     {
         /*write the number of slots into the file at the first place*/
         myFileStream << iSlots;
+        return BINFILE_OPERATION_OK;
+    }
+    else
+    {
+        /*tell the user that the file is not ready for use*/
+        return BINFILE_STREAM_NOT_OPENED;
     }
 }
 
