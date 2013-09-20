@@ -35,6 +35,7 @@
 #include <QDialog>
 #include <QRegExp>
 #include <QSignalMapper>
+#include <QIntValidator>
 #include "ui_connectionsettings.h"
 #include "s7connection.h"
 
@@ -94,6 +95,10 @@ private:
 //    Qt::GlobalColor /*graphColors[8]*/;
     //Modulo value for dynamic graphColor generation
     int moduloValue;
+
+    QIntValidator* myBitValidator;
+    QIntValidator* myByteAddressValidator;
+
 };
 
 #endif // CONNECTIONSETTINGS_H

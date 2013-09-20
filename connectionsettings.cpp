@@ -33,6 +33,7 @@
 #include "connectionsettings.h"
 #include <iostream>
 
+
 ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
     ui(new Ui::ConnectionSettings)
@@ -137,6 +138,20 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                 << Qt::darkYellow
                 << Qt::magenta << Qt::darkRed << Qt::darkCyan;
     moduloValue=graphColors.size();
+
+    //Integer Validator for the Address and Bit fields
+    myBitValidator = new QIntValidator(0,7,this);
+    myByteAddressValidator = new QIntValidator(0,4096,this);
+    for(int i=0;i<lineEditsBits.count();++i)
+    {
+        lineEditsBits[i]->setValidator(myBitValidator);
+        lineEditsAddress[i]->setValidator(myByteAddressValidator);
+        lineEditsDB[i]->setValidator(myByteAddressValidator);
+    }
+
+
+
+
 
 }
 ConnectionSettings::~ConnectionSettings()
