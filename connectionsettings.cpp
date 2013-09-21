@@ -94,11 +94,14 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
             comboBoxesLength[i]->addItem(comboItemsLength[j],
                                          comboValuesLength[j]);
     }
-    //Connect the format-combo boxes' indexChanged signal to the handling
+
+    //Connect the format- and length-combo boxes' indexChanged signal to the handling
     //Slot for conditional disabling of Bit field
     for(int i=0;i<comboBoxesArea.count();++i)
     {
         connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),
+                this,SLOT(comboBoxIndexChanged(int)));
+        connect(comboBoxesLength[i],SIGNAL(currentIndexChanged(int)),
                 this,SLOT(comboBoxIndexChanged(int)));
     }
 
@@ -262,41 +265,57 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
     }else if(comboBoxesFormat.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesFormat,sendingBox);
+    }else if(comboBoxesLength.contains(sendingBox))
+    {
+        lineNumber = findCorrespondingLine(comboBoxesLength,sendingBox);
     }
 
     switch (dataItem)
     {
     case daveInputs:
-        lineEditsDB[lineNumber]->clear();
-        lineEditsDB[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
-        break;
     case daveOutputs:
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }
         lineEditsDB[lineNumber]->clear();
         lineEditsDB[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
         break;
     case daveFlags:
         lineEditsDB[lineNumber]->clear();
         lineEditsDB[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }
         break;
     case daveDB:
         lineEditsDB[lineNumber]->setEnabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }
         break;
-        //Timer and Counter Later
-        //    case daveCounter:
-        //    case daveTimer:
-        //        lineEditsBits[lineNumber]->clear();
-        //        lineEditsBits[lineNumber]->setDisabled(true);
-        //        lineEditsDB[lineNumber]->clear();
-        //        lineEditsDB[lineNumber]->setDisabled(true);
-        //        comboBoxesLength[]
-        //        break;
+    case DatLenWord:
+    case DatLenByte:
+    case DatLenDWord:
+        lineEditsBits[lineNumber]->setDisabled(true);
+        lineEditsBits[lineNumber]->clear();
+        break;
     default:
-        lineEditsBits[lineNumber]->setEnabled(true);
-        lineEditsDB[lineNumber]->setEnabled(true);
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }else
+        {
+            lineEditsBits[lineNumber]->setDisabled(true);
+            lineEditsBits[lineNumber]->clear();
+        }
+        if(!(comboBoxesArea[lineNumber]->itemData(comboBoxesArea[lineNumber]->currentIndex()).toInt() == daveDB))
+           {
+            lineEditsDB[lineNumber]->setDisabled(true);
+            lineEditsDB[lineNumber]->clear();
+        }else            lineEditsDB[lineNumber]->setEnabled(true);
     }
 }
 
