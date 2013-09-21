@@ -180,12 +180,6 @@ void MainWindow::TimeOut()
         ui->customPlot->replot();
         recordings++;
     }
-
-    if (MyS7Connection.isConnected())
-    {
-        //salzbergwerk
-        ;
-    }
 }
 
 // Event Werte aus Dialog sollen übernommen werden
@@ -202,85 +196,95 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
     MySlot = newConSlots;
     ConDiag.SetSlots(MySlot);
 
+
+    printf("MySlot Size: %i\r\n", MySlot.size());
+    // MySlot.size()
     //Get the operand labels and displays working
-    QVector<QString> opLabel (MySlot.size());
-    for(int i=0;i<MySlot.size();++i)
+    QVector<QString> opLabel (labelsOperand.count());
+    for(int i=0; i < labelsOperand.count(); ++i)
     {
-        switch(MySlot[i].iAdrBereich)
+
+        if(i<MySlot.size())
         {
-        case daveInputs: opLabel[i] = "E";
-            break;
-        case daveOutputs: opLabel[i] = "A";
-            break;
-        case daveFlags: opLabel[i] = "M";
-            break;
-        case daveTimer: opLabel[i] = "T ";
-            break;
-        case daveCounter:  opLabel[i] = "Z ";
-            break;
-        case daveDB:    opLabel[i] = "DB";
-            break;
-        default:
+            switch(MySlot[i].iAdrBereich)
+            {
+            case daveInputs: opLabel[i] = "E";
+                break;
+            case daveOutputs: opLabel[i] = "A";
+                break;
+            case daveFlags: opLabel[i] = "M";
+                break;
+            case daveTimer: opLabel[i] = "T ";
+                break;
+            case daveCounter:  opLabel[i] = "Z ";
+                break;
+            case daveDB:    opLabel[i] = "DB";
+                break;
+            default:
+                opLabel[i] = "";
+            }
+
+            if(opLabel[i] == "DB")
+            {
+                opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
+
+                switch(MySlot[i].iDatenlaenge)
+                {
+                case DatLenBit:
+                    opLabel[i] += "X ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    opLabel[i] += ".";
+                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                    break;
+                case DatLenWord:
+                    opLabel[i] += "W ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenByte:
+                    opLabel[i] += "B ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenDWord:
+                    opLabel[i] += "D ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                default:
+                    opLabel[i] += "";
+
+                }
+            }
+            else if (opLabel[i] != "")
+            {
+                switch(MySlot[i].iDatenlaenge)
+                {
+                case DatLenBit:
+                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    opLabel[i] += ".";
+                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                    break;
+                case DatLenWord:
+                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenByte:
+                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenDWord:
+                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                default:
+                    opLabel[i] += "";
+                }
+            }
+
+
+        }
+        else
+        {
             opLabel[i] = "";
-        }
-
-        if(opLabel[i] == "DB")
-        {
-            opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
-
-            switch(MySlot[i].iDatenlaenge)
-            {
-            case DatLenBit:
-                opLabel[i] += "X ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                opLabel[i] += ".";
-                opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                break;
-            case DatLenWord:
-                opLabel[i] += "W ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            case DatLenByte:
-                opLabel[i] += "B ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            case DatLenDWord:
-                opLabel[i] += "D ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            default:
-                opLabel[i] += "";
-
-            }
-        }
-        else if (opLabel[i] != "")
-        {
-            switch(MySlot[i].iDatenlaenge)
-            {
-            case DatLenBit:
-                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                opLabel[i] += ".";
-                opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                break;
-            case DatLenWord:
-                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                          break;
-            case DatLenByte:
-                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
-               opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            case DatLenDWord:
-                if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            default:
-                opLabel[i] += "";
-            }
-
-
-
         }
 
         if(opLabel[i]!="")
