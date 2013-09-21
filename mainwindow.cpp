@@ -109,10 +109,10 @@ MainWindow::MainWindow(QWidget *parent) :
         ConDiag.SetSettings(xmlSettings->openedConSets);
         MySlot = xmlSettings->openedConSlots;
         ConDiag.newSlots = MySlot;
-    }
-    /*set the filepath here*/
 
-    //myWriter.OpenFileStream(,true);
+    }
+
+
 }
 
 MainWindow::~MainWindow()
@@ -157,16 +157,7 @@ void MainWindow::on_Button_Connect_clicked()
     }
 }
 
-// Should be no need for that function later
-//// Neuen Wert aus der SPS anfordern
-//void MainWindow::on_Button_Get_Val_clicked()
-//{
-//    if (MyS7Connection.isConnected())
-//    {
-//       //Currently only Flag byte 1 is read!
-//        ui->lcdNumber->display(MyS7Connection.getValue());
-//    }
-//}
+
 
 // Zyklisches Event
 void MainWindow::TimeOut()
@@ -229,15 +220,19 @@ void MainWindow::ChangeSettings(ConSets* NewConSets)
 }
 
 void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
-    {
+{
 
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
+   
     //Get the operand labels and displays working
-    QVector<QString> opLabel (MySlot.size());
-    for(int i=0;i<MySlot.size();++i)
+    QVector<QString> opLabel (labelsOperand.count());
+    for(int i=0; i < labelsOperand.count(); ++i)
     {
-        switch(MySlot[i].iAdrBereich)
+
+        if(i<MySlot.size())
+        {
+               switch(MySlot[i].iAdrBereich)
         {
         case daveInputs: opLabel[i] = "E";
             break;
@@ -278,10 +273,11 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
                 opLabel[i] += "";
 
             }
-        }else{
+        }else if (opLabel[i] != "")
+		{
             switch(MySlot[i].iDatenlaenge)
             {
-            case DatLenBit:
+ case DatLenBit:
                 opLabel[i] += " " + QString::number(MySlot[i].iStartAdr);
                 opLabel[i] += ".";
                 opLabel[i] += QString::number(MySlot[i].iBitnummer);
@@ -302,19 +298,36 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
                 opLabel[i] += "";
             }
 
+            }
 
 
         }
-        QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
-        lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+        else
+        {
+            opLabel[i] = "";
+        }
+
+        if(opLabel[i]!="")
+        {
+            QString lineeditStyle = "QLineEdit { color :" + MySlot[i].graphColor.name() + "; }";
+            lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
+            lineEditsOperandValue[i]->show();
+        }
+        else
+        {
+             lineEditsOperandValue[i]->hide();
+        }
+
+
         labelsOperand[0]->colorCount();
 
         labelsOperand[i]->setText(opLabel[i]);
     }
-
     }
 
-    // Button Verbindungseinstellungen
+}
+
+// Button Verbindungseinstellungen
     void MainWindow::on_pushButton_ConSets_clicked()
     {
         //Fill the fields with data
@@ -382,31 +395,31 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         }
     }
 
-    // Autoscale axes
-    void MainWindow::on_pushButton_clicked()
-    {
-        ui->customPlot->rescaleAxes();
-    }
+// Autoscale axes
+void MainWindow::on_pushButton_clicked()
+{
+    ui->customPlot->rescaleAxes();
+}
 
-    void MainWindow::on_actionNewProject_triggered()
-    {
-        std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
-                     useProto << std::endl;
-    }
+void MainWindow::on_actionNewProject_triggered()
+{    
+    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
+                 useProto << std::endl;
+}
 
-    void MainWindow::on_actionSaveProject_triggered()
-    {
-        xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
-    }
+void MainWindow::on_actionSaveProject_triggered()
+{    
+    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+}
 
-    //LessThan Comparison for labels
-    bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
-    {
-        return label1->objectName() < label2->objectName();
-    }
+//LessThan Comparison for labels
+bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
+{
+    return label1->objectName() < label2->objectName();
+}
 
-    //LessThan Comparison for line edits
-    bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
-    {
-        return le1->objectName() < le2->objectName();
-    }
+//LessThan Comparison for line edits
+bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
+{
+    return le1->objectName() < le2->objectName();
+}

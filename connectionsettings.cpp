@@ -40,7 +40,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     // Build userinterface
     ui->setupUi(this);
 
-    //Fill comboboxes for area and formats with data
+    // Fill comboboxes for area and formats with data
     comboBoxesArea = findChildren<QComboBox*>(QRegExp("comboBoxArea_.*"));
     comboBoxesFormat = findChildren<QComboBox*>(QRegExp("comboBoxFormat_.*"));
     comboBoxesLength = findChildren<QComboBox*>(QRegExp("comboBoxLength_.*"));
@@ -48,7 +48,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     lineEditsAddress = findChildren<QLineEdit*>(QRegExp("lineEditAddress_.*"));
     lineEditsDB = findChildren<QLineEdit*>(QRegExp("lineEditDB_.*"));
 
-    //Sorting algorithms for the right order of the objects
+    // Sorting algorithms for the right order of the objects
     qSort(comboBoxesArea.begin(), comboBoxesArea.end(),
           comboBoxPointerLessThan);
     qSort(comboBoxesFormat.begin(), comboBoxesFormat.end(),
@@ -73,9 +73,9 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                       << AnzFormatDezimal << AnzFormatHexadezimal
                       << AnzFormatGleitpunkt << AnzFormatZeichen;
 
-    //Initialize with two for loops. Q_FOREACH would fit too, seems simpler and
-    //faster but then an additional iterator
-    //value declaration outside the loop was necessary.
+    // Initialize with two for loops. Q_FOREACH would fit too, 
+    // seems simpler and faster but then an additional iterator 
+    // value declaration outside the loop was necessary.
     for(int i=0;i<comboBoxesArea.count();++i)
     {
         for(int j=0;j<comboItemsArea.count();++j)
@@ -105,7 +105,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                 this,SLOT(comboBoxIndexChanged(int)));
     }
 
-    // ComboBox "Protokoll" mit den Einstellungen füllen
+    // Fill ComboBox "Protocol" with cuttent settings
     ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
     ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
     ui->ComboBox_Protokoll->addItem("S5 programming port protocol",
@@ -120,22 +120,21 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     ui->ComboBox_Protokoll->addItem("ISO over TCP with Routing",
                                     daveProtoISOTCPR);
 
-    // Validator für die Eingabe der IP Adresse
+    // Validator for IP Address Input
     QRegExpValidator *RegExp_IP = new QRegExpValidator(this);
     QRegExp rx("((1{0,1}[0-9]{0,2}|2[0-4]{1,1}[0-9]{1,1}|25[0-5]{1,1})\\.)"\
                "{3,3}(1{0,1}[0-9]{0,2}|2[0-4]{1,1}[0-9]{1,1}|25[0-5]{1,1})");
     RegExp_IP->setRegExp(rx);
     ui->lineEdit_IP->setValidator(RegExp_IP);
 
-    // Validator für die Eingabe der MPI Adresse 0..127
+    // Validator for MPI Address (0..127) input
     QRegExpValidator *RegExp_MPI = new QRegExpValidator(this);
     rx.setPattern("[0-9]{0,2}|1{1,1}[0-1]?[0-9]?|1{1,1}2{1,1}[0-7]{1,1}");
     RegExp_MPI->setRegExp(rx);
     ui->lineEdit_CPU_MPI->setValidator(RegExp_MPI);
     ui->lineEdit_local_MPI->setValidator(RegExp_MPI);
     graphColors << Qt::green << Qt::black << Qt::blue << Qt::cyan
-                << Qt::darkYellow
-                << Qt::magenta << Qt::darkRed << Qt::darkCyan;
+                << Qt::darkYellow << Qt::magenta << Qt::darkRed << Qt::darkCyan;
     moduloValue=graphColors.size();
 
     //Integer Validator for the Address and Bit fields
@@ -149,69 +148,84 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     }
 }
 
+// Destructor of ConnectionSettings
 ConnectionSettings::~ConnectionSettings()
 {
     delete ui;
 }
 
+// Changes confirmed with "OK" button
 void ConnectionSettings::on_buttonBox_accepted()
 {
-    // Einstellungen in die Membervariable schreiben
+    // Write changes to member variable
     m_DiagSets->IP_Adr = ui->lineEdit_IP->text();
     m_DiagSets->localMPI = ui->lineEdit_local_MPI->text().toInt();
     m_DiagSets->plcMPI = ui->lineEdit_CPU_MPI->text().toInt();
     m_DiagSets->speed = ui->comboBox_Speed->currentIndex();
-    m_DiagSets->useProto = ui->ComboBox_Protokoll->
-            itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
+    m_DiagSets->useProto = ui->ComboBox_Protokoll->itemData(ui->ComboBox_Protokoll->currentIndex()).toInt();
     m_DiagSets->rack = ui->lineEdit_Rack->text().toInt();
     m_DiagSets->slot = ui->lineEdit_Slot->text().toInt();
 
-    // Signal "Einstellungen geändert" auslösen
+    // Emit Signal "Settings Changed"
     emit SettingsChanged(m_DiagSets);
 
-    if(newSlots.isEmpty() || !newSlots.size()==comboBoxesArea.count())
+    int iAnzahlSlots = 0;
+
+    // Count number of areas != NULL
+    for(int i = 0; i < comboBoxesArea.count(); i++)
+    {
+        if(comboBoxesArea[i]->itemData(comboBoxesArea[i]->currentIndex()).toInt())
+        {
+            // This Area setting is choosed, need for a slot
+            iAnzahlSlots++;
+        }
+        else
+        {
+            // The first empty entry -> ignore all other entries
+            break;
+        }
+    }
+
+  // Has the number of Slots changed?
+    if(newSlots.isEmpty() || newSlots.size()!=iAnzahlSlots)
     {
         //initialize the conslot vector with the number of slots
-        newSlots.resize(comboBoxesArea.count());
+        newSlots.resize(iAnzahlSlots);
     }
 
     //Insert Slot data in Vector
-    for(int i=0;i<lineEditsBits.count();++i){
+    for(int i=0; i < iAnzahlSlots; ++i){
         newSlots[i].iBitnummer = lineEditsBits[i]->text().toInt();
         newSlots[i].iStartAdr = lineEditsAddress[i]->text().toInt();
-        newSlots[i].iAnzFormat = comboBoxesFormat[i]->
-                itemData(comboBoxesFormat[i]->currentIndex()).toInt();
-        newSlots[i].iAdrBereich = comboBoxesArea[i]->
-                itemData(comboBoxesArea[i]->currentIndex()).toInt();
+        newSlots[i].iAnzFormat = comboBoxesFormat[i]->itemData(comboBoxesFormat[i]->currentIndex()).toInt();
+        newSlots[i].iAdrBereich = comboBoxesArea[i]->itemData(comboBoxesArea[i]->currentIndex()).toInt();
         newSlots[i].iDBnummer = lineEditsDB[i]->text().toInt();
         newSlots[i].graphColor = graphColors[i % moduloValue];
-        newSlots[i].iDatenlaenge = comboBoxesLength[i]->
-                itemData(comboBoxesLength[i]->currentIndex()).toInt();
+        newSlots[i].iDatenlaenge = comboBoxesLength[i]->itemData(comboBoxesLength[i]->currentIndex()).toInt();
     }
 
+    // Emit the signal that the Slots has changed
     emit SlotsChanged(newSlots);
 }
 
 void ConnectionSettings::SetSettings(ConSets *CurrentSets)
 {
-    // Membervariable mit den aktuellen Einstellungen setzten
+    // Set the membervariables with the cuttent changes
     m_DiagSets = CurrentSets;
 
-    // Eingaben mit den akuellen Werten setzten
+    // Set input boxes with the current values
     ui->lineEdit_IP->setText(m_DiagSets->IP_Adr);
     ui->lineEdit_local_MPI->setText(QString::number(m_DiagSets->localMPI));
     ui->lineEdit_CPU_MPI->setText(QString::number(m_DiagSets->plcMPI));
     ui->comboBox_Speed->setCurrentIndex(m_DiagSets->speed);
-    ui->ComboBox_Protokoll->setCurrentIndex(ui->ComboBox_Protokoll->
-                                            findData(m_DiagSets->useProto));
+    ui->ComboBox_Protokoll->setCurrentIndex(ui->ComboBox_Protokoll->findData(m_DiagSets->useProto));
     ui->lineEdit_Rack->setText(QString::number(m_DiagSets->rack));
     ui->lineEdit_Slot->setText(QString::number(m_DiagSets->slot));
 }
 
 void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
 {
-    // Setzt die Bedienbarkeit von Elementen in Abhängigkeit des gewählten
-    //Protokolltyps
+    // Set the enable status of input boxes coredponding the current protocol type
     int iCurrProto = ui->ComboBox_Protokoll->itemData(index).toInt();
 
     switch(iCurrProto)
@@ -270,7 +284,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         lineNumber = findCorrespondingLine(comboBoxesLength,sendingBox);
     }
 
-    switch (dataItem)
+switch (dataItem)
     {
     case daveInputs:
     case daveOutputs:
@@ -318,7 +332,6 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         }else            lineEditsDB[lineNumber]->setEnabled(true);
     }
 }
-
 int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
                                               QComboBox* sendingBox)
 {
@@ -336,18 +349,13 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
 void ConnectionSettings::SetSlots(QVector<ConSlot> &currentSlots)
 {
     for(int i=0; i<currentSlots.count();++i){
-        comboBoxesArea[i]->setCurrentIndex(
-                    comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
-        comboBoxesFormat[i]->setCurrentIndex(
-                    comboValuesFormat.indexOf(currentSlots[i].iAnzFormat));
+        comboBoxesArea[i]->setCurrentIndex(comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
+        comboBoxesFormat[i]->setCurrentIndex(comboValuesFormat.indexOf(currentSlots[i].iAnzFormat));
         lineEditsBits[i]->setText(QString::number(currentSlots[i].iBitnummer));
-        lineEditsAddress[i]->setText(QString::number(
-                                         currentSlots[i].iStartAdr));
+        lineEditsAddress[i]->setText(QString::number(currentSlots[i].iStartAdr));
         lineEditsDB[i]->setText(QString::number(currentSlots[i].iDBnummer));
-        comboBoxesLength[i]->setCurrentIndex(
-                    comboValuesLength.indexOf(currentSlots[i].iDatenlaenge));
+        comboBoxesLength[i]->setCurrentIndex(comboValuesLength.indexOf(currentSlots[i].iDatenlaenge));
     }
-
 }
 
 //LessThan Comparison for combo boxes
