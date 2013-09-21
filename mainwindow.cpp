@@ -66,7 +66,8 @@ MainWindow::MainWindow(QWidget *parent) :
     xmlSettings = new xmlSettingsHandler(this);
     connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,
             SLOT(changeSlots(QVector<ConSlot>)));
-
+    connect(xmlSettings,SIGNAL(newSettingsOpened(ConSets*)),this,
+            SLOT(ChangeSettings(ConSets*)));
     currentConsets = new ConSets;
 
     // Start the timer for slot reading
@@ -83,11 +84,12 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->lineEdit_Duration->setValidator(RegExp_Duration);
 
 #ifdef LINUX
-    recordings = std::numeric_limits<int>::max();
+#define MAXIMUMINT std::numeric_limits<int>::max()
 #else
-    recordings = MAXINT;
+#define MAXIMUMINT MAXINT
 #endif
 
+    recordings = MAXIMUMINT;
     //Get Labels and Operand value displays
     labelsOperand = this->findChildren<QLabel*>(QRegExp("operandLabel_.*"));
     lineEditsOperandValue = this->findChildren<QLineEdit*>
@@ -109,6 +111,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ConDiag.newSlots = MySlot;
 
     }
+   
 
 
 }
@@ -126,7 +129,7 @@ void MainWindow::on_actionOpenProject_triggered()
     currentConsets = xmlSettings->openedConSets;
     ConDiag.SetSettings(currentConsets);
     MySlot = xmlSettings->openedConSlots;
-    ConDiag.SetSlots(MySlot);
+
 
 }
 
@@ -151,8 +154,11 @@ void MainWindow::on_Button_Connect_clicked()
         // ui->Button_Get_Val->setEnabled(false);
         ui->Button_read_slots->setEnabled(false);
         ui->Button_Connect->setText("Connect");
+        myWriter.Close();
     }
 }
+
+
 
 // Zyklisches Event
 void MainWindow::TimeOut()
@@ -160,6 +166,9 @@ void MainWindow::TimeOut()
     // Zyklisches lesen
     if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
+
+
+
         // Read new values to slots
         MyS7Connection.readSlots(MySlot, MySlot.size());
 
@@ -171,7 +180,7 @@ void MainWindow::TimeOut()
         {
             // Write current value
             y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
-            //also into the value displays
+            // also into the value displays
             lineEditsOperandValue[i]->setText(QString::number(y[i][recordings]));
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
@@ -179,6 +188,31 @@ void MainWindow::TimeOut()
         }
         ui->customPlot->replot();
         recordings++;
+
+        /*save data if the amount of points is reached*/
+        if (recordings == amountOfPoints)
+        {
+            y.resize(5);
+
+            ui->textEdit->append(QString::number(y[0].size()));
+            ui->textEdit->append(QString::number(y.size()));
+
+            /*save the data to the file*/
+            myWriter.WriteVector(y, x);
+
+            recordings = 0;
+        }
+    }
+    else
+    {
+        /*save data if recordings started and connection is disconnected*/
+        if (recordings != MAXIMUMINT)
+        {
+            /*write data to file*/
+            myWriter.WriteVector(y, x);
+            /*reset recordings to MAXINT*/
+            recordings = MAXIMUMINT;
+        }
     }
 }
 
@@ -196,109 +230,80 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
     MySlot = newConSlots;
     ConDiag.SetSlots(MySlot);
 
-
-    printf("MySlot Size: %i\r\n", MySlot.size());
-    // MySlot.size()
-    //Get the operand labels and displays working
-    QVector<QString> opLabel (labelsOperand.count());
-    for(int i=0; i < labelsOperand.count(); ++i)
+    // Get the operand labels and displays working
+    QVector<QString> opLabel (MySlot.size());
+    for(int i=0;i<MySlot.size();++i)
     {
-
-        if(i<MySlot.size())
+        switch(MySlot[i].iAdrBereich)
         {
-            switch(MySlot[i].iAdrBereich)
-            {
-            case daveInputs: opLabel[i] = "E";
-                break;
-            case daveOutputs: opLabel[i] = "A";
-                break;
-            case daveFlags: opLabel[i] = "M";
-                break;
-            case daveTimer: opLabel[i] = "T ";
-                break;
-            case daveCounter:  opLabel[i] = "Z ";
-                break;
-            case daveDB:    opLabel[i] = "DB";
-                break;
-            default:
-                opLabel[i] = "";
-            }
-
-            if(opLabel[i] == "DB")
-            {
-                opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
-
-                switch(MySlot[i].iDatenlaenge)
-                {
-                case DatLenBit:
-                    opLabel[i] += "X ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    opLabel[i] += ".";
-                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                    break;
-                case DatLenWord:
-                    opLabel[i] += "W ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenByte:
-                    opLabel[i] += "B ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenDWord:
-                    opLabel[i] += "D ";
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                default:
-                    opLabel[i] += "";
-
-                }
-            }
-            else if (opLabel[i] != "")
-            {
-                switch(MySlot[i].iDatenlaenge)
-                {
-                case DatLenBit:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += " "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    opLabel[i] += ".";
-                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                    break;
-                case DatLenWord:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "W "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenByte:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "B "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                case DatLenDWord:
-                    if(!(opLabel[i] == "T " || opLabel[i] == "Z ")) {opLabel[i] += "D "; }
-                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                    break;
-                default:
-                    opLabel[i] += "";
-                }
-            }
-
-
-        }
-        else
-        {
+        case daveInputs: opLabel[i] = "E";
+            break;
+        case daveOutputs: opLabel[i] = "A";
+            break;
+        case daveFlags: opLabel[i] = "M";
+            break;
+        case daveDB:    opLabel[i] = "DB";
+            break;
+        default:
             opLabel[i] = "";
         }
-
-        if(opLabel[i]!="")
+        if(opLabel[i] == "DB")
         {
-            QString lineeditStyle = "QLineEdit { color :" + MySlot[i].graphColor.name() + "; }";
-            lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
-            lineEditsOperandValue[i]->show();
-        }
-        else
-        {
-             lineEditsOperandValue[i]->hide();
-        }
+            opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
+
+            switch(MySlot[i].iDatenlaenge)
+            {
+            case DatLenBit:
+                opLabel[i] += "X ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += ".";
+                opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                break;
+            case DatLenWord:
+                opLabel[i] += "W ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenByte:
+                opLabel[i] += "B ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenDWord:
+                opLabel[i] += "D ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            default:
+                opLabel[i] += "";
+
+            }
+        }else{
+            switch(MySlot[i].iDatenlaenge)
+            {
+            case DatLenBit:
+                opLabel[i] += " " + QString::number(MySlot[i].iStartAdr);
+                opLabel[i] += ".";
+                opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                break;
+            case DatLenWord:
+                opLabel[i] += "W ";
+                                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenByte:
+                opLabel[i] += "B ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            case DatLenDWord:
+                opLabel[i] += "D ";
+                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                break;
+            default:
+                opLabel[i] += "";
+            }
 
 
+
+        }
+        QString lineeditStyle = "QLineEdit { background-color :" + MySlot[i].graphColor.name() + "; }";
+        lineEditsOperandValue[i]->setStyleSheet(lineeditStyle);
         labelsOperand[0]->colorCount();
 
         labelsOperand[i]->setText(opLabel[i]);
@@ -306,31 +311,33 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 
 }
 
-// Button Verbindungseinstellungen
-void MainWindow::on_pushButton_ConSets_clicked()
-{
-
-    ConDiag.show();
+    // Button Verbindungseinstellungen
+    void MainWindow::on_pushButton_ConSets_clicked()
+    {
+        //Fill the fields with data
+        ConDiag.SetSlots(MySlot);
+        ConDiag.show();
 }
 
 void MainWindow::on_Button_read_slots_clicked()
 {
 
-
-    recordings = 0;
+   recordings = 0;
 
     //Delete old graphs
     int numberOfGraphs = ui->customPlot->graphCount();
     qDebug("Number of Graphs is: %i", numberOfGraphs);
 
-    // If numberOfGraphs <  -> add graphs
-    for (int i = numberOfGraphs; i < MySlot.size(); i++)
-    {
-        // Add new graphs
-        ui->customPlot->addGraph();
-        ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
-        qDebug("Adding Graph number %i", i);
-    }
+  // If numberOfGraphs <  -> add graphs
+        for (int i = numberOfGraphs; i < MySlot.size(); i++)
+        {
+            // Add new graphs
+            ui->customPlot->addGraph();
+            // We want to have nice steep edges in our plot, at least when we are not watching floating point operands!
+            if (!(MySlot[i].iAnzFormat == AnzFormatGleitpunkt)) ui->customPlot->graph(i)->setLineStyle(QCPGraph::lsStepCenter);
+            ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
+            qDebug("Adding Graph number %i", i);
+        }
 
     // refresh numberOfGraphs
     numberOfGraphs = ui->customPlot->graphCount();
@@ -363,6 +370,11 @@ void MainWindow::on_Button_read_slots_clicked()
     // set axes ranges, so we see all data:
     ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
     ui->customPlot->yAxis->setRange(-5.0, 5.0);
+        //open filewriter and write the number of slots
+        if (!myWriter.AlreadyOpen())
+        {
+            myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+        }
 }
 
 // Autoscale axes

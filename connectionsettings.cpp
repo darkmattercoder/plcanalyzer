@@ -62,14 +62,11 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     qSort(lineEditsAddress.begin(), lineEditsAddress.end(),
           lineEditPointerLessThan);
 
-    comboItemsArea << " " << "E" << "A" << "M" << "DB" << "Z" << "T" << "IEC_Z"
-                   << "IEC_T";
+    comboItemsArea << " " << "E" << "A" << "M" << "DB";
     comboItemsLength << " " << "BIT" << "BYTE" << "WORD" << "DWORD";
     comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT"
                      << "CHAR";
-    comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB
-                    << daveCounter << daveTimer << daveCounter200
-                    << daveTimer200;
+    comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB;
     comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord
                       << DatLenDWord;
     comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatBinaer
@@ -97,11 +94,14 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
             comboBoxesLength[i]->addItem(comboItemsLength[j],
                                          comboValuesLength[j]);
     }
-    //Connect the format-combo boxes' indexChanged signal to the handling
+
+    //Connect the format- and length-combo boxes' indexChanged signal to the handling
     //Slot for conditional disabling of Bit field
     for(int i=0;i<comboBoxesArea.count();++i)
     {
         connect(comboBoxesArea[i],SIGNAL(currentIndexChanged(int)),
+                this,SLOT(comboBoxIndexChanged(int)));
+        connect(comboBoxesLength[i],SIGNAL(currentIndexChanged(int)),
                 this,SLOT(comboBoxIndexChanged(int)));
     }
 
@@ -136,6 +136,16 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     graphColors << Qt::green << Qt::black << Qt::blue << Qt::cyan
                 << Qt::darkYellow << Qt::magenta << Qt::darkRed << Qt::darkCyan;
     moduloValue=graphColors.size();
+
+    //Integer Validator for the Address and Bit fields
+    myBitValidator = new QIntValidator(0,7,this);
+    myByteAddressValidator = new QIntValidator(0,4096,this);
+    for(int i=0;i<lineEditsBits.count();++i)
+    {
+        lineEditsBits[i]->setValidator(myBitValidator);
+        lineEditsAddress[i]->setValidator(myByteAddressValidator);
+        lineEditsDB[i]->setValidator(myByteAddressValidator);
+    }
 }
 
 // Destructor of ConnectionSettings
@@ -187,11 +197,14 @@ void ConnectionSettings::on_buttonBox_accepted()
     for(int i=0; i < iAnzahlSlots; ++i){
         newSlots[i].iBitnummer = lineEditsBits[i]->text().toInt();
         newSlots[i].iStartAdr = lineEditsAddress[i]->text().toInt();
-        newSlots[i].iAnzFormat = comboBoxesFormat[i]->itemData(comboBoxesFormat[i]->currentIndex()).toInt();
-        newSlots[i].iAdrBereich = comboBoxesArea[i]->itemData(comboBoxesArea[i]->currentIndex()).toInt();
+        newSlots[i].iAnzFormat = comboBoxesFormat[i]->
+                itemData(comboBoxesFormat[i]->currentIndex()).toInt();
+        newSlots[i].iAdrBereich = comboBoxesArea[i]->
+                itemData(comboBoxesArea[i]->currentIndex()).toInt();
         newSlots[i].iDBnummer = lineEditsDB[i]->text().toInt();
         newSlots[i].graphColor = graphColors[i % moduloValue];
-        newSlots[i].iDatenlaenge = comboBoxesLength[i]->itemData(comboBoxesLength[i]->currentIndex()).toInt();
+        newSlots[i].iDatenlaenge = comboBoxesLength[i]->
+                itemData(comboBoxesLength[i]->currentIndex()).toInt();
     }
 
     // Emit the signal that the Slots has changed
@@ -269,45 +282,57 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
     }else if(comboBoxesFormat.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesFormat,sendingBox);
+    }else if(comboBoxesLength.contains(sendingBox))
+    {
+        lineNumber = findCorrespondingLine(comboBoxesLength,sendingBox);
     }
 
-    switch (dataItem)
+  switch (dataItem)
     {
     case daveInputs:
-        lineEditsDB[lineNumber]->clear();
-        lineEditsDB[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
-        break;
     case daveOutputs:
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }
         lineEditsDB[lineNumber]->clear();
         lineEditsDB[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
         break;
     case daveFlags:
         lineEditsDB[lineNumber]->clear();
         lineEditsDB[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }
         break;
     case daveDB:
         lineEditsDB[lineNumber]->setEnabled(true);
-        lineEditsBits[lineNumber]->setEnabled(true);
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }
         break;
-    case daveCounter:
-    case daveTimer:
-    case daveCounter200:
-    case daveTimer200:
-        lineEditsBits[lineNumber]->clear();
+    case DatLenWord:
+    case DatLenByte:
+    case DatLenDWord:
         lineEditsBits[lineNumber]->setDisabled(true);
-        lineEditsDB[lineNumber]->clear();
-        lineEditsDB[lineNumber]->setDisabled(true);
-        break;
-    case AnzFormatHexadezimal:
         lineEditsBits[lineNumber]->clear();
-        lineEditsBits[lineNumber]->setDisabled(true);
         break;
     default:
-        lineEditsBits[lineNumber]->setEnabled(true);
-        lineEditsDB[lineNumber]->setEnabled(true);
+        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+        {
+            lineEditsBits[lineNumber]->setEnabled(true);
+        }else
+        {
+            lineEditsBits[lineNumber]->setDisabled(true);
+            lineEditsBits[lineNumber]->clear();
+        }
+        if(!(comboBoxesArea[lineNumber]->itemData(comboBoxesArea[lineNumber]->currentIndex()).toInt() == daveDB))
+           {
+            lineEditsDB[lineNumber]->setDisabled(true);
+            lineEditsDB[lineNumber]->clear();
+        }else            lineEditsDB[lineNumber]->setEnabled(true);
     }
 }
 
@@ -325,7 +350,7 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
     return lineNumber;
 }
 
-void ConnectionSettings::SetSlots(QVector<ConSlot> currentSlots)
+void ConnectionSettings::SetSlots(QVector<ConSlot> &currentSlots)
 {
     for(int i=0; i<currentSlots.count();++i){
         comboBoxesArea[i]->setCurrentIndex(comboValuesArea.indexOf(currentSlots[i].iAdrBereich));

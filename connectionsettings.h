@@ -35,6 +35,7 @@
 #include <QDialog>
 #include <QRegExp>
 #include <QSignalMapper>
+#include <QIntValidator>
 #include "ui_connectionsettings.h"
 #include "s7connection.h"
 
@@ -51,7 +52,7 @@ public:
     explicit ConnectionSettings(QWidget *parent = 0);
     ~ConnectionSettings();
     void SetSettings(ConSets* CurrentSets);
-    void SetSlots(QVector<ConSlot> currentSlots);
+    void SetSlots(QVector<ConSlot> &currentSlots);
     ConSets* m_DiagSets;
     QVector<ConSlot> newSlots;
     
@@ -94,6 +95,10 @@ private:
 //    Qt::GlobalColor /*graphColors[8]*/;
     //Modulo value for dynamic graphColor generation
     int moduloValue;
+
+    QIntValidator* myBitValidator;
+    QIntValidator* myByteAddressValidator;
+
 };
 
 #endif // CONNECTIONSETTINGS_H

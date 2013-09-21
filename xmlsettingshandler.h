@@ -51,6 +51,7 @@ public:
 signals:
 
     void newSlotsOpened(QVector<ConSlot> openedConSlots);
+    void newSettingsOpened(ConSets* openedConSets);
     
 public slots:
 
