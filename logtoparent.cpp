@@ -44,6 +44,7 @@ logToParent::logToParent(MainWindow *parent) :
     std::cout << "Debug: Qthread for logging run: " << myRedirector->
                  isRunning() << std::endl;
     parentStatbar = parent->ui->statusBar;
+    parentTextEdit = parent->ui->textEdit;
     connect(myRedirector, SIGNAL(writeOut(QString)),
             this,SLOT(updateParentLog(QString)));
 }
@@ -57,5 +58,6 @@ logToParent::~logToParent()
 void logToParent::updateParentLog(QString logString)
 {
     parentStatbar->showMessage(logString,2500);
+    parentTextEdit->append(logString);
 
 }

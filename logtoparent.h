@@ -57,6 +57,7 @@ private:
 
     QStatusBar *parentStatbar;
     stdoutRedirector * myRedirector;
+    QTextEdit *parentTextEdit;
 
 };
 
