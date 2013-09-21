@@ -323,7 +323,6 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
 
         labelsOperand[i]->setText(opLabel[i]);
     }
-    }
 
 }
 
