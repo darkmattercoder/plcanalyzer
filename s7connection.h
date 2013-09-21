@@ -134,6 +134,7 @@ public:
     void readSlots(QVector<ConSlot> &cSlot, int iAmountSlots);
 //    void readSlots(ConSlot cSlot[], int iAmountSlots);
     QString interpret(ConSlot cSlot);
+    QString interpret(ConSlot cSlot, bool bGraphOutput);
 
     // Public Variables
     ConSets* MyConSet;

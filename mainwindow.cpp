@@ -175,9 +175,9 @@ void MainWindow::TimeOut()
         for (int i = 0; i < MySlot.size(); i++)
         {
             // Write current value
-            y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
+            y[i][recordings] = MyS7Connection.interpret(MySlot[i], true).toFloat();
             //also into the value displays
-            lineEditsOperandValue[i]->setText(QString::number(y[i][recordings]));
+            lineEditsOperandValue[i]->setText(MyS7Connection.interpret(MySlot[i]));
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
 
@@ -188,8 +188,6 @@ void MainWindow::TimeOut()
         /*save data if the amount of points is reached*/
         if (recordings == amountOfPoints)
         {
-            y.resize(5);
-
             ui->textEdit->append(QString::number(y[0].size()));
             ui->textEdit->append(QString::number(y.size()));
 
