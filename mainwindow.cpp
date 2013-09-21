@@ -109,10 +109,11 @@ MainWindow::MainWindow(QWidget *parent) :
         ConDiag.SetSettings(xmlSettings->openedConSets);
         MySlot = xmlSettings->openedConSlots;
         ConDiag.newSlots = MySlot;
-    }
-    /*set the filepath here*/
 
-    //myWriter.OpenFileStream(,true);
+    }
+   
+
+
 }
 
 MainWindow::~MainWindow()
@@ -157,16 +158,7 @@ void MainWindow::on_Button_Connect_clicked()
     }
 }
 
-// Should be no need for that function later
-//// Neuen Wert aus der SPS anfordern
-//void MainWindow::on_Button_Get_Val_clicked()
-//{
-//    if (MyS7Connection.isConnected())
-//    {
-//       //Currently only Flag byte 1 is read!
-//        ui->lcdNumber->display(MyS7Connection.getValue());
-//    }
-//}
+
 
 // Zyklisches Event
 void MainWindow::TimeOut()
@@ -174,6 +166,9 @@ void MainWindow::TimeOut()
     // Zyklisches lesen
     if (recordings < amountOfPoints && MyS7Connection.isConnected())
     {
+
+
+
         // Read new values to slots
         MyS7Connection.readSlots(MySlot, MySlot.size());
 
@@ -185,7 +180,7 @@ void MainWindow::TimeOut()
         {
             // Write current value
             y[i][recordings] = MyS7Connection.interpret(MySlot[i]).toFloat();
-            //also into the value displays
+            // also into the value displays
             lineEditsOperandValue[i]->setText(QString::number(y[i][recordings]));
             // Assign vector to graph
             ui->customPlot->graph(i)->setData(x, y[i]);
@@ -229,11 +224,13 @@ void MainWindow::ChangeSettings(ConSets* NewConSets)
 }
 
 void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
-    {
+{
 
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
-    //Get the operand labels and displays working
+    ConDiag.SetSlots(MySlot);
+
+    // Get the operand labels and displays working
     QVector<QString> opLabel (MySlot.size());
     for(int i=0;i<MySlot.size();++i)
     {
@@ -312,7 +309,7 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         labelsOperand[i]->setText(opLabel[i]);
     }
 
-    }
+}
 
     // Button Verbindungseinstellungen
     void MainWindow::on_pushButton_ConSets_clicked()
@@ -320,19 +317,18 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         //Fill the fields with data
         ConDiag.SetSlots(MySlot);
         ConDiag.show();
+}
 
+void MainWindow::on_Button_read_slots_clicked()
+{
 
-    }
+   recordings = 0;
 
-    void MainWindow::on_Button_read_slots_clicked()
-    {
-        recordings = 0;
+    //Delete old graphs
+    int numberOfGraphs = ui->customPlot->graphCount();
+    qDebug("Number of Graphs is: %i", numberOfGraphs);
 
-        //Delete old graphs
-        int numberOfGraphs = ui->customPlot->graphCount();
-        qDebug("Number of Graphs is: %i", numberOfGraphs);
-
-        // If numberOfGraphs <  -> add graphs
+  // If numberOfGraphs <  -> add graphs
         for (int i = numberOfGraphs; i < MySlot.size(); i++)
         {
             // Add new graphs
@@ -343,70 +339,69 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
             qDebug("Adding Graph number %i", i);
         }
 
-        // refresh numberOfGraphs
-        numberOfGraphs = ui->customPlot->graphCount();
+    // refresh numberOfGraphs
+    numberOfGraphs = ui->customPlot->graphCount();
 
-        // If numberOfGraphs >  -> remove graphs
-        for (int i = numberOfGraphs; i > MySlot.size(); i--)
-        {
-            // Remove not needed graphs
-            ui->customPlot->removeGraph(i);
-            qDebug("Remove Graph: %i", i);
-        }
+    // If numberOfGraphs >  -> remove graphs
+    for (int i = numberOfGraphs; i > MySlot.size(); i--)
+    {
+        // Remove not needed graphs
+        ui->customPlot->removeGraph(i);
+        qDebug("Remove Graph: %i", i);
+    }
 
-        // Resize vectors
+    // Resize vectors
 
-        // Abtastung mit 10 Hz
-        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
-        x.resize(amountOfPoints);
-        y.resize(MySlot.size());
+    // Abtastung mit 10 Hz
+    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
+    x.resize(amountOfPoints);
+    y.resize(MySlot.size());
 
-        // Resize 2nd dimension
-        for (int i = 0; i <MySlot.size() ; i++)
-        {
-            y[i].resize(amountOfPoints);
-        }
+    // Resize 2nd dimension
+    for (int i = 0; i <MySlot.size() ; i++)
+    {
+        y[i].resize(amountOfPoints);
+    }
 
-        // give the axes some labels:
-        ui->customPlot->xAxis->setLabel("[time] s");
-        ui->customPlot->yAxis->setLabel("value");
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("[time] s");
+    ui->customPlot->yAxis->setLabel("value");
 
-        // set axes ranges, so we see all data:
-        ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
-        ui->customPlot->yAxis->setRange(-5.0, 5.0);
-
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
+    ui->customPlot->yAxis->setRange(-5.0, 5.0);
         //open filewriter and write the number of slots
         if (!myWriter.AlreadyOpen())
         {
             myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
         }
-    }
+}
 
-    // Autoscale axes
-    void MainWindow::on_pushButton_clicked()
-    {
-        ui->customPlot->rescaleAxes();
-    }
+// Autoscale axes
+void MainWindow::on_pushButton_clicked()
+{
+    ui->customPlot->rescaleAxes();
+}
 
-    void MainWindow::on_actionNewProject_triggered()
-    {
-        std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
-                     useProto << std::endl;
-    }
+void MainWindow::on_actionNewProject_triggered()
+{    
+    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
+                 useProto << std::endl;
+}
 
-    void MainWindow::on_actionSaveProject_triggered()
-    {
-        xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
-    }
+void MainWindow::on_actionSaveProject_triggered()
+{    
+    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+}
 
-    //LessThan Comparison for labels
-    bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
-    {
-        return label1->objectName() < label2->objectName();
-    }
+//LessThan Comparison for labels
+bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
+{
+    return label1->objectName() < label2->objectName();
+}
 
-    //LessThan Comparison for line edits
-    bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
-    {
-        return le1->objectName() < le2->objectName();
-    }
+//LessThan Comparison for line edits
+bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
+{
+    return le1->objectName() < le2->objectName();
+}

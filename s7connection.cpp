@@ -441,7 +441,7 @@ QString S7Connection::interpret(ConSlot cSlot)
         break;
 
     default:
-        std::cout << "Länge muss in Bit angegeben werden und kann maximal 32"
+        std::cout << "Laenge muss in Bit angegeben werden und kann maximal 32"
                      "betragen." << std::endl;
         break;
     }
