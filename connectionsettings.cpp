@@ -32,6 +32,7 @@
 
 #include "connectionsettings.h"
 #include <iostream>
+#include <QStandardItemModel>
 
 ConnectionSettings::ConnectionSettings(QWidget *parent):
     QDialog(parent),
@@ -73,8 +74,8 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                       << AnzFormatDezimal << AnzFormatHexadezimal
                       << AnzFormatGleitpunkt << AnzFormatZeichen;
 
-    // Initialize with two for loops. Q_FOREACH would fit too, 
-    // seems simpler and faster but then an additional iterator 
+    // Initialize with two for loops. Q_FOREACH would fit too,
+    // seems simpler and faster but then an additional iterator
     // value declaration outside the loop was necessary.
     for(int i=0;i<comboBoxesArea.count();++i)
     {
@@ -186,7 +187,7 @@ void ConnectionSettings::on_buttonBox_accepted()
         }
     }
 
-  // Has the number of Slots changed?
+    // Has the number of Slots changed?
     if(newSlots.isEmpty() || newSlots.size()!=iAnzahlSlots)
     {
         //initialize the conslot vector with the number of slots
@@ -284,7 +285,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         lineNumber = findCorrespondingLine(comboBoxesLength,sendingBox);
     }
 
-switch (dataItem)
+    switch (dataItem)
     {
     case daveInputs:
     case daveOutputs:
@@ -315,18 +316,26 @@ switch (dataItem)
     case DatLenDWord:
         lineEditsBits[lineNumber]->setDisabled(true);
         lineEditsBits[lineNumber]->clear();
+        for (int i=3; i<comboItemsArea.count()+2;++i)
+        {
+            qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(true);
+        }
         break;
     default:
         if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
         {
             lineEditsBits[lineNumber]->setEnabled(true);
+            for (int i=3; i<comboItemsArea.count()+2;++i)
+            {
+                qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(false);
+            }
         }else
         {
             lineEditsBits[lineNumber]->setDisabled(true);
             lineEditsBits[lineNumber]->clear();
         }
         if(!(comboBoxesArea[lineNumber]->itemData(comboBoxesArea[lineNumber]->currentIndex()).toInt() == daveDB))
-           {
+        {
             lineEditsDB[lineNumber]->setDisabled(true);
             lineEditsDB[lineNumber]->clear();
         }else            lineEditsDB[lineNumber]->setEnabled(true);
