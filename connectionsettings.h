@@ -99,6 +99,10 @@ private:
     QIntValidator* myBitValidator;
     QIntValidator* myByteAddressValidator;
 
+    //functions for selecting the selectable items
+    void Enabler (int iLinenumber, bool bEnable, int iIndex);
+    void EnableSwticher(int iDataitem, int iLinenumber);
+
 };
 
 #endif // CONNECTIONSETTINGS_H

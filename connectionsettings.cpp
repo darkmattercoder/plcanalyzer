@@ -226,7 +226,7 @@ void ConnectionSettings::SetSettings(ConSets *CurrentSets)
 
 void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
 {
-    // Set the enable status of input boxes coredponding the current protocol type
+    // Set the enable status of input boxes corresponding the current protocol type
     int iCurrProto = ui->ComboBox_Protokoll->itemData(index).toInt();
 
     switch(iCurrProto)
@@ -276,6 +276,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     int dataItem = sendingBox->itemData(index).toInt();
     int lineNumber = 0;
 
+    //get the corresponding line
     if(comboBoxesArea.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
     }else if(comboBoxesFormat.contains(sendingBox)){
@@ -316,6 +317,9 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     case DatLenDWord:
         lineEditsBits[lineNumber]->setDisabled(true);
         lineEditsBits[lineNumber]->clear();
+
+        comboBoxesFormat[lineNumber]->setCurrentIndex(0);
+
         for (int i=3; i<comboItemsArea.count()+2;++i)
         {
             qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(true);
@@ -340,6 +344,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
             lineEditsDB[lineNumber]->clear();
         }else            lineEditsDB[lineNumber]->setEnabled(true);
     }
+    EnableSwticher(dataItem, lineNumber);//enable and disable the selectable values
 }
 int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
                                               QComboBox* sendingBox)
@@ -378,3 +383,56 @@ bool ConnectionSettings::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
 {
     return le1->objectName() < le2->objectName();
 }
+
+
+
+//switch to select case
+void ConnectionSettings::EnableSwticher(int iDataitem, int iLinenumber)
+{
+    //create a temporary array with 6 elements
+    bool *bEnablerArray = new bool[6];
+
+    bEnablerArray[2] = true;            //enable decimal
+    bEnablerArray[0] = true;            //enable binary
+
+    //select the settings for the selectable property
+    switch (iDataitem)
+    {
+    case DatLenBit:
+        bEnablerArray[1] = true;            //enable bool
+        bEnablerArray[3] = false;           //disable hex
+        bEnablerArray[4] = false;           //disable float
+        bEnablerArray[5] = false;           //disable char
+    break;
+    case DatLenByte:
+    case DatLenWord:
+        bEnablerArray[1] = false;           //diable bool
+        bEnablerArray[3] = true;            //enable hex
+        bEnablerArray[4] = false;           //disable float
+        bEnablerArray[5] = true;            //enable char
+    break;
+    case DatLenDWord:
+        bEnablerArray[1] = false;           //diable bool
+        bEnablerArray[3] = true;            //enable hex
+        bEnablerArray[4] = true;            //enable float
+        bEnablerArray[5] = true;            //enable char
+    break;
+    default:
+        bEnablerArray[0] = false;           //disable binary
+        bEnablerArray[1] = false;           //disable bool
+        bEnablerArray[2] = false;           //disable decimal
+        bEnablerArray[3] = false;           //disable hex
+        bEnablerArray[4] = false;           //disable float
+        bEnablerArray[5] = false;           //disable char
+    }
+    //enable or disable the elements
+    for (int i = 0; i < 6; i++)
+    { Enabler(iLinenumber, bEnablerArray [i], i + 1); }
+
+    //free the allocated block of memory
+    delete [] bEnablerArray;
+}
+
+//enables or disables the selectable attribute of the item in the combobox
+void ConnectionSettings::Enabler (int iLinenumber, bool bEnable, int iIndex)
+{ qobject_cast<QStandardItemModel *>(comboBoxesFormat[iLinenumber]->model())->item(iIndex)->setEnabled(bEnable); }
