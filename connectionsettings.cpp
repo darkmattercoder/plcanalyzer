@@ -65,8 +65,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
 
     comboItemsArea << " " << "E" << "A" << "M" << "DB";
     comboItemsLength << " " << "BIT" << "BYTE" << "WORD" << "DWORD";
-    comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT"
-                     << "CHAR";
+    comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT" << "CHAR";
     comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB;
     comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord
                       << DatLenDWord;
@@ -293,10 +292,77 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     switch(originOfEvent)
     {
     case 1:
+        // Area has been changed
+
+        // Dis/Enable the following AreaComboboxes
+        if(comboBoxesArea.count() - 1 > lineNumber)
+        {
+            if(comboBoxesArea[lineNumber]->currentIndex() == 0)
+            {
+                comboBoxesArea[lineNumber + 1]->setDisabled(true);
+                comboBoxesArea[lineNumber + 1]->setCurrentIndex(0);
+            }
+            else
+            {
+                comboBoxesArea[lineNumber + 1]->setEnabled(true);
+            }
+        }
+
+        // Dis/Enable the current line
+        if(comboBoxesArea[lineNumber]->currentIndex() == 0)
+        {
+            // Nothing is selected
+            comboBoxesLength[lineNumber]->setDisabled(true);
+            comboBoxesFormat[lineNumber]->setDisabled(true);
+            lineEditsDB[lineNumber]->setDisabled(true);
+            lineEditsAddress[lineNumber]->setDisabled(true);
+
+            comboBoxesLength[lineNumber]->setCurrentIndex(0);
+            comboBoxesFormat[lineNumber]->setCurrentIndex(0);
+            lineEditsDB[lineNumber]->clear();
+            lineEditsAddress[lineNumber]->clear();
+        }
+        else
+        {
+            //
+            comboBoxesLength[lineNumber]->setEnabled(true);
+
+            if(comboBoxesArea[lineNumber]->currentIndex() == 4)
+            {
+                // DB is selected
+                lineEditsDB[lineNumber]->setEnabled(true);
+                lineEditsDB[lineNumber]->setText("0");
+            }
+        }
         break;
     case 2:
         break;
     case 3:
+        // Lenght has been chenged
+        // Set the available representation for this lenght
+        enableSwitcher(dataItem, lineNumber);
+        comboBoxesFormat[lineNumber]->setCurrentIndex(0);
+
+        // Format has been changed
+        if(comboBoxesLength[lineNumber]->currentIndex() == 1)
+        {
+            // Datalenght Bit is selected
+            lineEditsBits[lineNumber]->setEnabled(true);
+            lineEditsBits[lineNumber]->setText("0");
+        }
+        else
+        {
+            lineEditsBits[lineNumber]->setDisabled(true);
+            lineEditsBits[lineNumber]->clear();
+        }
+
+        if(comboBoxesLength[lineNumber]->currentIndex() != 0)
+        {
+            lineEditsAddress[lineNumber]->setEnabled(true);
+            comboBoxesFormat[lineNumber]->setEnabled(true);
+
+            lineEditsAddress[lineNumber]->setText("0");
+        }
         break;
     default:
         break;
@@ -362,6 +428,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
 //        }
 //    enableSwitcher(dataItem, lineNumber);//enable and disable the selectable values
 }
+
 int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
                                               QComboBox* sendingBox)
 {
@@ -378,7 +445,8 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
 
 void ConnectionSettings::setSlots(QVector<ConSlot> &currentSlots)
 {
-    for(int i=0; i<currentSlots.count();++i){
+    for(int i=0; i<currentSlots.count();++i)
+    {
         comboBoxesArea[i]->setCurrentIndex(comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
         comboBoxesFormat[i]->setCurrentIndex(comboValuesFormat.indexOf(currentSlots[i].iAnzFormat));
         lineEditsBits[i]->setText(QString::number(currentSlots[i].iBitnummer));
@@ -399,8 +467,6 @@ bool ConnectionSettings::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
 {
     return le1->objectName() < le2->objectName();
 }
-
-
 
 //switch to select case
 void ConnectionSettings::enableSwitcher(int iDataitem, int iLinenumber)
@@ -443,7 +509,9 @@ void ConnectionSettings::enableSwitcher(int iDataitem, int iLinenumber)
     }
     //enable or disable the elements
     for (int i = 0; i < 6; i++)
-    { Enabler(iLinenumber, bEnablerArray [i], i + 1); }
+    {
+        Enabler(iLinenumber, bEnablerArray [i], i + 1);
+    }
 
     //free the allocated block of memory
     delete [] bEnablerArray;
@@ -451,4 +519,6 @@ void ConnectionSettings::enableSwitcher(int iDataitem, int iLinenumber)
 
 //enables or disables the selectable attribute of the item in the combobox
 void ConnectionSettings::Enabler (int iLinenumber, bool bEnable, int iIndex)
-{ qobject_cast<QStandardItemModel *>(comboBoxesFormat[iLinenumber]->model())->item(iIndex)->setEnabled(bEnable); }
+{
+    qobject_cast<QStandardItemModel *>(comboBoxesFormat[iLinenumber]->model())->item(iIndex)->setEnabled(bEnable);
+}
