@@ -205,6 +205,7 @@ void ConnectionSettings::on_buttonBox_accepted()
 
     // Emit the signal that the Slots has changed
     emit SlotsChanged(newSlots);
+    this->show();
 }
 
 void ConnectionSettings::SetSettings(ConSets *CurrentSets)
@@ -329,7 +330,12 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
             {
                 // DB is selected
                 lineEditsDB[lineNumber]->setEnabled(true);
-                lineEditsDB[lineNumber]->setText("0");
+            }
+            else
+            {
+                // DB is deselected
+                lineEditsDB[lineNumber]->setDisabled(true);
+                lineEditsDB[lineNumber]->clear();
             }
         }
         break;
@@ -346,7 +352,6 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         {
             // Datalenght Bit is selected
             lineEditsBits[lineNumber]->setEnabled(true);
-            lineEditsBits[lineNumber]->setText("0");
         }
         else
         {
@@ -358,8 +363,6 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         {
             lineEditsAddress[lineNumber]->setEnabled(true);
             comboBoxesFormat[lineNumber]->setEnabled(true);
-
-            lineEditsAddress[lineNumber]->setText("0");
         }
         break;
     default:
@@ -412,34 +415,34 @@ void ConnectionSettings::enableSwitcher(int iDataitem, int iLinenumber)
     //create a temporary array with 6 elements
     bool *bEnablerArray = new bool[6];
 
+    bEnablerArray[1] = true;            //enable binary
     bEnablerArray[2] = true;            //enable decimal
-    bEnablerArray[0] = true;            //enable binary
 
     //select the settings for the selectable property
     switch (iDataitem)
     {
     case DatLenBit:
-        bEnablerArray[1] = true;            //enable bool
+        bEnablerArray[0] = true;            //enable bool
         bEnablerArray[3] = false;           //disable hex
         bEnablerArray[4] = false;           //disable float
         bEnablerArray[5] = false;           //disable char
         break;
     case DatLenByte:
     case DatLenWord:
-        bEnablerArray[1] = false;           //diable bool
+        bEnablerArray[0] = false;           //diable bool
         bEnablerArray[3] = true;            //enable hex
         bEnablerArray[4] = false;           //disable float
         bEnablerArray[5] = true;            //enable char
         break;
     case DatLenDWord:
-        bEnablerArray[1] = false;           //diable bool
+        bEnablerArray[0] = false;           //diable bool
         bEnablerArray[3] = true;            //enable hex
         bEnablerArray[4] = true;            //enable float
         bEnablerArray[5] = true;            //enable char
         break;
     default:
-        bEnablerArray[0] = false;           //disable binary
-        bEnablerArray[1] = false;           //disable bool
+        bEnablerArray[0] = false;           //disable bool
+        bEnablerArray[1] = false;           //disable binary
         bEnablerArray[2] = false;           //disable decimal
         bEnablerArray[3] = false;           //disable hex
         bEnablerArray[4] = false;           //disable float

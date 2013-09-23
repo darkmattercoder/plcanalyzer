@@ -95,7 +95,6 @@ private:
 //    Qt::GlobalColor /*graphColors[8]*/;
     //Modulo value for dynamic graphColor generation
     int moduloValue;
-
     QIntValidator* myBitValidator;
     QIntValidator* myByteAddressValidator;
 
