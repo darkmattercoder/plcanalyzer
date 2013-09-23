@@ -205,7 +205,6 @@ void ConnectionSettings::on_buttonBox_accepted()
 
     // Emit the signal that the Slots has changed
     emit SlotsChanged(newSlots);
-    this->show();
 }
 
 void ConnectionSettings::SetSettings(ConSets *CurrentSets)
@@ -342,11 +341,12 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     case 2:
         break;
     case 3:
-        // Lenght has been chenged
+        // Lenght has been changed
         // Set the available representation for this lenght
         enableSwitcher(dataItem, lineNumber);
-        comboBoxesFormat[lineNumber]->setCurrentIndex(0);
-
+        if(!comboBoxesFormat.contains(sendingBox) && !readingFromFile){
+            comboBoxesFormat[lineNumber]->setCurrentIndex(0);
+        }
         // Format has been changed
         if(comboBoxesLength[lineNumber]->currentIndex() == 1)
         {
@@ -364,6 +364,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
             lineEditsAddress[lineNumber]->setEnabled(true);
             comboBoxesFormat[lineNumber]->setEnabled(true);
         }
+
         break;
     default:
         break;
@@ -386,6 +387,7 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
 
 void ConnectionSettings::setSlots(QVector<ConSlot> &currentSlots)
 {
+    readingFromFile = true;
     for(int i=0; i<currentSlots.count();++i)
     {
         comboBoxesArea[i]->setCurrentIndex(comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
@@ -395,6 +397,7 @@ void ConnectionSettings::setSlots(QVector<ConSlot> &currentSlots)
         lineEditsDB[i]->setText(QString::number(currentSlots[i].iDBnummer));
         comboBoxesLength[i]->setCurrentIndex(comboValuesLength.indexOf(currentSlots[i].iDatenlaenge));
     }
+    readingFromFile = false;
 }
 
 //LessThan Comparison for combo boxes

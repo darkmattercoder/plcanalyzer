@@ -90,6 +90,8 @@ private:
     static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 
+    bool readingFromFile;
+
     //Graph colors as a "resorted" int-vector of Qt::GlobalColors
     QVector<QColor> graphColors;
 //    Qt::GlobalColor /*graphColors[8]*/;
