@@ -447,3 +447,52 @@ QString S7Connection::interpret(ConSlot cSlot)
     }
     return szRetVal;
 }
+
+// Interpret Graph
+QString S7Connection::interpret(ConSlot cSlot, bool bGraphOutput)
+{
+    QString szRetVal;
+
+    if(bGraphOutput)
+    {
+        switch(cSlot.iDatenlaenge)
+        {
+        case DatLenBit:
+            szRetVal  = QString::number(cSlot.RetVal.Bit);
+            break;
+
+        case DatLenByte:
+            szRetVal  = QString::number(cSlot.RetVal.Byte);
+            break;
+
+        case DatLenWord:
+            szRetVal  = QString::number(cSlot.RetVal.Int);
+
+        case DatLenDWord:
+            switch(cSlot.iAnzFormat)
+            {
+            case AnzFormatGleitpunkt:
+                szRetVal = QString::number(cSlot.RetVal.Real);
+                break;
+            default:
+                szRetVal  = QString::number(cSlot.RetVal.DInt);
+                break;
+            }
+            break;
+
+        default:
+            std::cout << "Laenge muss in Bit angegeben werden und kann maximal 32"
+                         "betragen." << std::endl;
+            szRetVal = "0";
+            break;
+        }
+        return szRetVal;
+    }
+    else
+    {
+        // Execute for normal output
+        szRetVal = interpret(cSlot);
+    }
+    return szRetVal;
+}
+

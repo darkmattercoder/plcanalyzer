@@ -188,6 +188,7 @@ void MainWindow::TimeOut()
         /*save data if the amount of points is reached*/
         if (recordings == amountOfPoints)
         {
+            y.resize(5);
 
 //            ui->textEdit->append(QString::number(y[0].size()));
 //            ui->textEdit->append(QString::number(y.size()));
