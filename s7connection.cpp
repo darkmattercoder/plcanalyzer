@@ -113,17 +113,17 @@ bool S7Connection::startConnection(WId WndHandle)
                         initSuccess=1;
                         a= daveListReachablePartners(di,buf1);
                         std::cout << "daveListReachablePartners"
-                                     "List length: %d\n" << a << std::endl;
+                                     "List length:  " << a << std::endl;
                         if (a>0) {
                             for (int j=0;j<a;j++) {
                                 if (buf1[j]==daveMPIReachable) {
                                     std::cout << "Aktiver Teilnehmer mit"
-                                                 "Adresse:%d\n" << j <<
+                                                 "Adresse: " << j <<
                                                  std::endl;
                                 }
                                 if (buf1[j]==daveMPIPassive) {
                                     std::cout << "Passiver Teilnehmer mit"
-                                                 "Adresse:%d\n" << j <<
+                                                 "Adresse: " << j <<
                                                  std::endl;
                                 }
                             }
@@ -167,7 +167,7 @@ bool S7Connection::startConnection(WId WndHandle)
             }
             else
             {
-                std::cout << "Es konnte keine Verbinung aufgebaut werden.\n"
+                std::cout << "Es konnte keine Verbinung aufgebaut werden."
                           << std::endl;
                 daveDisconnectAdapter(di);
 
@@ -334,8 +334,8 @@ void S7Connection::readSlots(QVector<ConSlot> &cSlot, int iAmountSlots)
         }
         else
         {
-            // Ausgabe des Fehlercodes
-            std::cout << "*** Error: %s\n" << daveStrerror(res) << std::endl;
+            // Errorcode output
+            std::cout << "*** Error: " << daveStrerror(res) << std::endl;
         }
     }
 
