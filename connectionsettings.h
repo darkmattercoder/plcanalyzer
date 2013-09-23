@@ -52,7 +52,7 @@ public:
     explicit ConnectionSettings(QWidget *parent = 0);
     ~ConnectionSettings();
     void SetSettings(ConSets* CurrentSets);
-    void SetSlots(QVector<ConSlot> &currentSlots);
+    void setSlots(QVector<ConSlot> &currentSlots);
     ConSets* m_DiagSets;
     QVector<ConSlot> newSlots;
     
@@ -101,7 +101,7 @@ private:
 
     //functions for selecting the selectable items
     void Enabler (int iLinenumber, bool bEnable, int iIndex);
-    void EnableSwticher(int iDataitem, int iLinenumber);
+    void enableSwitcher(int iDataitem, int iLinenumber);
 
 };
 

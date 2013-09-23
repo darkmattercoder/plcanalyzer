@@ -275,76 +275,92 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     QComboBox *sendingBox = (QComboBox *)sender();
     int dataItem = sendingBox->itemData(index).toInt();
     int lineNumber = 0;
+    int originOfEvent = 0;
 
     //get the corresponding line
     if(comboBoxesArea.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesArea,sendingBox);
+        originOfEvent = 1;
     }else if(comboBoxesFormat.contains(sendingBox)){
         lineNumber = findCorrespondingLine(comboBoxesFormat,sendingBox);
+        originOfEvent = 2;
     }else if(comboBoxesLength.contains(sendingBox))
     {
         lineNumber = findCorrespondingLine(comboBoxesLength,sendingBox);
+        originOfEvent = 3;
     }
 
-    switch (dataItem)
+    switch(originOfEvent)
     {
-    case daveInputs:
-    case daveOutputs:
-        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-        {
-            lineEditsBits[lineNumber]->setEnabled(true);
-        }
-        lineEditsDB[lineNumber]->clear();
-        lineEditsDB[lineNumber]->setDisabled(true);
+    case 1:
         break;
-    case daveFlags:
-        lineEditsDB[lineNumber]->clear();
-        lineEditsDB[lineNumber]->setDisabled(true);
-        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-        {
-            lineEditsBits[lineNumber]->setEnabled(true);
-        }
+    case 2:
         break;
-    case daveDB:
-        lineEditsDB[lineNumber]->setEnabled(true);
-        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-        {
-            lineEditsBits[lineNumber]->setEnabled(true);
-        }
-        break;
-    case DatLenWord:
-    case DatLenByte:
-    case DatLenDWord:
-        lineEditsBits[lineNumber]->setDisabled(true);
-        lineEditsBits[lineNumber]->clear();
-
-        comboBoxesFormat[lineNumber]->setCurrentIndex(0);
-
-        for (int i=3; i<comboItemsArea.count()+2;++i)
-        {
-            qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(true);
-        }
+    case 3:
         break;
     default:
-        if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-        {
-            lineEditsBits[lineNumber]->setEnabled(true);
-            for (int i=3; i<comboItemsArea.count()+2;++i)
-            {
-                qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(false);
-            }
-        }else
-        {
-            lineEditsBits[lineNumber]->setDisabled(true);
-            lineEditsBits[lineNumber]->clear();
-        }
-        if(!(comboBoxesArea[lineNumber]->itemData(comboBoxesArea[lineNumber]->currentIndex()).toInt() == daveDB))
-        {
-            lineEditsDB[lineNumber]->setDisabled(true);
-            lineEditsDB[lineNumber]->clear();
-        }else            lineEditsDB[lineNumber]->setEnabled(true);
+        break;
     }
-    EnableSwticher(dataItem, lineNumber);//enable and disable the selectable values
+
+//        switch (dataItem)
+//        {
+//        case daveInputs:
+//        case daveOutputs:
+//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+//            {
+//                lineEditsBits[lineNumber]->setEnabled(true);
+//            }
+//            lineEditsDB[lineNumber]->clear();
+//            lineEditsDB[lineNumber]->setDisabled(true);
+//            break;
+//        case daveFlags:
+//            lineEditsDB[lineNumber]->clear();
+//            lineEditsDB[lineNumber]->setDisabled(true);
+//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+//            {
+//                lineEditsBits[lineNumber]->setEnabled(true);
+//            }
+//            break;
+//        case daveDB:
+//            lineEditsDB[lineNumber]->setEnabled(true);
+//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+//            {
+//                lineEditsBits[lineNumber]->setEnabled(true);
+//            }
+//            break;
+//        case DatLenWord:
+//        case DatLenByte:
+//        case DatLenDWord:
+//            lineEditsBits[lineNumber]->setDisabled(true);
+//            lineEditsBits[lineNumber]->clear();
+
+//            comboBoxesFormat[lineNumber]->setCurrentIndex(0);
+
+//            for (int i=3; i<comboItemsArea.count()+2;++i)
+//            {
+//                qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(true);
+//            }
+//            break;
+//        default:
+//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
+//            {
+//                lineEditsBits[lineNumber]->setEnabled(true);
+//                for (int i=3; i<comboItemsArea.count()+2;++i)
+//                {
+//                    qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(false);
+//                }
+//            }else
+//            {
+//                lineEditsBits[lineNumber]->setDisabled(true);
+//                lineEditsBits[lineNumber]->clear();
+//            }
+//            if(!(comboBoxesArea[lineNumber]->itemData(comboBoxesArea[lineNumber]->currentIndex()).toInt() == daveDB))
+//            {
+//                lineEditsDB[lineNumber]->setDisabled(true);
+//                lineEditsDB[lineNumber]->clear();
+//            }else            lineEditsDB[lineNumber]->setEnabled(true);
+//        }
+//    enableSwitcher(dataItem, lineNumber);//enable and disable the selectable values
 }
 int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
                                               QComboBox* sendingBox)
@@ -360,7 +376,7 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
     return lineNumber;
 }
 
-void ConnectionSettings::SetSlots(QVector<ConSlot> &currentSlots)
+void ConnectionSettings::setSlots(QVector<ConSlot> &currentSlots)
 {
     for(int i=0; i<currentSlots.count();++i){
         comboBoxesArea[i]->setCurrentIndex(comboValuesArea.indexOf(currentSlots[i].iAdrBereich));
@@ -387,7 +403,7 @@ bool ConnectionSettings::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
 
 
 //switch to select case
-void ConnectionSettings::EnableSwticher(int iDataitem, int iLinenumber)
+void ConnectionSettings::enableSwitcher(int iDataitem, int iLinenumber)
 {
     //create a temporary array with 6 elements
     bool *bEnablerArray = new bool[6];
@@ -403,20 +419,20 @@ void ConnectionSettings::EnableSwticher(int iDataitem, int iLinenumber)
         bEnablerArray[3] = false;           //disable hex
         bEnablerArray[4] = false;           //disable float
         bEnablerArray[5] = false;           //disable char
-    break;
+        break;
     case DatLenByte:
     case DatLenWord:
         bEnablerArray[1] = false;           //diable bool
         bEnablerArray[3] = true;            //enable hex
         bEnablerArray[4] = false;           //disable float
         bEnablerArray[5] = true;            //enable char
-    break;
+        break;
     case DatLenDWord:
         bEnablerArray[1] = false;           //diable bool
         bEnablerArray[3] = true;            //enable hex
         bEnablerArray[4] = true;            //enable float
         bEnablerArray[5] = true;            //enable char
-    break;
+        break;
     default:
         bEnablerArray[0] = false;           //disable binary
         bEnablerArray[1] = false;           //disable bool

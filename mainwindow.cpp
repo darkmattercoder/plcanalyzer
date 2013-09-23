@@ -330,7 +330,7 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
     void MainWindow::on_pushButton_ConSets_clicked()
     {
         //Fill the fields with data
-        ConDiag.SetSlots(MySlot);
+        ConDiag.setSlots(MySlot);
         ConDiag.show();
 
 
