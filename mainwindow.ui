@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>606</width>
-    <height>617</height>
+    <height>550</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -15,6 +15,18 @@
     <horstretch>0</horstretch>
     <verstretch>0</verstretch>
    </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>606</width>
+    <height>550</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>606</width>
+    <height>550</height>
+   </size>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
@@ -24,7 +36,7 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>490</y>
+      <y>430</y>
       <width>581</width>
       <height>60</height>
      </rect>
@@ -43,9 +55,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>220</y>
+      <y>40</y>
       <width>581</width>
-      <height>211</height>
+      <height>210</height>
      </rect>
     </property>
    </widget>
@@ -53,8 +65,8 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>450</y>
-      <width>304</width>
+      <y>260</y>
+      <width>181</width>
       <height>29</height>
      </rect>
     </property>
@@ -146,10 +158,10 @@
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>339</x>
-      <y>40</y>
+      <x>340</x>
+      <y>259</y>
       <width>251</width>
-      <height>161</height>
+      <height>151</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -247,7 +259,7 @@
      <x>0</x>
      <y>0</y>
      <width>606</width>
-     <height>25</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">

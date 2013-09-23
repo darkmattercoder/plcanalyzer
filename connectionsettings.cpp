@@ -67,8 +67,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     comboItemsLength << " " << "BIT" << "BYTE" << "WORD" << "DWORD";
     comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT" << "CHAR";
     comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB;
-    comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord
-                      << DatLenDWord;
+    comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord << DatLenDWord;
     comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatBinaer
                       << AnzFormatDezimal << AnzFormatHexadezimal
                       << AnzFormatGleitpunkt << AnzFormatZeichen;
@@ -293,7 +292,6 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     {
     case 1:
         // Area has been changed
-
         // Dis/Enable the following AreaComboboxes
         if(comboBoxesArea.count() - 1 > lineNumber)
         {
@@ -324,7 +322,7 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
         }
         else
         {
-            //
+            // One item is selected
             comboBoxesLength[lineNumber]->setEnabled(true);
 
             if(comboBoxesArea[lineNumber]->currentIndex() == 4)
@@ -367,66 +365,6 @@ void ConnectionSettings::comboBoxIndexChanged(int index)
     default:
         break;
     }
-
-//        switch (dataItem)
-//        {
-//        case daveInputs:
-//        case daveOutputs:
-//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-//            {
-//                lineEditsBits[lineNumber]->setEnabled(true);
-//            }
-//            lineEditsDB[lineNumber]->clear();
-//            lineEditsDB[lineNumber]->setDisabled(true);
-//            break;
-//        case daveFlags:
-//            lineEditsDB[lineNumber]->clear();
-//            lineEditsDB[lineNumber]->setDisabled(true);
-//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-//            {
-//                lineEditsBits[lineNumber]->setEnabled(true);
-//            }
-//            break;
-//        case daveDB:
-//            lineEditsDB[lineNumber]->setEnabled(true);
-//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-//            {
-//                lineEditsBits[lineNumber]->setEnabled(true);
-//            }
-//            break;
-//        case DatLenWord:
-//        case DatLenByte:
-//        case DatLenDWord:
-//            lineEditsBits[lineNumber]->setDisabled(true);
-//            lineEditsBits[lineNumber]->clear();
-
-//            comboBoxesFormat[lineNumber]->setCurrentIndex(0);
-
-//            for (int i=3; i<comboItemsArea.count()+2;++i)
-//            {
-//                qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(true);
-//            }
-//            break;
-//        default:
-//            if(comboBoxesLength[lineNumber]->itemData(comboBoxesLength[lineNumber]->currentIndex()).toInt() == DatLenBit)
-//            {
-//                lineEditsBits[lineNumber]->setEnabled(true);
-//                for (int i=3; i<comboItemsArea.count()+2;++i)
-//                {
-//                    qobject_cast<QStandardItemModel *>(comboBoxesFormat[lineNumber]->model())->item(i)->setEnabled(false);
-//                }
-//            }else
-//            {
-//                lineEditsBits[lineNumber]->setDisabled(true);
-//                lineEditsBits[lineNumber]->clear();
-//            }
-//            if(!(comboBoxesArea[lineNumber]->itemData(comboBoxesArea[lineNumber]->currentIndex()).toInt() == daveDB))
-//            {
-//                lineEditsDB[lineNumber]->setDisabled(true);
-//                lineEditsDB[lineNumber]->clear();
-//            }else            lineEditsDB[lineNumber]->setEnabled(true);
-//        }
-//    enableSwitcher(dataItem, lineNumber);//enable and disable the selectable values
 }
 
 int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
