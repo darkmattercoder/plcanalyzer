@@ -41,7 +41,7 @@ class BinFile //: Datastructure
         QFile myFile;
 
         /*function used for opening the filestream*/
-        void OpenFileStream(QString szFilepath, bool bWrite);
+        void OpenFileStream(QString &szFilepath, bool bWrite);
 
         /*closes the file and saves the data on disk*/
         void CloseFile();
@@ -51,7 +51,7 @@ class BinFile //: Datastructure
         BinFile();
 
 		/*constructor with a filepath for opening the filestream*/
-        BinFile(QString szFilepath, bool bWrite);
+        BinFile(QString &szFilepath, bool bWrite);
 
 		/*deconstructor, used for flushing and closing a file*/
 		~BinFile();
@@ -66,10 +66,10 @@ private:
     QVector<double> LastVals;
 
     /*function used to write new vals to lastvals vector*/
-    void ValsChanged(QVector<QVector<double>> Data, int iIndex);
+    void ValsChanged(QVector<QVector<double>> &Data, int iIndex);
 
     /*function used for checking if data has changed*/
-    bool CheckValues(QVector<QVector<double>> Data, int iIndex);
+    bool CheckValues(QVector<QVector<double>> &Data, int iIndex);
 
 public:
     /*standard constructor*/
@@ -78,13 +78,13 @@ public:
     ~BinWriter();
 
 	/*constructor of class binfile used for setting the filepath*/
-    BinWriter(QString szFilepath, int iSlots);
+    BinWriter(QString &szFilepath, int iSlots);
 
     /*function used for writing the number of slots*/
-    int WriteSlots(QString szFilepath, int iSlots);
+    int WriteSlots(QString &szFilepath, int iSlots);
 
     /*function used for writing data from a vector to the file*/
-    int WriteVector(QVector<QVector<double>> Data, QVector<double> Time);
+    int WriteVector(QVector<QVector<double>> &Data, QVector<double> Time);
 
     /*returns true when the file is already opened*/
     bool AlreadyOpen();
