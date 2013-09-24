@@ -51,7 +51,7 @@ signals:
 
 public slots:
 
-    void updateParentLog(QString logString);
+    void updateParentLog(const QString &logString);
 
 private:
 
