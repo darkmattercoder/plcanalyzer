@@ -376,7 +376,8 @@ void MainWindow::changeSlots(QVector<ConSlot> &newConSlots)
         //open filewriter and write the number of slots
         if (!myWriter.AlreadyOpen())
         {
-            myWriter.WriteSlots(TimeNDate::CreatePath(), MySlot.size());
+            QString timeNDate = TimeNDate::CreatePath();
+            myWriter.WriteSlots(timeNDate, MySlot.size());
         }
     }
 
