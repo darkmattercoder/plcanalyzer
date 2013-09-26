@@ -32,6 +32,9 @@
 
 #include "logtoparent.h"
 
+
+//construct a redirector for piping the outputs to the
+//textedit of the mainwindow
 logToParent::logToParent(MainWindow *parent) :
     QMainWindow(parent)
 {
@@ -55,9 +58,10 @@ logToParent::~logToParent()
     emit threadTerminator();
 }
 
+//write the data to the statusbar and the textedit
+//statbar will hold text for 2 and a half seconds
 void logToParent::updateParentLog(QString logString)
 {
     parentStatbar->showMessage(logString,2500);
     parentTextEdit->append(logString);
-
 }
