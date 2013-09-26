@@ -66,7 +66,7 @@
      <rect>
       <x>10</x>
       <y>260</y>
-      <width>181</width>
+      <width>233</width>
       <height>29</height>
      </rect>
     </property>
@@ -161,7 +161,7 @@
       <x>340</x>
       <y>259</y>
       <width>251</width>
-      <height>151</height>
+      <height>161</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout">
@@ -259,7 +259,7 @@
      <x>0</x>
      <y>0</y>
      <width>606</width>
-     <height>21</height>
+     <height>25</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuDatei">
@@ -321,7 +321,7 @@
   <customwidget>
    <class>QCustomPlot</class>
    <extends>QWidget</extends>
-   <header location="global">qcustomplot.h</header>
+   <header>qcustomplot.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

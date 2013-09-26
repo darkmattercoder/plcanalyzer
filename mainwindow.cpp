@@ -1,34 +1,34 @@
-/*******************************************************************************
- *   *File: mainwindow.cpp                                                     *
- *   *Date: 2013-06-01                                                         *
- *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
- *               Lukas Kern <lukas.kern@online.de>                             *
- *               Carsten Klein <hook-the-master@gmx.net>                       *
- *                                                                             *
- *   *License information:                                                     *
- *                                                                             *
- *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
- *                                                                             *
- *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
- *   redistribute it and/or modify it under the terms of the GNU General       *
- *   Public License as published by the Free Software Foundation; either       *
- *   version 2 of the License, or (at your option) any later version.          *
- *                                                                             *
- *   This program is distributed in the hope that it will be useful, but       *
- *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
- *   GNU General Public License for more details.                              *
- *   You should have received a copy of the GNU General Public License         *
- *   along with this program; if not, write to the Free Software               *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
- *   02110-1301, USA.                                                          *
- *                                                                             *
- *   *Program name: PLCANALYZER                                                *
- *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
- *                               * Reads memory areas                          *
- *                               * Draws a graph over time for operands        *
- *   *Have fun!                                                                *
- ******************************************************************************/
+/******************************************************************************
+*   *File: mainwindow.cpp                                                     *
+*   *Date: 2013-06-01                                                         *
+*   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+*               Lukas Kern <lukas.kern@online.de>                             *
+*               Carsten Klein <hook-the-master@gmx.net>                       *
+*                                                                             *
+*   *License information:                                                     *
+*                                                                             *
+*   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+*                                                                             *
+*   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+*   redistribute it and/or modify it under the terms of the GNU General       *
+*   Public License as published by the Free Software Foundation; either       *
+*   version 2 of the License, or (at your option) any later version.          *
+*                                                                             *
+*   This program is distributed in the hope that it will be useful, but       *
+*   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*   GNU General Public License for more details.                              *
+*   You should have received a copy of the GNU General Public License         *
+*   along with this program; if not, write to the Free Software               *
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+*   02110-1301, USA.                                                          *
+*                                                                             *
+*   *Program name: PLCANALYZER                                                *
+*   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+*                               * Reads memory areas                          *
+*                               * Draws a graph over time for operands        *
+*   *Have fun!                                                                *
+******************************************************************************/
 
 #include "mainwindow.h"
 //uncommented for strange linux compile errrors and mpoved to mainwindow.h
@@ -43,6 +43,7 @@
 #endif
 
 #include "xmlsettingshandler.h"
+
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -216,78 +217,78 @@ void MainWindow::changeSlots(QVector<ConSlot> &newConSlots)
 {
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
-   
+
     //Get the operand labels and displays working
     QVector<QString> opLabel (labelsOperand.count());
     for(int i=0; i < labelsOperand.count(); ++i)
     {
         if(i<MySlot.size())
         {
-               switch(MySlot[i].iAdrBereich)
-        {
-        case daveInputs: opLabel[i] = "E";
-            break;
-        case daveOutputs: opLabel[i] = "A";
-            break;
-        case daveFlags: opLabel[i] = "M";
-            break;
-        case daveDB:    opLabel[i] = "DB";
-            break;
-        default:
-            opLabel[i] = "";
-        }
-        if(opLabel[i] == "DB")
-        {
-            opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
-
-            switch(MySlot[i].iDatenlaenge)
+            switch(MySlot[i].iAdrBereich)
             {
-            case DatLenBit:
-                opLabel[i] += "X ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                opLabel[i] += ".";
-                opLabel[i] += QString::number(MySlot[i].iBitnummer);
+            case daveInputs: opLabel[i] = "E";
                 break;
-            case DatLenWord:
-                opLabel[i] += "W ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+            case daveOutputs: opLabel[i] = "A";
                 break;
-            case DatLenByte:
-                opLabel[i] += "B ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+            case daveFlags: opLabel[i] = "M";
                 break;
-            case DatLenDWord:
-                opLabel[i] += "D ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
+            case daveDB:    opLabel[i] = "DB";
                 break;
             default:
-                opLabel[i] += "";
-
+                opLabel[i] = "";
             }
-        }else if (opLabel[i] != "")
-		{
-            switch(MySlot[i].iDatenlaenge)
+            if(opLabel[i] == "DB")
             {
- case DatLenBit:
-                opLabel[i] += " " + QString::number(MySlot[i].iStartAdr);
-                opLabel[i] += ".";
-                opLabel[i] += QString::number(MySlot[i].iBitnummer);
-                break;
-            case DatLenWord:
-                opLabel[i] += "W ";
-                                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            case DatLenByte:
-                opLabel[i] += "B ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            case DatLenDWord:
-                opLabel[i] += "D ";
-                opLabel[i] += QString::number(MySlot[i].iStartAdr);
-                break;
-            default:
-                opLabel[i] += "";
-            }
+                opLabel[i] += QString::number(MySlot[i].iDBnummer) + "." + "DB";
+
+                switch(MySlot[i].iDatenlaenge)
+                {
+                case DatLenBit:
+                    opLabel[i] += "X ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    opLabel[i] += ".";
+                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                    break;
+                case DatLenWord:
+                    opLabel[i] += "W ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenByte:
+                    opLabel[i] += "B ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenDWord:
+                    opLabel[i] += "D ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                default:
+                    opLabel[i] += "";
+
+                }
+            }else if (opLabel[i] != "")
+            {
+                switch(MySlot[i].iDatenlaenge)
+                {
+                case DatLenBit:
+                    opLabel[i] += " " + QString::number(MySlot[i].iStartAdr);
+                    opLabel[i] += ".";
+                    opLabel[i] += QString::number(MySlot[i].iBitnummer);
+                    break;
+                case DatLenWord:
+                    opLabel[i] += "W ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenByte:
+                    opLabel[i] += "B ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                case DatLenDWord:
+                    opLabel[i] += "D ";
+                    opLabel[i] += QString::number(MySlot[i].iStartAdr);
+                    break;
+                default:
+                    opLabel[i] += "";
+                }
 
             }
 
@@ -306,7 +307,7 @@ void MainWindow::changeSlots(QVector<ConSlot> &newConSlots)
         }
         else
         {
-             lineEditsOperandValue[i]->hide();
+            lineEditsOperandValue[i]->hide();
         }
         labelsOperand[0]->colorCount();
 
@@ -315,71 +316,71 @@ void MainWindow::changeSlots(QVector<ConSlot> &newConSlots)
 }
 
 // Button Verbindungseinstellungen
-    void MainWindow::on_pushButton_ConSets_clicked()
+void MainWindow::on_pushButton_ConSets_clicked()
+{
+    //Fill the fields with data
+    ConDiag.setSlots(MySlot);
+    ConDiag.show();
+}
+
+void MainWindow::on_Button_read_slots_clicked()
+{
+    recordings = 0;
+
+    //Delete old graphs
+    int numberOfGraphs = ui->customPlot->graphCount();
+    qDebug("Number of Graphs is: %i", numberOfGraphs);
+
+    // If numberOfGraphs <  -> add graphs
+    for (int i = numberOfGraphs; i < MySlot.size(); i++)
     {
-        //Fill the fields with data
-        ConDiag.setSlots(MySlot);
-        ConDiag.show();
+        // Add new graphs
+        ui->customPlot->addGraph();
+        // We want to have nice steep edges in our plot, at least when we are not watching floating point operands!
+        if (!(MySlot[i].iAnzFormat == AnzFormatGleitpunkt)) ui->customPlot->graph(i)->setLineStyle(QCPGraph::lsStepCenter);
+        ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
+        qDebug("Adding Graph number %i", i);
     }
 
-    void MainWindow::on_Button_read_slots_clicked()
+    // refresh numberOfGraphs
+    numberOfGraphs = ui->customPlot->graphCount();
+
+    // If numberOfGraphs >  -> remove graphs
+    for (int i = numberOfGraphs; i > MySlot.size(); i--)
     {
-        recordings = 0;
-
-        //Delete old graphs
-        int numberOfGraphs = ui->customPlot->graphCount();
-        qDebug("Number of Graphs is: %i", numberOfGraphs);
-
-        // If numberOfGraphs <  -> add graphs
-        for (int i = numberOfGraphs; i < MySlot.size(); i++)
-        {
-            // Add new graphs
-            ui->customPlot->addGraph();
-            // We want to have nice steep edges in our plot, at least when we are not watching floating point operands!
-            if (!(MySlot[i].iAnzFormat == AnzFormatGleitpunkt)) ui->customPlot->graph(i)->setLineStyle(QCPGraph::lsStepCenter);
-            ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
-            qDebug("Adding Graph number %i", i);
-        }
-
-        // refresh numberOfGraphs
-        numberOfGraphs = ui->customPlot->graphCount();
-
-        // If numberOfGraphs >  -> remove graphs
-        for (int i = numberOfGraphs; i > MySlot.size(); i--)
-        {
-            // Remove not needed graphs
-            ui->customPlot->removeGraph(i);
-            qDebug("Remove Graph: %i", i);
-        }
-
-        // Resize vectors
-
-        // Abtastung mit 10 Hz
-        amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
-        x.resize(amountOfPoints);
-        y.resize(MySlot.size());
-
-        // Resize 2nd dimension
-        for (int i = 0; i <MySlot.size() ; i++)
-        {
-            y[i].resize(amountOfPoints);
-        }
-
-        // give the axes some labels:
-        ui->customPlot->xAxis->setLabel("[time] s");
-        ui->customPlot->yAxis->setLabel("value");
-
-        // set axes ranges, so we see all data:
-        ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
-        ui->customPlot->yAxis->setRange(-5.0, 5.0);
-
-        //open filewriter and write the number of slots
-        if (!myWriter.AlreadyOpen())
-        {
-            QString timeNDate = TimeNDate::CreatePath();
-            myWriter.WriteSlots(timeNDate, MySlot.size());
-        }
+        // Remove not needed graphs
+        ui->customPlot->removeGraph(i);
+        qDebug("Remove Graph: %i", i);
     }
+
+    // Resize vectors
+
+    // Abtastung mit 10 Hz
+    amountOfPoints = ui->lineEdit_Duration->text().toInt() * 10;
+    x.resize(amountOfPoints);
+    y.resize(MySlot.size());
+
+    // Resize 2nd dimension
+    for (int i = 0; i <MySlot.size() ; i++)
+    {
+        y[i].resize(amountOfPoints);
+    }
+
+    // give the axes some labels:
+    ui->customPlot->xAxis->setLabel("[time] s");
+    ui->customPlot->yAxis->setLabel("value");
+
+    // set axes ranges, so we see all data:
+    ui->customPlot->xAxis->setRange(0.0, ui->lineEdit_Duration->text().toInt());
+    ui->customPlot->yAxis->setRange(-5.0, 5.0);
+
+    //open filewriter and write the number of slots
+    if (!myWriter.AlreadyOpen())
+    {
+        QString timeNDate = TimeNDate::CreatePath();
+        myWriter.WriteSlots(timeNDate, MySlot.size());
+    }
+}
 
 // Autoscale axes
 void MainWindow::on_pushButton_clicked()

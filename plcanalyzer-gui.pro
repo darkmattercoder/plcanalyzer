@@ -16,7 +16,6 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     s7connection.cpp \
     connectionsettings.cpp \
-    qcustomplot.cpp \
    stdoutredirector.cpp \
     logtoparent.cpp \
     xmlsettingshandler.cpp \
@@ -28,7 +27,6 @@ HEADERS  += mainwindow.h \
       stdoutredirector.h \
     logtoparent.h \
     xmlsettingshandler.h \
-    qcustomplot.h \
     filestream.h
 
 FORMS    += mainwindow.ui \
@@ -60,6 +58,7 @@ LINUX {
 LIBS += -L$$PWD/lib/ -lnodave64
 }
 INCLUDEPATH += $$PWD/include/libnodave/
+INCLUDEPATH += $$PWD/include/qcustomplot/
 DEPENDPATH += $$PWD/lib/
 
 PRE_TARGETDEPS += $$PWD/lib/libnodave.lib

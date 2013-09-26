@@ -18,9 +18,9 @@
 **                                                                        **
 ****************************************************************************
 **           Author: Emanuel Eichhammer                                   **
-**  Website/Contact: http://www.WorksLikeClockwork.com/                   **
-**             Date: 19.05.13                                             **
-**          Version: 1.0.0-beta                                           **
+**  Website/Contact: http://www.qcustomplot.com/                          **
+**             Date: 05.09.13                                             **
+**          Version: 1.0.1                                                **
 ****************************************************************************/
 
 #ifndef QCUSTOMPLOT_H
@@ -40,7 +40,6 @@
 #include <QPixmap>
 #include <QVector>
 #include <QString>
-#include <QPrinter>
 #include <QDateTime>
 #include <QMultiMap>
 #include <QFlags>
@@ -50,8 +49,14 @@
 #include <QCache>
 #include <QMargins>
 #include <qmath.h>
-#include <qnumeric.h>
 #include <limits>
+#if QT_VERSION < QT_VERSION_CHECK(5, 0, 0)
+#  include <qnumeric.h>
+#  include <QPrinter>
+#else
+#  include <QtNumeric>
+#  include <QPrinter>
+#endif
 
 class QCPPainter;
 class QCustomPlot;
@@ -156,7 +161,7 @@ Q_DECLARE_FLAGS(PlottingHints, PlottingHint)
 enum Interaction { iRangeDrag         = 0x001 ///< <tt>0x001</tt> Axis ranges are draggable (see \ref QCPAxisRect::setRangeDrag, \ref QCPAxisRect::setRangeDragAxes)
                    ,iRangeZoom        = 0x002 ///< <tt>0x002</tt> Axis ranges are zoomable with the mouse wheel (see \ref QCPAxisRect::setRangeZoom, \ref QCPAxisRect::setRangeZoomAxes)
                    ,iMultiSelect      = 0x004 ///< <tt>0x004</tt> The user can select multiple objects by holding the modifier set by \ref QCustomPlot::setMultiSelectModifier while clicking
-                   ,iSelectPlottables = 0x008 ///< <tt>0x008</tt> Plottables are selectable
+                   ,iSelectPlottables = 0x008 ///< <tt>0x008</tt> Plottables are selectable (e.g. graphs, curves, bars,... see QCPAbstractPlottable)
                    ,iSelectAxes       = 0x010 ///< <tt>0x010</tt> Axes are selectable (or parts of them, see QCPAxis::setSelectableParts)
                    ,iSelectLegend     = 0x020 ///< <tt>0x020</tt> Legends are selectable (or their child items, see QCPLegend::setSelectableParts)
                    ,iSelectItems      = 0x040 ///< <tt>0x040</tt> Items are selectable (Rectangles, Arrows, Textitems, etc. see \ref QCPAbstractItem)
@@ -172,7 +177,7 @@ Q_DECLARE_FLAGS(Interactions, Interaction)
 */
 inline bool isInvalidData(double value)
 {
-  return (!qIsNaN(value) && !qIsInf(value));
+  return qIsNaN(value) || qIsInf(value);
 }
 
 /*! \internal
@@ -244,12 +249,12 @@ public:
     drawn with the pen and brush specified with \ref setPen and \ref setBrush.
   */
   Q_ENUMS(ScatterShape)
-  enum ScatterShape { ssNone       ///< \enumimage{ssNone.png} no scatter symbols are drawn (e.g. in QCPGraph, data only represented with lines)
+  enum ScatterShape { ssNone       ///< no scatter symbols are drawn (e.g. in QCPGraph, data only represented with lines)
                       ,ssDot       ///< \enumimage{ssDot.png} a single pixel (use \ref ssDisc or \ref ssCircle if you want a round shape with a certain radius)
                       ,ssCross     ///< \enumimage{ssCross.png} a cross
                       ,ssPlus      ///< \enumimage{ssPlus.png} a plus
                       ,ssCircle    ///< \enumimage{ssCircle.png} a circle
-                      ,ssDisc      ///< \enumimage{ssDisc.png} a circle which is filled with the pen (not the brush as with ssCircle)
+                      ,ssDisc      ///< \enumimage{ssDisc.png} a circle which is filled with the pen's color (not the brush as with ssCircle)
                       ,ssSquare    ///< \enumimage{ssSquare.png} a square
                       ,ssDiamond   ///< \enumimage{ssDiamond.png} a diamond
                       ,ssStar      ///< \enumimage{ssStar.png} a star with eight arms, i.e. a combination of cross and plus
@@ -260,8 +265,8 @@ public:
                       ,ssCrossCircle      ///< \enumimage{ssCrossCircle.png} a circle with a cross inside
                       ,ssPlusCircle       ///< \enumimage{ssPlusCircle.png} a circle with a plus inside
                       ,ssPeace     ///< \enumimage{ssPeace.png} a circle, with one vertical and two downward diagonal lines
-                      ,ssPixmap    ///< \enumimage{ssPixmap.png} a custom pixmap specified by setScatterPixmap, centered on the data point coordinates
-                      ,ssCustom    ///< \enumimage{ssCustom.png} custom painter operations are performed per scatter (As QPainterPath, see \ref setCustomPath)
+                      ,ssPixmap    ///< a custom pixmap specified by \ref setPixmap, centered on the data point coordinates
+                      ,ssCustom    ///< custom painter operations are performed per scatter (As QPainterPath, see \ref setCustomPath)
                     };
 
   QCPScatterStyle();
@@ -560,7 +565,7 @@ public:
   virtual void update();
   virtual QSize minimumSizeHint() const;
   virtual QSize maximumSizeHint() const;
-  virtual QList<QCPLayoutElement*> elements(bool recursive=false) const;
+  virtual QList<QCPLayoutElement*> elements(bool recursive) const;
   
   // reimplemented virtual methods:
   virtual double selectTest(const QPointF &pos, bool onlySelectable, QVariant *details=0) const;
@@ -605,7 +610,7 @@ public:
   
   // reimplemented virtual methods:
   virtual void update();
-  virtual QList<QCPLayoutElement*> elements(bool recursive=false) const;
+  virtual QList<QCPLayoutElement*> elements(bool recursive) const;
   
   // introduced virtual methods:
   virtual int elementCount() const = 0;
@@ -618,9 +623,6 @@ public:
   bool removeAt(int index);
   bool remove(QCPLayoutElement* element);
   void clear();
-  
-  // reimplemented virtual methods:
-  virtual double selectTest(const QPointF &pos, bool onlySelectable, QVariant *details) const;
   
 protected:
   // introduced virtual methods:
@@ -675,7 +677,7 @@ public:
   virtual QCPLayoutElement* elementAt(int index) const;
   virtual QCPLayoutElement* takeAt(int index);
   virtual bool take(QCPLayoutElement* element);
-  virtual QList<QCPLayoutElement*> elements(bool recursive=false) const;
+  virtual QList<QCPLayoutElement*> elements(bool recursive) const;
   virtual void simplify();
   virtual QSize minimumSizeHint() const;
   virtual QSize maximumSizeHint() const;
@@ -735,6 +737,7 @@ public:
   virtual QCPLayoutElement* takeAt(int index);
   virtual bool take(QCPLayoutElement* element);
   virtual void simplify() {}
+  virtual double selectTest(const QPointF &pos, bool onlySelectable, QVariant *details=0) const;
   
   // non-virtual methods:
   void addElement(QCPLayoutElement *element, Qt::Alignment alignment);
@@ -1330,6 +1333,9 @@ protected:
   int mAnchorId;
   QSet<QCPItemPosition*> mChildren;
   
+  // introduced virtual methods:
+  virtual QCPItemPosition *toQCPItemPosition() { return 0; }
+  
   // non-virtual methods:
   void addChild(QCPItemPosition* pos); // called from pos when this anchor is set as parent
   void removeChild(QCPItemPosition *pos); // called from pos when its parent anchor is reset or pos deleted
@@ -1387,6 +1393,9 @@ protected:
   QWeakPointer<QCPAxisRect> mAxisRect;
   double mKey, mValue;
   QCPItemAnchor *mParentAnchor;
+  
+  // reimplemented virtual methods:
+  virtual QCPItemPosition *toQCPItemPosition() { return this; }
   
 private:
   Q_DISABLE_COPY(QCPItemPosition)
@@ -1592,6 +1601,7 @@ public:
   bool saveBmp(const QString &fileName, int width=0, int height=0, double scale=1.0);
   bool saveRastered(const QString &fileName, int width, int height, double scale, const char *format, int quality=-1);
   QPixmap toPixmap(int width=0, int height=0, double scale=1.0);
+  void toPainter(QCPPainter *painter, int width=0, int height=0);
   Q_SLOT void replot();
   
   QCPAxis *xAxis, *yAxis, *xAxis2, *yAxis2;
@@ -1673,6 +1683,10 @@ protected:
   friend class QCPLayer;
   friend class QCPAxisRect;
 };
+
+
+/*! \file */
+
 
 
 class QCP_LIB_DECL QCPData
@@ -1836,6 +1850,10 @@ protected:
 };
 
 
+/*! \file */
+
+
+
 class QCP_LIB_DECL QCPCurveData
 {
 public:
@@ -1929,6 +1947,10 @@ protected:
 };
 
 
+/*! \file */
+
+
+
 class QCP_LIB_DECL QCPBarData
 {
 public:
@@ -2009,6 +2031,10 @@ protected:
   friend class QCustomPlot;
   friend class QCPLegend;
 };
+
+
+/*! \file */
+
 
 
 class QCP_LIB_DECL QCPStatisticalBox : public QCPAbstractPlottable
@@ -2407,9 +2433,10 @@ public:
   QCPItemAnchor * const bottom;
   QCPItemAnchor * const bottomLeftRim;
   QCPItemAnchor * const left;
+  QCPItemAnchor * const center;
   
 protected:
-  enum AnchorIndex {aiTopLeftRim, aiTop, aiTopRightRim, aiRight, aiBottomRightRim, aiBottom, aiBottomLeftRim, aiLeft};
+  enum AnchorIndex {aiTopLeftRim, aiTop, aiTopRightRim, aiRight, aiBottomRightRim, aiBottom, aiBottomLeftRim, aiLeft, aiCenter};
   
   // property members:
   QPen mPen, mSelectedPen;
@@ -2687,7 +2714,7 @@ public:
   
   // reimplemented virtual methods:
   virtual void update();
-  virtual QList<QCPLayoutElement*> elements(bool recursive=false) const;
+  virtual QList<QCPLayoutElement*> elements(bool recursive) const;
 
 protected:
   // property members:
