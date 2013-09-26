@@ -38,6 +38,7 @@
 logToParent::logToParent(MainWindow *parent) :
     QMainWindow(parent)
 {
+    // See also the destructor description
     myRedirector = new stdoutRedirector;
     connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
     std::cout << "Debug: Qthread for logging run: " << myRedirector->
@@ -54,14 +55,17 @@ logToParent::logToParent(MainWindow *parent) :
 
 logToParent::~logToParent()
 {
-//
     emit threadTerminator();
+    // myRedirector should have been removed here
+    // unfortunately that leads to hard thread destroying
+
 }
 
 //write the data to the statusbar and the textedit
 //statbar will hold text for 2 and a half seconds
-void logToParent::updateParentLog(QString logString)
+void logToParent::updateParentLog(const QString &logString)
 {
     parentStatbar->showMessage(logString,2500);
     parentTextEdit->append(logString);
+    qDebug() << QDateTime::currentDateTime().toString("yyyy-mm-dd hh:mm:ss") << "Debug :" << logString;
 }
