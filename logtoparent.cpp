@@ -35,6 +35,7 @@
 logToParent::logToParent(MainWindow *parent) :
     QMainWindow(parent)
 {
+    // See also the destructor description
     myRedirector = new stdoutRedirector;
     connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
     std::cout << "Debug: Qthread for logging run: " << myRedirector->
@@ -52,7 +53,9 @@ logToParent::logToParent(MainWindow *parent) :
 logToParent::~logToParent()
 {
     emit threadTerminator();
-    delete myRedirector;
+    // myRedirector should have been removed here
+    // unfortunately that leads to hard thread destroying
+
 }
 
 void logToParent::updateParentLog(const QString &logString)
