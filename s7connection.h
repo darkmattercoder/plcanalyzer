@@ -116,27 +116,42 @@ private:
     _daveOSserialType fds;
     daveInterface * di;
     daveConnection * dc, *dc2;
-    QMessageBox msgBox;
-    int initSuccess;
+    bool initSuccess;
 
     // Private Functions
 
 
 public:
     // Public Functions
+    // Class constructor
     S7Connection();
+
+    // Class deconstructor
     ~S7Connection();
 
+    // Opens the Connection witch is set in MyConSets
     bool startConnection(WId WndHandle);
-    void disconnect();
-    int getValue();
-    bool isConnected();
-    void readSlots(QVector<ConSlot> &cSlot, int iAmountSlots);
-//    void readSlots(ConSlot cSlot[], int iAmountSlots);
-    QString interpret(ConSlot cSlot);
-    QString interpret(ConSlot cSlot, bool bGraphOutput);
 
-    // Public Variables
+    // Disconnect from PLC, and frees all reserved memory
+    void disconnect();
+
+    // Currently only a certain operand is read. To be thrown away or rewritten!
+    int getValue();
+
+    // Returns the connection status
+    bool isConnected();
+
+    // Reads all variables handed in the Slotvector and writes them back
+    void readSlots(QVector<ConSlot> &cSlot, int iAmountSlots);
+
+    // Value output in the desired format from handed slot
+    QString interpret(ConSlot &cSlot);
+
+    // Value output just in decimal oder or float format for graph output
+    QString interpret(ConSlot &cSlot, bool bGraphOutput);
+
+    // Public Variables    
+    // Declaire pointer for connection settings
     ConSets* MyConSet;
 };
 

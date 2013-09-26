@@ -33,9 +33,10 @@
 #include "s7connection.h"
 #include <iostream>
 
+// Class constructor
 S7Connection::S7Connection()
 {
-
+    // Reserve memory for connection settings
     MyConSet = new ConSets;
 
     // Initialisize Variables
@@ -47,32 +48,39 @@ S7Connection::S7Connection()
     MyConSet->IP_Adr = "0.0.0.0";
     MyConSet->rack = 0;
     MyConSet->slot = 2;
-    initSuccess = 0;
+    initSuccess = false;
 }
 
+// Class deconstructor
 S7Connection::~S7Connection()
 {
-    // Disconnect from PLC
+    // Is an connection established?
     if (isConnected())
     {
+        // Disconnect PLC
         disconnect();
     }
+
+    // Free memory
     delete MyConSet;
 }
 
-// Opens the Connection
+// Opens the Connection witch is set in MyConSets
 bool S7Connection::startConnection(WId WndHandle)
 {
+    // Only connect once
     if(!isConnected())
     {
+        // Clear pointer
         fds.rfd = NULL;
 
+        // Get the pointer to the desired entypoint
         switch(MyConSet->useProto)
         {
         case daveProtoMPI:
         case daveProtoPPI:
         case daveProtoAS511:
-            qDebug("Diese Verbinung ist in Vorbereitung");
+            std::cout << "Diese Verbinung ist in Vorbereitung" << std::endl;
             return false;
             break;
 #ifdef BCCWIN
@@ -87,41 +95,52 @@ bool S7Connection::startConnection(WId WndHandle)
             fds.rfd=openSocket(102, MyConSet->IP_Adr.toUtf8());
             break;
         default:
-            std::cout << "Abbruch!\nKeine gueltiges Protokoll gewaehlt!" <<
+            std::cout << "Abbruch! Keine gueltiges Protokoll gewaehlt!" <<
                          std::endl;
             return false;
             break;
         }
 
+        // Copy entypoint pointer
         fds.wfd=fds.rfd;
-        if (((int)fds.rfd)>=0) { 	// had Problems here: HANDLE is unsigned,
-                                    //0 is a valid HANDLE for s7onlinx
 
-            //daveSetDebug(daveDebugListReachables);
+        // Is there a valid pointer
+        if (((int)fds.rfd)>=0)  	// had Problems here: HANDLE is unsigned,
+        {                           //0 is a valid HANDLE for s7onlinx
+            // Open new interface
             di = daveNewInterface(fds, "IF1", MyConSet->localMPI, MyConSet->
                                   useProto, MyConSet->speed);
 
-            daveSetTimeout(di,1000000);
+            // Set Timout for interface
+            daveSetTimeout(di, 1000000);
 
-            char buf1 [davePartnerListSize];
 
+            // If S7 Online Protocol -> initialize adapter
             if (MyConSet->useProto == daveProtoS7online)
             {
-                int a;
-                for (int i=0; i<3; i++) {
-                    if (0==daveInitAdapter(di)) {
-                        initSuccess=1;
-                        a= daveListReachablePartners(di,buf1);
-                        std::cout << "daveListReachablePartners"
-                                     "List length:  " << a << std::endl;
-                        if (a>0) {
-                            for (int j=0;j<a;j++) {
-                                if (buf1[j]==daveMPIReachable) {
+                char buf1 [davePartnerListSize];
+                int iAmountPartners;
+                for (int i=0; i<3; i++)
+                {
+                    // Initalize Adapter
+                    if (0==daveInitAdapter(di))
+                    {
+                        initSuccess = true;
+                        iAmountPartners = daveListReachablePartners(di, buf1);
+                        std::cout << "daveListReachablePartners List length:  "
+                                  << iAmountPartners << std::endl;
+                        if(iAmountPartners > 0)
+                        {
+                            for (int j = 0; j < iAmountPartners; j++)
+                            {
+                                if (buf1[j] == daveMPIReachable)
+                                {
                                     std::cout << "Aktiver Teilnehmer mit"
                                                  "Adresse: " << j <<
                                                  std::endl;
                                 }
-                                if (buf1[j]==daveMPIPassive) {
+                                if (buf1[j] == daveMPIPassive)
+                                {
                                     std::cout << "Passiver Teilnehmer mit"
                                                  "Adresse: " << j <<
                                                  std::endl;
@@ -129,32 +148,44 @@ bool S7Connection::startConnection(WId WndHandle)
                             }
                         }
                         break;
-                    } else daveDisconnectAdapter(di);
+                    }
+                    else
+                    {
+                        // Could not initalize Adapter
+                        // Free the interface
+                        daveDisconnectAdapter(di);
+                    }
 
                 }
 
+                // If adapter couldn´t be initalised -> Error Message
                 if (!initSuccess)
                 {
                     std::cout << "Konnte keine Verbindung mit dem Adapter"
-                                 "herstellen!\n Bitte versuchen sie es"
+                                 "herstellen! Bitte versuchen sie es"
                                  "nocheinmal." << std::endl;
                 }
             }
 
-            // Try to Connect
+            // Open a new connection
             dc = daveNewConnection(di, MyConSet->plcMPI, MyConSet->rack,
                                    MyConSet->slot);
 
+            // Use 2nd Method of MPI Connection
             if(MyConSet->plc2MPI>=0)
+            {
                 dc2 =daveNewConnection(di,MyConSet->plc2MPI,0,0);
+            }
             else
+            {
                 dc2=NULL;
+            }
 
-
+            // Try to connect with opened connection
             if (0==daveConnectPLC(dc))
             {
                 std::cout << "Verbindung erfolgreich hergestellt." << std::endl;
-                initSuccess=1;
+                initSuccess = true;
 
                 if(MyConSet->plc2MPI>=0)
                 {
@@ -171,6 +202,7 @@ bool S7Connection::startConnection(WId WndHandle)
                           << std::endl;
                 daveDisconnectAdapter(di);
 
+                // Close the right entrypoint
                 switch(MyConSet->useProto)
                 {
                 case daveProtoMPI:
@@ -189,55 +221,66 @@ bool S7Connection::startConnection(WId WndHandle)
                     closeSocket(fds.rfd);
                     break;
                 default:
-                    // Unbekannter Protokolltyp gewählt
+                    // Unknown protocol type choosen
                     std::cout << "Unbekannter Protokolltyp!" << std::endl;
                     return false;
                     break;
                 }
             }
-        } else {
-            std::cout << "Couldn't open access point S7ONLINE." << std::endl;
-            //return -1;
+        }
+        else
+        {
+            // Couldn't open access point
+            std::cout << "Zugangspunkt konnte nicht geoeffnet werden" << std::endl;
         }
     }
     else
     {
-        std::cout << "Connection already exists!" << std::endl;
+        // Connection already exists
+        std::cout << "Es besteht bereits eine offene Verbindung" << std::endl;
     }
     return isConnected();
 }
 
-// Disconnect from PLC
+// Disconnect from PLC, and frees all reserved memory
 void S7Connection::disconnect()
 {
+    // Just disconnect if connection has existed
     if (isConnected())
     {
+        // Disconnect and free variables
         daveDisconnectPLC(dc);
         daveFree(dc);
 
+        // If 2nd Method is choosen -> close it
         if(dc2)
         {
+            // Free memory
             daveDisconnectPLC(dc2);
             daveFree(dc);
         }
 
+        // Diconnect opened adapter
         daveDisconnectAdapter(di);
 
+        // Close the opened entypoint
         switch(MyConSet->useProto)
         {
         case daveProtoMPI:
         case daveProtoPPI:
         case daveProtoAS511:
-
+            std::cout << "Diese Verbindung ist noch nicht implementiert" << std::endl;
             break;
 #ifdef BCCWIN
         case daveProtoS7online:
+            // Close S7Online
             closeS7online(int(fds.rfd));
             break;
 #endif
         case daveProtoISOTCP:
         case daveProtoISOTCP243:
         case daveProtoISOTCPR:
+            // Close Netsockets
             closeSocket(fds.rfd);
             break;
         default:
@@ -246,8 +289,11 @@ void S7Connection::disconnect()
             break;
         }
 
+        // Free interface and set disconnected status
         daveFree(di);
-        initSuccess = 0;
+
+        // Set state disconnected
+        initSuccess = false;
 
         std::cout << "Verbindung wurde getrennt." << std::endl;
     }
@@ -261,25 +307,29 @@ int S7Connection::getValue()
     int res;
     res = daveReadBytes(dc, daveFlags, 0, 1, 1, NULL);
 
-    if (res==0) {
+    if (res==0)
+    {
         iReturn = daveGetS8(dc);
     }
     return iReturn;
 }
 
+// Returns the connection status
 bool S7Connection::isConnected()
 {
-    bool bRet = false;
-    if (initSuccess) bRet = true;
-    return bRet;
+    return initSuccess;
 }
 
+// Reads all variables handed in the Slotvector and writes them back
 void S7Connection::readSlots(QVector<ConSlot> &cSlot, int iAmountSlots)
-//void S7Connection::readSlots(ConSlot cSlot[], int iAmountSlots)
 {
     PDU p;
+
+
+    // Prepare the read request
     davePrepareReadRequest(dc, &p);
 
+    // Insert all available slots to read request
     for (int i = 0; i < iAmountSlots; i++)
     {
         // Add Variables to Request
@@ -294,7 +344,7 @@ void S7Connection::readSlots(QVector<ConSlot> &cSlot, int iAmountSlots)
         else
         {
             // Read Bit
-            // Das Bit ab Adresse 0.0
+            // The bit beginning with addresse 0.0
             int iBit = cSlot[i].iStartAdr * 8 + cSlot[i].iBitnummer;
             daveAddBitVarToReadRequest(&p, cSlot[i].iAdrBereich,
                                        cSlot[i].iDBnummer, iBit , 1);
@@ -303,18 +353,20 @@ void S7Connection::readSlots(QVector<ConSlot> &cSlot, int iAmountSlots)
 
     daveResultSet rs;
     unsigned long res;
+
+    // Execute read request
     res=daveExecReadRequest(dc, &p, &rs);
 
+    // Write requested data back to the slots
     for (int i = 0; i < iAmountSlots; i++)
     {
-        // Use the result
+        // Get data from resultset
         res=daveUseResult(dc, &rs, i);
         if (res==0)
         {
             switch(cSlot[i].iDatenlaenge)
             {
             case DatLenBit:
-                // Read Value
                 cSlot[i].RetVal.Bit = bool (daveGetU8(dc));
                 break;
             case DatLenByte:
@@ -339,12 +391,12 @@ void S7Connection::readSlots(QVector<ConSlot> &cSlot, int iAmountSlots)
         }
     }
 
-    // Bereinigung des Ergebnisspeichers
+    // Free result memory
     daveFreeResults(&rs);
 }
 
-// Wert im gewünschten Format ausgeben
-QString S7Connection::interpret(ConSlot cSlot)
+// Value output in the desired format from handed slot
+QString S7Connection::interpret(ConSlot &cSlot)
 {
     QString szRetVal("ERROR");
     switch(cSlot.iDatenlaenge)
@@ -448,8 +500,8 @@ QString S7Connection::interpret(ConSlot cSlot)
     return szRetVal;
 }
 
-// Interpret Graph
-QString S7Connection::interpret(ConSlot cSlot, bool bGraphOutput)
+// Value output just in decimal oder or float format for graph output
+QString S7Connection::interpret(ConSlot &cSlot, bool bGraphOutput)
 {
     QString szRetVal;
 
