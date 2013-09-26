@@ -4,7 +4,7 @@
 /*************************************************************************/
 /*constructor for binary file with a fileparameter and a parameter
  * setting the read and write attributes for interaction with the file*/
-BinFile::BinFile(QString szFilepath, bool bWrite)
+BinFile::BinFile(QString &szFilepath, bool bWrite)
 {
     /*open a file for read/write*/
 	OpenFileStream(szFilepath, bWrite);
@@ -14,7 +14,7 @@ BinFile::BinFile(QString szFilepath, bool bWrite)
 BinFile::BinFile(){}
 
 /*function used for opening a file with the given path*/
-void BinFile::OpenFileStream(QString szFilepath, bool bWrite)
+void BinFile::OpenFileStream(QString &szFilepath, bool bWrite)
 {
     myFile.setFileName(szFilepath);
     /*open the file with the read or write access*/
@@ -48,7 +48,7 @@ void BinFile::CloseFile()
 /* the BinFile                                                           */
 /*************************************************************************/
 /*standard constructor of class binwriter*/
-BinWriter::BinWriter(QString szFilepath, int iSlots) : BinFile(szFilepath, true)
+BinWriter::BinWriter(QString &szFilepath, int iSlots) : BinFile(szFilepath, true)
 {
     /*check if the data can be written*/
     if (myFile.isOpen())
@@ -65,7 +65,7 @@ void BinWriter::Close()
 
 /*write the number of slots into the file after setting it to correct
 path and openeing the file in writemode*/
-int BinWriter::WriteSlots(QString szFilepath, int iSlots)
+int BinWriter::WriteSlots(QString &szFilepath, int iSlots)
 {
     /*open file woith writeaccess*/
     OpenFileStream(szFilepath, true);
@@ -85,7 +85,7 @@ int BinWriter::WriteSlots(QString szFilepath, int iSlots)
 BinWriter::BinWriter(){}
 
 /*function used to write a complete data- and timestampvector*/
-int BinWriter::WriteVector(QVector<QVector<double>> Data, QVector<double> Time)
+int BinWriter::WriteVector(QVector<QVector<double>> &Data, QVector<double> Time)
 {
     /*check if the file is opened and ready for use*/
     if (myFile.isOpen())
@@ -115,7 +115,7 @@ int BinWriter::WriteVector(QVector<QVector<double>> Data, QVector<double> Time)
 }
 
 //this function checks if there were changes in the data
-bool BinWriter::CheckValues(QVector<QVector<double>> Data, int iIndex)
+bool BinWriter::CheckValues(QVector<QVector<double>> &Data, int iIndex)
 {
     /*check for first time*/
     if (LastVals.isEmpty())
@@ -143,13 +143,14 @@ bool BinWriter::CheckValues(QVector<QVector<double>> Data, int iIndex)
     }
 }
 
+//returns tre, if the file is already opened
 bool BinWriter::AlreadyOpen()
 {
     return myFile.isOpen();
 }
 
 /*function used to write new vals to lastvals vector*/
-void BinWriter::ValsChanged(QVector<QVector<double>> Data, int iIndex)
+void BinWriter::ValsChanged(QVector<QVector<double>> &Data, int iIndex)
 {
     /*clear lastvals vector*/
     LastVals.clear();
