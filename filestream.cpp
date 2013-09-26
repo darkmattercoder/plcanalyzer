@@ -143,6 +143,7 @@ bool BinWriter::CheckValues(QVector<QVector<double>> &Data, int iIndex)
     }
 }
 
+//returns tre, if the file is already opened
 bool BinWriter::AlreadyOpen()
 {
     return myFile.isOpen();

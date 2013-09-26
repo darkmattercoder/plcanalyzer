@@ -109,10 +109,7 @@ MainWindow::MainWindow(QWidget *parent) :
         ConDiag.SetSettings(xmlSettings->openedConSets);
         MySlot = xmlSettings->openedConSlots;
         ConDiag.newSlots = MySlot;
-
     }
-
-
 }
 
 MainWindow::~MainWindow()
@@ -128,8 +125,6 @@ void MainWindow::on_actionOpenProject_triggered()
     currentConsets = xmlSettings->openedConSets;
     ConDiag.SetSettings(currentConsets);
     MySlot = xmlSettings->openedConSlots;
-
-
 }
 
 // Button Verbinden / Trennen
@@ -217,9 +212,8 @@ void MainWindow::ChangeSettings(ConSets* NewConSets)
     currentConsets = NewConSets;
 }
 
-void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
+void MainWindow::changeSlots(QVector<ConSlot> &newConSlots)
 {
-
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;
    
@@ -227,7 +221,6 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
     QVector<QString> opLabel (labelsOperand.count());
     for(int i=0; i < labelsOperand.count(); ++i)
     {
-
         if(i<MySlot.size())
         {
                switch(MySlot[i].iAdrBereich)
@@ -315,13 +308,10 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         {
              lineEditsOperandValue[i]->hide();
         }
-
-
         labelsOperand[0]->colorCount();
 
         labelsOperand[i]->setText(opLabel[i]);
     }
-
 }
 
 // Button Verbindungseinstellungen
@@ -330,8 +320,6 @@ void MainWindow::changeSlots(QVector<ConSlot> newConSlots)
         //Fill the fields with data
         ConDiag.setSlots(MySlot);
         ConDiag.show();
-
-
     }
 
     void MainWindow::on_Button_read_slots_clicked()

@@ -63,9 +63,11 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
     qSort(lineEditsAddress.begin(), lineEditsAddress.end(),
           lineEditPointerLessThan);
 
+    //set the text of the comboboxes items
     comboItemsArea << " " << "E" << "A" << "M" << "DB";
     comboItemsLength << " " << "BIT" << "BYTE" << "WORD" << "DWORD";
     comboItemsFormat << " " << "BOOL" << "BIN" << "DEZ" << "HEX" << "FLOAT" << "CHAR";
+    //set the equivalent values for the items of the comboboxes
     comboValuesArea << 0x0 << daveInputs << daveOutputs << daveFlags << daveDB;
     comboValuesLength << 0x0 << DatLenBit << DatLenByte << DatLenWord << DatLenDWord;
     comboValuesFormat << 0x0 << AnzFormatBool << AnzFormatBinaer
@@ -104,7 +106,7 @@ ConnectionSettings::ConnectionSettings(QWidget *parent):
                 this,SLOT(comboBoxIndexChanged(int)));
     }
 
-    // Fill ComboBox "Protocol" with cuttent settings
+    // Fill ComboBox "Protocol" with current settings
     ui->ComboBox_Protokoll->addItem("MPI for S7 300/400", daveProtoMPI);
     ui->ComboBox_Protokoll->addItem("PPI for S7 200", daveProtoPPI);
     ui->ComboBox_Protokoll->addItem("S5 programming port protocol",
