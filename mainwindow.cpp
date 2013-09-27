@@ -54,7 +54,7 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(&ConDiag, SIGNAL(SettingsChanged(ConSets*)), this,
             SLOT(ChangeSettings(ConSets*)));
     connect(&ConDiag, SIGNAL(SlotsChanged(QVector<ConSlot>)), this,
-            SLOT(changeSlots(QVector<ConSlot>)));
+            SLOT(changeSlots(const QVector<ConSlot>&)));
 
     //The "logger" starts a thread which delivers stdout content to a pipe and
     //reads from it to push it to the debug console and/or a logging widget
@@ -66,7 +66,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // files for the project
     xmlSettings = new xmlSettingsHandler(this);
     connect(xmlSettings,SIGNAL(newSlotsOpened(QVector<ConSlot>)),this,
-            SLOT(changeSlots(QVector<ConSlot>)));
+            SLOT(changeSlots(const QVector<ConSlot>&)));
     connect(xmlSettings,SIGNAL(newSettingsOpened(ConSets*)),this,
             SLOT(ChangeSettings(ConSets*)));
     currentConsets = new ConSets;
@@ -213,7 +213,7 @@ void MainWindow::ChangeSettings(ConSets* NewConSets)
     currentConsets = NewConSets;
 }
 
-void MainWindow::changeSlots(QVector<ConSlot> &newConSlots)
+void MainWindow::changeSlots(const QVector<ConSlot> &newConSlots)
 {
     currentConsets = xmlSettings->openedConSets;
     MySlot = newConSlots;

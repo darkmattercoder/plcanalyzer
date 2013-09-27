@@ -78,7 +78,7 @@ private slots:
     void TimeOut();
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
-    void changeSlots(QVector<ConSlot> &newConSlots);
+    void changeSlots(const QVector<ConSlot> &newConSlots);
     void on_pushButton_clicked();
 
     //Menu entries
