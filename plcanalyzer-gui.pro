@@ -34,7 +34,8 @@ FORMS    += mainwindow.ui \
 
 OTHER_FILES += \
     README \
-    LICENSE
+    LICENSE \
+    USAGE
 
 #DEFINES depend on CONFIG above
 LINUX {
