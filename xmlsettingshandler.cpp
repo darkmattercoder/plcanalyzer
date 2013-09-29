@@ -34,6 +34,9 @@
 #include<QFileDialog>
 #include "xmlsettingshandler.h"
 #include <iostream>
+#ifdef BCCWIN
+#include "windows.h"
+#endif
 
 
 xmlSettingsHandler::xmlSettingsHandler(QMainWindow *parent)
@@ -60,7 +63,13 @@ bool xmlSettingsHandler::openProject(bool lastSets)
                                                 "Projekte (*.plcproj)");
     }else
     {
-        filename = "lastSettings.plcproj";
+        // make file hidden
+
+        filename = ".lastSettings.plcproj";
+
+#ifdef BCCWIN
+        //Set file hidden attribute
+#endif
 
     }
     QFile file(filename);

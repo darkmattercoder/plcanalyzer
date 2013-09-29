@@ -3,6 +3,7 @@
 *   *Date: 2013-09-26                                                         *
 *   *Version: 1.0                                                             *
 *   *Author(s): Carsten Klein <hook-the-master@gmx.net>                       *
+*               Jochen Bauer <devel@jochenbauer.net>                          *
 *                                                                             *
 *   *License information:                                                     *
 *                                                                             *
@@ -225,8 +226,14 @@ QString TimeNDate::CreatePath()
     // get the executables path
     QDir path(QCoreApplication::applicationDirPath());
 
+    // Check for subdirectory for the logs. If not existent, create one
+    if(!path.exists("Logs/"))
+    {
+        path.mkdir("Logs/");
+    }
     // create the path for the logfile
-    QString szPath = ( path.absolutePath() + QDir::separator() + "Log_" + GetDate() + "__" + GetTime() +".bin");
+    QString szPath = ( path.absolutePath() + QDir::separator() + "Logs" + QDir::separator() + "Log_" + GetDate() + "__" + GetTime() +".bin");
     return szPath;
+
 }
 
