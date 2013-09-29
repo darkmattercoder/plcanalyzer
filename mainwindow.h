@@ -86,6 +86,13 @@ private slots:
     void on_actionOpenProject_triggered();
     void on_actionSaveProject_triggered();
 
+    void on_actionAbout_QT_triggered();
+
+
+    void on_actionAbout_triggered();
+
+    void on_actionHelp_triggered();
+
 signals:
 
 private:
@@ -107,8 +114,12 @@ private:
     static bool labelPointerLessThan(QLabel* label1, QLabel* label2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 
-    //
+    // Binary file logger
     BinWriter myWriter;
+    // About Dialog
+    QDialog* aboutDialog;
+    // Help Widget
+    QWidget* helpWidget;
 };
 
 #endif // MAINWINDOW_H

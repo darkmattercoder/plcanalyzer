@@ -30,7 +30,9 @@ HEADERS  += mainwindow.h \
     filestream.h
 
 FORMS    += mainwindow.ui \
-    connectionsettings.ui
+    connectionsettings.ui \
+    aboutDialog.ui \
+    help.ui
 
 OTHER_FILES += \
     README \

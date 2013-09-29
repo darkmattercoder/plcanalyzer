@@ -1,6 +1,6 @@
 /******************************************************************************
 *   *File: stdoutredirector.h                                                 *
-*   *Date: 2013-06-01                                                         *
+*   *Date: 2013-06-13                                                         *
 *   *Version: 1.0                                                             *
 *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
 *               Lukas Kern <lukas.kern@online.de>                             *

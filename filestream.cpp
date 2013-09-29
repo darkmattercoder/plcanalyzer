@@ -1,6 +1,6 @@
 /******************************************************************************
-*   *File: filestream.h                                                       *
-*   *Date: 2013-09-26                                                         *
+*   *File: filestream.cpp                                                       *
+*   *Date: 2013-09-29                                                         *
 *   *Version: 1.0                                                             *
 *   *Author(s): Carsten Klein <hook-the-master@gmx.net>                       *
 *               Jochen Bauer <devel@jochenbauer.net>                          *

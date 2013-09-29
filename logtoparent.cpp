@@ -1,6 +1,6 @@
 /******************************************************************************
 *   *File: logtoparent.cpp                                                    *
-*   *Date: 2013-06-01                                                         *
+*   *Date: 2013-09-29                                                         *
 *   *Version: 1.0                                                             *
 *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
 *               Lukas Kern <lukas.kern@online.de>                             *
@@ -42,12 +42,7 @@ logToParent::logToParent(MainWindow *parent) :
     // See also the destructor description
     myRedirector = new stdoutRedirector;
     connect(this, SIGNAL(threadTerminator()),myRedirector,SLOT(terminate()));
-    std::cout << "Debug: Qthread for logging run: " << myRedirector->
-                 isRunning() << std::endl;
     myRedirector->start();
-    std::cout << "Debug: Logger constructed" << std::endl;
-    std::cout << "Debug: Qthread for logging run: " << myRedirector->
-                 isRunning() << std::endl;
     parentStatbar = parent->ui->statusBar;
     parentTextEdit = parent->ui->textEdit;
     connect(myRedirector, SIGNAL(writeOut(QString)),
@@ -68,5 +63,7 @@ void logToParent::updateParentLog(const QString &logString)
 {
     parentStatbar->showMessage(logString,2500);
     parentTextEdit->append(logString);
+
+    // debug output with timestamp
     qDebug() << QDateTime::currentDateTime().toString("yyyy-mm-dd hh:mm:ss") << "Debug :" << logString;
 }

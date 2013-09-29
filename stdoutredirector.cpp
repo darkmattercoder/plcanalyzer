@@ -1,6 +1,6 @@
 /******************************************************************************
 *   *File: stdoutredirector.cpp                                               *
-*   *Date: 2013-06-01                                                         *
+*   *Date: 2013-09-29                                                         *
 *   *Version: 1.0                                                             *
 *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
 *               Lukas Kern <lukas.kern@online.de>                             *
@@ -33,6 +33,12 @@
 
 #include "stdoutredirector.h"
 
+// This class should ensure that any printf()-statement from the included c libraries
+// is thrown on any output when using qt on both windows and linux
+// However the whole stuff is a bit messy and does not behave the same way on both OSes
+// in summary, the whole "stdoutRedirector"/logtoparent-thing is not the "knowledge's last conclusion"
+// (der Weisheit letzter Schluss.....) and has to be reworked somehow.
+
 stdoutRedirector::stdoutRedirector()
 {
     res=pipe(fds);
@@ -53,13 +59,16 @@ stdoutRedirector::~stdoutRedirector()
 void stdoutRedirector::run()
 {
 
+
     Q_FOREVER{
+        // Code snipped assembled by hand from various tips around the net
         res=read(fds[0],buf,sizeof(buf)-1);
         assert(res>=0 && res<sizeof(buf));
         buf[res]=0;
         emit writeOut(buf);
-        qDebug() << buf;
-        //fprintf(stderr,"printf: %s\n",buf);
+        // Additional debug output
+
+        // Thread has to be terminated from inside.
         if (terminate_)
         {
             return;

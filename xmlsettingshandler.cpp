@@ -38,7 +38,6 @@
 #include "windows.h"
 #endif
 
-
 xmlSettingsHandler::xmlSettingsHandler(QMainWindow *parent)
     : QMainWindow(parent)
 {
@@ -52,25 +51,19 @@ xmlSettingsHandler::~xmlSettingsHandler()
 
 void xmlSettingsHandler::newProject()
 {
-
+    // Todo: implement!
 }
 
 bool xmlSettingsHandler::openProject(bool lastSets)
 {
+    // Open a new project. Also used for any existent settings from before
     if(!lastSets)
     {
         filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-"
                                                 "Projekte (*.plcproj)");
     }else
     {
-        // make file hidden
-
         filename = ".lastSettings.plcproj";
-
-#ifdef BCCWIN
-        //Set file hidden attribute
-#endif
-
     }
     QFile file(filename);
     if (!file.open(QFile::ReadOnly | QFile::Text))
@@ -83,10 +76,11 @@ bool xmlSettingsHandler::openProject(bool lastSets)
         }else return false;
 
     }
-
+    // Setup the object
     xmlReader.setDevice(&file);
     openedConSlots.clear();
     ConSlot tempSlot;
+    // parse the whole file to get the right entries
     while(!xmlReader.atEnd())
     {
         xmlReader.readNext();
@@ -130,7 +124,7 @@ bool xmlSettingsHandler::openProject(bool lastSets)
         }
 
     }
-
+    // Small error msg
     if(xmlReader.hasError())
     {
         std::cout << "XML-READER Error: " <<
@@ -142,6 +136,7 @@ bool xmlSettingsHandler::openProject(bool lastSets)
 
     }else
     {
+        // Up date settings and slots
         emit newSlotsOpened(openedConSlots);
         emit newSettingsOpened(openedConSets);
     }
@@ -162,8 +157,13 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets,
                                                 "PLCANALYZER-Projekte (*.plcproj)");
     }else
     {
-        filename = "lastSettings.plcproj";
+        // create file and make it hidden
+        filename = ".lastSettings.plcproj";
+#ifdef BCCWIN
+        // TODO: Set file hidden attribute
+#endif
     }
+    // Setup the file
     if(!filename.contains(".plcproj")) {filename.append(".plcproj");}
     QFile file(filename);
     file.open(QIODevice::WriteOnly);
@@ -191,6 +191,7 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets,
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("SLOTS");
+    // For each slot fill the values
     for(int i=0;i<currentConSlots.size();++i)
     {
         QString slotDescriptor = "SLOT_" + QString::number(i);

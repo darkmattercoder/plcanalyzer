@@ -37,6 +37,8 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QTimer>
+#include "ui_aboutDialog.h"
+#include "ui_help.h"
 
 #ifdef LINUX
 #include <limits>
@@ -117,6 +119,7 @@ MainWindow::~MainWindow()
 {
     //Save current settings for next start settings
     xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,true);
+
     delete ui;
 }
 
@@ -329,7 +332,7 @@ void MainWindow::on_Button_read_slots_clicked()
 
     //Delete old graphs
     int numberOfGraphs = ui->customPlot->graphCount();
-    qDebug("Number of Graphs is: %i", numberOfGraphs);
+    std::cout << "Number of Graphs is: " << numberOfGraphs << std::endl;
 
     // If numberOfGraphs <  -> add graphs
     for (int i = numberOfGraphs; i < MySlot.size(); i++)
@@ -339,7 +342,7 @@ void MainWindow::on_Button_read_slots_clicked()
         // We want to have nice steep edges in our plot, at least when we are not watching floating point operands!
         if (!(MySlot[i].iAnzFormat == AnzFormatGleitpunkt)) ui->customPlot->graph(i)->setLineStyle(QCPGraph::lsStepCenter);
         ui->customPlot->graph(i)->setPen(MySlot[i].graphColor);
-        qDebug("Adding Graph number %i", i);
+        std::cout << "Adding Graph number" << i << std::endl;
     }
 
     // refresh numberOfGraphs
@@ -350,7 +353,7 @@ void MainWindow::on_Button_read_slots_clicked()
     {
         // Remove not needed graphs
         ui->customPlot->removeGraph(i);
-        qDebug("Remove Graph: %i", i);
+        std::cout << "Remove Graph: " << i << endl;
     }
 
     // Resize vectors
@@ -390,8 +393,7 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_actionNewProject_triggered()
 {    
-    std::cout << "Gewaehltes Protokoll: %i" << MyS7Connection.MyConSet->
-                 useProto << std::endl;
+
 }
 
 void MainWindow::on_actionSaveProject_triggered()
@@ -409,4 +411,32 @@ bool MainWindow::labelPointerLessThan(QLabel *label1, QLabel *label2)
 bool MainWindow::lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2)
 {
     return le1->objectName() < le2->objectName();
+}
+
+void MainWindow::on_actionAbout_QT_triggered()
+{
+    // Show a QT-Information
+    qApp->aboutQt();
+}
+
+void MainWindow::on_actionAbout_triggered()
+{
+    // Show a nice information about the program
+    aboutDialog = new QDialog;
+    Ui::AboutPLCAnalyzer about;
+    about.setupUi(aboutDialog);
+    aboutDialog->show();
+
+}
+
+void MainWindow::on_actionHelp_triggered()
+{
+    helpWidget = new QWidget;
+    Ui::Help help;
+    help.setupUi(helpWidget);
+    QFile usageFile("USAGE");
+    usageFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    help.textBrowser->setText(usageFile.readAll());
+    usageFile.close();
+    helpWidget->show();
 }
