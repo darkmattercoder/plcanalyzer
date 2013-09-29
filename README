@@ -13,7 +13,17 @@ Get it from http://qt-project.org
 Just open the plcanalyzer directory and in a terminal type "qmake" (Regarding any possibly leading paths), then "nmake" (or "make" on Linux).
 And the application will build.
 
-Run it by executing either "plcanalyzer.exe" or "./plcanalyzer".
+If you have an instance of qt creator running, you can now just start the application from the ide which will work fine.
+However there is a small issue with the shared libraries in the subdirectory "lib". If you try to execute the application from the
+command line, you will end up with linux or windows complaining about the missing libraries.
+
+Therefore please do the following steps:
+
+- On Windows, simply copy the dlls into the folder where the plcanalyzer-gui.exe is located.
+- On Linux, open a terminal and relocate to the path with the executable.
+  Then change the "LD_LIBRARY_PATH": `export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:./lib/;`
+
+Run the application by executing either "plcanalyzer.exe" (Win) or "./plcanalyzer" (Linux).
 
 == Usage ==
 
