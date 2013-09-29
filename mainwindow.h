@@ -93,6 +93,9 @@ private slots:
 
     void on_actionHelp_triggered();
 
+
+    void on_clearGraphs_clicked();
+
 signals:
 
 private:
@@ -102,7 +105,7 @@ private:
     int amountOfPoints;
     QVector<double> x;          // 1d Vector
     QVector<QVector<double>> y; // 2d Vectot
-
+    QTimer* timer;
     xmlSettingsHandler* xmlSettings;
     QTextEdit* debugText;
 

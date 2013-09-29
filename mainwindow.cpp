@@ -74,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent) :
     currentConsets = new ConSets;
 
     // Start the timer for slot reading
-    QTimer *timer = new QTimer(this);
+    timer = new QTimer(this);
     connect(timer, SIGNAL(timeout()), this, SLOT(TimeOut()));
     timer->start(100);
     currentConsets = MyS7Connection.MyConSet;
@@ -439,4 +439,24 @@ void MainWindow::on_actionHelp_triggered()
     help.textBrowser->setText(usageFile.readAll());
     usageFile.close();
     helpWidget->show();
+}
+
+// Quick hack: clear graphs
+void MainWindow::on_clearGraphs_clicked()
+{
+    if(ui->customPlot->graphCount()  > 0){
+        timer->stop();
+        for (int i = 0; i < MySlot.size(); i++)
+        {
+            ui->customPlot->graph(i)->clearData();
+        }
+        ui->customPlot->clearGraphs();
+        ui->customPlot->replot();
+        amountOfPoints = 0;
+        for (int i = 0; i <MySlot.size() ; i++)
+        {
+            y[i].resize(amountOfPoints);
+        }
+        recordings = MAXIMUMINT;
+        timer->start();}
 }
