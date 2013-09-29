@@ -479,6 +479,6 @@ void ConnectionSettings::Enabler (int iLinenumber, bool bEnable, int iIndex)
 
 void ConnectionSettings::clearSlots()
 {
- // Quick and dirty hack to clear the slots
+    // Quick and dirty hack to clear the slots
     comboBoxesArea[0]->setCurrentIndex(0);
 }

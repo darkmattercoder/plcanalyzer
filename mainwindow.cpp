@@ -1,6 +1,6 @@
 /******************************************************************************
 *   *File: mainwindow.cpp                                                     *
-*   *Date: 2013-06-01                                                         *
+*   *Date: 2013-09-29                                                        *
 *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
 *               Lukas Kern <lukas.kern@online.de>                             *
 *               Carsten Klein <hook-the-master@gmx.net>                       *
@@ -401,7 +401,7 @@ void MainWindow::on_actionNewProject_triggered()
 
 void MainWindow::on_actionSaveProject_triggered()
 {
-     xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
 }
 
 //LessThan Comparison for labels

@@ -1,6 +1,6 @@
 /******************************************************************************
 *   *File: connectionsettings.h                                               *
-*   *Date: 2013-09-23                                                         *
+*   *Date: 2013-09-29                                                         *
 *   *Version: 1.0                                                             *
 *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
 *               Lukas Kern <lukas.kern@online.de>                             *

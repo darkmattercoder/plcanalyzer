@@ -85,7 +85,7 @@ bool xmlSettingsHandler::openProject(bool lastSets, bool emptySet)
                                      + filename + "\"");
             msgBoxOpenError->show();
         }
-            else return false;
+        else return false;
 
     }
     // Setup the object
