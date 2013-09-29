@@ -1,8 +1,20 @@
-plcanalyzer
+PLC Analyzer 1.0
 ===========
 
 PLC Analyzer gives you a possibility to display and record values read out from a plc. 
-Using libnodave you are able to connect to most SIEMENS S5 and S7 plc's.
+Using libnodave you are able to connect to most SIEMENS S5 and S7 PLC.
 
+Programm is tested on Windows 7 and Linux (Ubuntu 12.04).
 
-Programm is tested under Windows 7 and Linux (Ubuntu 12.04).
+== Compile instructions for PlcAnalyzer v.1.0 ==
+
+On Windows and Linux be sure to have the QT-Libraries installed on your machine. You will at least need QT 4.8.2.
+Get it from http://qt-project.org
+Just open the plcanalyzer directory and in a terminal type "qmake" (Regarding any possibly leading paths), then "nmake" (or "make" on Linux).
+And the application will build.
+
+Run it by executing either "plcanalyzer.exe" or "./plcanalyzer".
+
+== Usage ==
+
+You can find a small program description in the "USAGE"-File in the Directory as well as by chosing the "Help"-menu entry.
