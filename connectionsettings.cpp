@@ -206,13 +206,13 @@ void ConnectionSettings::on_buttonBox_accepted()
         newSlots[i].iDatenlaenge = comboBoxesLength[i]->itemData(comboBoxesLength[i]->currentIndex()).toInt();
     }
 
-    // Emit the signal that the Slots has changed
+    // Emit the signal that the Slots have changed
     emit SlotsChanged(newSlots);
 }
 
 void ConnectionSettings::SetSettings(ConSets *CurrentSets)
 {
-    // Set the membervariables with the cuttent changes
+    // Set the membervariables with the current changes
     m_DiagSets = CurrentSets;
 
     // Set input boxes with the current values
@@ -273,6 +273,10 @@ void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
 
 void ConnectionSettings::comboBoxIndexChanged(int index)
 {
+    // get the object name of the object which invoked the Slot
+    // Afterwards check which vector element it belongs to and adjust
+    // the visibility / content of the conslot elements on the ui as
+    // well as in the vector itself
     QComboBox *sendingBox = (QComboBox *)sender();
     int dataItem = sendingBox->itemData(index).toInt();
     int lineNumber = 0;
@@ -380,6 +384,7 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
     int lineNumber = 0;
     int count = 0;
 
+    // Q_FOREACH need less chars to type ;-)
     Q_FOREACH(QComboBox *areaBox,areaBoxes)
     {
         if(areaBox == sendingBox) {lineNumber = count;}
@@ -390,6 +395,8 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
 
 void ConnectionSettings::setSlots(QVector<ConSlot> &currentSlots)
 {
+    // The boolean value prevents the slot, invoced by the current index changed signal of the
+    // UI Elements to do its work in that very case.
     readingFromFile = true;
     for(int i=0; i<currentSlots.count();++i)
     {

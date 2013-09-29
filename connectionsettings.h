@@ -87,21 +87,21 @@ private:
     int findCorrespondingLine(QList<QComboBox*> boxesArea,
                               QComboBox* sendingBox);
 
-    //Compare funqtions for the qsort algorithm
+    // Compare functions for the qsort algorithm
     static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 
     bool readingFromFile;
 
-    //Graph colors as a "resorted" int-vector of Qt::GlobalColors
+    // Graph colors as a "resorted" int-vector of Qt::GlobalColors
     QVector<QColor> graphColors;
-    //    Qt::GlobalColor /*graphColors[8]*/;
-    //Modulo value for dynamic graphColor generation
+    // Qt::GlobalColor /*graphColors[8]*/;
+    // Modulo value for dynamic graphColor generation
     int moduloValue;
     QIntValidator* myBitValidator;
     QIntValidator* myByteAddressValidator;
 
-    //functions for selecting the selectable items
+    // functions for selecting the selectable items
     void Enabler (int iLinenumber, bool bEnable, int iIndex);
     void enableSwitcher(int iDataitem, int iLinenumber);
 
