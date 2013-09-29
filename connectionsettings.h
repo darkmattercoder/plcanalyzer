@@ -1,34 +1,35 @@
-/*******************************************************************************
- *   *File: connectionsettings.h                                               *
- *   *Date: 2013-09-04                                                        *
- *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
- *               Lukas Kern <lukas.kern@online.de>                             *
- *               Carsten Klein <hook-the-master@gmx.net>                       *
- *                                                                             *
- *   *License information:                                                     *
- *                                                                             *
- *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
- *                                                                             *
- *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
- *   redistribute it and/or modify it under the terms of the GNU General       *
- *   Public License as published by the Free Software Foundation; either       *
- *   version 2 of the License, or (at your option) any later version.          *
- *                                                                             *
- *   This program is distributed in the hope that it will be useful, but       *
- *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
- *   GNU General Public License for more details.                              *
- *   You should have received a copy of the GNU General Public License         *
- *   along with this program; if not, write to the Free Software               *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
- *   02110-1301, USA.                                                          *
- *                                                                             *
- *   *Program name: PLCANALYZER                                                *
- *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
- *                               * Reads memory areas                          *
- *                               * Draws a graph over time for operands        *
- *   *Have fun!                                                                *
- ******************************************************************************/
+/******************************************************************************
+*   *File: connectionsettings.h                                               *
+*   *Date: 2013-09-29                                                         *
+*   *Version: 1.0                                                             *
+*   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+*               Lukas Kern <lukas.kern@online.de>                             *
+*               Carsten Klein <hook-the-master@gmx.net>                       *
+*                                                                             *
+*   *License information:                                                     *
+*                                                                             *
+*   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+*                                                                             *
+*   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+*   redistribute it and/or modify it under the terms of the GNU General       *
+*   Public License as published by the Free Software Foundation; either       *
+*   version 2 of the License, or (at your option) any later version.          *
+*                                                                             *
+*   This program is distributed in the hope that it will be useful, but       *
+*   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*   GNU General Public License for more details.                              *
+*   You should have received a copy of the GNU General Public License         *
+*   along with this program; if not, write to the Free Software               *
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+*   02110-1301, USA.                                                          *
+*                                                                             *
+*   *Program name: PLCANALYZER                                                *
+*   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+*                               * Reads memory areas                          *
+*                               * Draws a graph over time for operands        *
+*   *Have fun!                                                                *
+******************************************************************************/
 
 #ifndef CONNECTIONSETTINGS_H
 #define CONNECTIONSETTINGS_H
@@ -55,6 +56,7 @@ public:
     void setSlots(QVector<ConSlot> &currentSlots);
     ConSets* m_DiagSets;
     QVector<ConSlot> newSlots;
+    void clearSlots();
     
 private slots:
 
@@ -74,7 +76,7 @@ private:
     QStringList comboItemsArea;
     QStringList comboItemsFormat;
     QStringList comboItemsLength;
-        QList<int> comboValuesArea;
+    QList<int> comboValuesArea;
     QList<int> comboValuesFormat;
     QList<int> comboValuesLength;
     QList<QComboBox*> comboBoxesArea;
@@ -86,21 +88,21 @@ private:
     int findCorrespondingLine(QList<QComboBox*> boxesArea,
                               QComboBox* sendingBox);
 
-    //Compare funqtions for the qsort algorithm
+    // Compare functions for the qsort algorithm
     static bool comboBoxPointerLessThan(QComboBox* cb1, QComboBox* cb2);
     static bool lineEditPointerLessThan(QLineEdit* le1, QLineEdit* le2);
 
     bool readingFromFile;
 
-    //Graph colors as a "resorted" int-vector of Qt::GlobalColors
+    // Graph colors as a "resorted" int-vector of Qt::GlobalColors
     QVector<QColor> graphColors;
-//    Qt::GlobalColor /*graphColors[8]*/;
-    //Modulo value for dynamic graphColor generation
+    // Qt::GlobalColor /*graphColors[8]*/;
+    // Modulo value for dynamic graphColor generation
     int moduloValue;
     QIntValidator* myBitValidator;
     QIntValidator* myByteAddressValidator;
 
-    //functions for selecting the selectable items
+    // functions for selecting the selectable items
     void Enabler (int iLinenumber, bool bEnable, int iIndex);
     void enableSwitcher(int iDataitem, int iLinenumber);
 

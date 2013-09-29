@@ -1,12 +1,33 @@
-/****************************************************************************************
-* Filename:		filestream.h												*
-* Author:		Carsten Klein															*
-* Date:			2013/06/07																*
-* Description:	this file is the header for a class that is used for reading and		*
-*				writing to and from a binary file. In our project it will be used for	*
-*				saving the data of the SPS-analyser to a file and showing thatr data at	*
-*				any time the user wants to												*
-****************************************************************************************/
+/******************************************************************************
+*   *File: filestream.h                                                       *
+*   *Date: 2013-09-23                                                         *
+*   *Version: 1.0                                                             *
+*   *Author(s): Carsten Klein <hook-the-master@gmx.net>                       *
+*                                                                             *
+*   *License information:                                                     *
+*                                                                             *
+*   Copyright (C) [2013] [Carsten Klein]                                      *
+*                                                                             *
+*   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+*   redistribute it and/or modify it under the terms of the GNU General       *
+*   Public License as published by the Free Software Foundation; either       *
+*   version 2 of the License, or (at your option) any later version.          *
+*                                                                             *
+*   This program is distributed in the hope that it will be useful, but       *
+*   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*   GNU General Public License for more details.                              *
+*   You should have received a copy of the GNU General Public License         *
+*   along with this program; if not, write to the Free Software               *
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+*   02110-1301, USA.                                                          *
+*                                                                             *
+*   *Program name: PLCANALYZER                                                *
+*   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+*                               * Reads memory areas                          *
+*                               * Draws a graph over time for operands        *
+*   *Have fun!                                                                *
+******************************************************************************/
 
 /*include ward*/
 #ifndef _FILESTREAMER_H_INCLUDED_
@@ -36,25 +57,25 @@ using namespace std;			//use the standard namespace
 in a binary file equal if reading to or writing from a file*/
 class BinFile //: Datastructure
 {
-	protected:
-        QDataStream myFileStream;
-        QFile myFile;
+protected:
+    QDataStream myFileStream;
+    QFile myFile;
 
-        /*function used for opening the filestream*/
-        void OpenFileStream(QString &szFilepath, bool bWrite);
+    /*function used for opening the filestream*/
+    void OpenFileStream(QString &szFilepath, bool bWrite);
 
-        /*closes the file and saves the data on disk*/
-        void CloseFile();
-		
-	public:
-        /*standard constructor*/
-        BinFile();
+    /*closes the file and saves the data on disk*/
+    void CloseFile();
 
-		/*constructor with a filepath for opening the filestream*/
-        BinFile(QString &szFilepath, bool bWrite);
+public:
+    /*standard constructor*/
+    BinFile();
 
-		/*deconstructor, used for flushing and closing a file*/
-		~BinFile();
+    /*constructor with a filepath for opening the filestream*/
+    BinFile(QString &szFilepath, bool bWrite);
+
+    /*deconstructor, used for flushing and closing a file*/
+    ~BinFile();
 
 
 };
@@ -77,7 +98,7 @@ public:
 
     ~BinWriter();
 
-	/*constructor of class binfile used for setting the filepath*/
+    /*constructor of class binfile used for setting the filepath*/
     BinWriter(QString &szFilepath, int iSlots);
 
     /*function used for writing the number of slots*/

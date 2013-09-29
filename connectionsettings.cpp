@@ -1,34 +1,35 @@
-/*******************************************************************************
- *   *File: connectionsettings.cpp                                             *
- *   *Date: 2013-09-04                                                         *
- *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
- *               Lukas Kern <lukas.kern@online.de>                             *
- *               Carsten Klein <hook-the-master@gmx.net>                       *
- *                                                                             *
- *   *License information:                                                     *
- *                                                                             *
- *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
- *                                                                             *
- *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
- *   redistribute it and/or modify it under the terms of the GNU General       *
- *   Public License as published by the Free Software Foundation; either       *
- *   version 2 of the License, or (at your option) any later version.          *
- *                                                                             *
- *   This program is distributed in the hope that it will be useful, but       *
- *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
- *   GNU General Public License for more details.                              *
- *   You should have received a copy of the GNU General Public License         *
- *   along with this program; if not, write to the Free Software               *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
- *   02110-1301, USA.                                                          *
- *                                                                             *
- *   *Program name: PLCANALYZER                                                *
- *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
- *                               * Reads memory areas                          *
- *                               * Draws a graph over time for operands        *
- *   *Have fun!                                                                *
- ******************************************************************************/
+/******************************************************************************
+*   *File: connectionsettings.cpp                                             *
+*   *Date: 2013-09-04                                                         *
+*   *Version: 1.0                                                             *
+*   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+*               Lukas Kern <lukas.kern@online.de>                             *
+*               Carsten Klein <hook-the-master@gmx.net>                       *
+*                                                                             *
+*   *License information:                                                     *
+*                                                                             *
+*   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+*                                                                             *
+*   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+*   redistribute it and/or modify it under the terms of the GNU General       *
+*   Public License as published by the Free Software Foundation; either       *
+*   version 2 of the License, or (at your option) any later version.          *
+*                                                                             *
+*   This program is distributed in the hope that it will be useful, but       *
+*   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*   GNU General Public License for more details.                              *
+*   You should have received a copy of the GNU General Public License         *
+*   along with this program; if not, write to the Free Software               *
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+*   02110-1301, USA.                                                          *
+*                                                                             *
+*   *Program name: PLCANALYZER                                                *
+*   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+*                               * Reads memory areas                          *
+*                               * Draws a graph over time for operands        *
+*   *Have fun!                                                                *
+******************************************************************************/
 
 #include "connectionsettings.h"
 #include <iostream>
@@ -205,13 +206,13 @@ void ConnectionSettings::on_buttonBox_accepted()
         newSlots[i].iDatenlaenge = comboBoxesLength[i]->itemData(comboBoxesLength[i]->currentIndex()).toInt();
     }
 
-    // Emit the signal that the Slots has changed
+    // Emit the signal that the Slots have changed
     emit SlotsChanged(newSlots);
 }
 
 void ConnectionSettings::SetSettings(ConSets *CurrentSets)
 {
-    // Set the membervariables with the cuttent changes
+    // Set the membervariables with the current changes
     m_DiagSets = CurrentSets;
 
     // Set input boxes with the current values
@@ -272,6 +273,10 @@ void ConnectionSettings::on_ComboBox_Protokoll_currentIndexChanged(int index)
 
 void ConnectionSettings::comboBoxIndexChanged(int index)
 {
+    // get the object name of the object which invoked the Slot
+    // Afterwards check which vector element it belongs to and adjust
+    // the visibility / content of the conslot elements on the ui as
+    // well as in the vector itself
     QComboBox *sendingBox = (QComboBox *)sender();
     int dataItem = sendingBox->itemData(index).toInt();
     int lineNumber = 0;
@@ -379,6 +384,7 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
     int lineNumber = 0;
     int count = 0;
 
+    // Q_FOREACH need less chars to type ;-)
     Q_FOREACH(QComboBox *areaBox,areaBoxes)
     {
         if(areaBox == sendingBox) {lineNumber = count;}
@@ -389,6 +395,8 @@ int ConnectionSettings::findCorrespondingLine(QList<QComboBox*> areaBoxes,
 
 void ConnectionSettings::setSlots(QVector<ConSlot> &currentSlots)
 {
+    // The boolean value prevents the slot, invoced by the current index changed signal of the
+    // UI Elements to do its work in that very case.
     readingFromFile = true;
     for(int i=0; i<currentSlots.count();++i)
     {
@@ -467,4 +475,10 @@ void ConnectionSettings::enableSwitcher(int iDataitem, int iLinenumber)
 void ConnectionSettings::Enabler (int iLinenumber, bool bEnable, int iIndex)
 {
     qobject_cast<QStandardItemModel *>(comboBoxesFormat[iLinenumber]->model())->item(iIndex)->setEnabled(bEnable);
+}
+
+void ConnectionSettings::clearSlots()
+{
+    // Quick and dirty hack to clear the slots
+    comboBoxesArea[0]->setCurrentIndex(0);
 }

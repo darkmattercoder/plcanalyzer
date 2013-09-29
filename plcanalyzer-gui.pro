@@ -16,7 +16,6 @@ SOURCES += main.cpp\
     mainwindow.cpp \
     s7connection.cpp \
     connectionsettings.cpp \
-    qcustomplot.cpp \
    stdoutredirector.cpp \
     logtoparent.cpp \
     xmlsettingshandler.cpp \
@@ -28,15 +27,17 @@ HEADERS  += mainwindow.h \
       stdoutredirector.h \
     logtoparent.h \
     xmlsettingshandler.h \
-    qcustomplot.h \
     filestream.h
 
 FORMS    += mainwindow.ui \
-    connectionsettings.ui
+    connectionsettings.ui \
+    aboutDialog.ui \
+    help.ui
 
 OTHER_FILES += \
     README \
-    LICENSE
+    LICENSE \
+    USAGE
 
 #DEFINES depend on CONFIG above
 LINUX {
@@ -53,13 +54,17 @@ DEFINES += BCCWIN \
 
 #LIBS depend on CONFIG above
 BCCWIN {
-LIBS += -L$$PWD/lib/ -llibnodave
+LIBS += -L$$PWD/lib/ -llibnodave \
+        -L$$PWD/lib/ -lqcustomplot1
+QMAKE_COMPILER_DEFINES += _MSC_VER=1700 WIN32
 }
 
 LINUX {
-LIBS += -L$$PWD/lib/ -lnodave64
+LIBS += -L$$PWD/lib/ -lnodave64 \
+        -L$$PWD/lib/ -lqcustomplot
 }
 INCLUDEPATH += $$PWD/include/libnodave/
+INCLUDEPATH += $$PWD/include/qcustomplot/
 DEPENDPATH += $$PWD/lib/
 
 PRE_TARGETDEPS += $$PWD/lib/libnodave.lib
