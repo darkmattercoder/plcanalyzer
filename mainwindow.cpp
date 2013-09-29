@@ -106,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
 
     //Open last connection Settings if existent
-    if(xmlSettings->openProject(true))
+    if(xmlSettings->openProject(true,false))
     {
         currentConsets = xmlSettings->openedConSets;
         ConDiag.SetSettings(xmlSettings->openedConSets);
@@ -393,12 +393,15 @@ void MainWindow::on_pushButton_clicked()
 
 void MainWindow::on_actionNewProject_triggered()
 {    
-
+    xmlSettings->openProject(false,true);
+    currentConsets = xmlSettings->openedConSets;
+    ConDiag.SetSettings(currentConsets);
+    ConDiag.clearSlots();
 }
 
 void MainWindow::on_actionSaveProject_triggered()
-{    
-    xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
+{
+     xmlSettings->saveProject(MyS7Connection.MyConSet,MySlot,false);
 }
 
 //LessThan Comparison for labels

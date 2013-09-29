@@ -56,6 +56,7 @@ public:
     void setSlots(QVector<ConSlot> &currentSlots);
     ConSets* m_DiagSets;
     QVector<ConSlot> newSlots;
+    void clearSlots();
     
 private slots:
 

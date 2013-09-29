@@ -54,26 +54,38 @@ void xmlSettingsHandler::newProject()
     // Todo: implement!
 }
 
-bool xmlSettingsHandler::openProject(bool lastSets)
+bool xmlSettingsHandler::openProject(bool lastSets, bool emptySet)
 {
     // Open a new project. Also used for any existent settings from before
-    if(!lastSets)
+    if(!lastSets && !emptySet)
     {
         filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-"
                                                 "Projekte (*.plcproj)");
-    }else
+    }else if(lastSets)
     {
         filename = ".lastSettings.plcproj";
+    }else
+    {
+        filename = ".emptySettings.plcproj";
     }
     QFile file(filename);
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
-        if(!lastSets)
+        if(!lastSets && !emptySet)
         {
             std::cout << "Error: Cannot read file " << qPrintable(filename)
                       << ": " << qPrintable(file.errorString())
                       << std::endl;
-        }else return false;
+        }else if(emptySet)
+        {
+            QMessageBox *msgBoxOpenError = new QMessageBox(this);
+            msgBoxOpenError->setIcon(QMessageBox::Critical);
+            msgBoxOpenError->setText("Reference file for empty project not found. Load a project or safe an empty"
+                                     "connection set by hand using the connection settings dialog. It should be named \""
+                                     + filename + "\"");
+            msgBoxOpenError->show();
+        }
+            else return false;
 
     }
     // Setup the object

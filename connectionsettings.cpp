@@ -476,3 +476,9 @@ void ConnectionSettings::Enabler (int iLinenumber, bool bEnable, int iIndex)
 {
     qobject_cast<QStandardItemModel *>(comboBoxesFormat[iLinenumber]->model())->item(iIndex)->setEnabled(bEnable);
 }
+
+void ConnectionSettings::clearSlots()
+{
+ // Quick and dirty hack to clear the slots
+    comboBoxesArea[0]->setCurrentIndex(0);
+}
