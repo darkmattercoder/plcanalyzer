@@ -1,0 +1,27 @@
+== Usage instructions ==
+
+On startup you will see a window where you have different elements.
+If you ran the program before, you might notice that there are some operand value fields visible in the main window.
+Those value fields are saved on any program close event and restored on startup.
+
+You get three buttons at the top of the window:
+
+* "Connection settings" gives you a nice UI where you can make your desired connection settings as well as specify the operands
+  that you want to read
+* "Connect" makes the application try to connect to a physically present PLC. The Button reads "Disconnect" when connected
+* "Read slots" triggers the value reading from the PLC when triggered. Once pressed, the graph display in the middle of the
+  window will start to display a graphical representation of whatever it reads. The current values are displayed as well in the
+  value fields in the lower right.
+
+Under the graph display you find an auto scale-button to rescale a graph if needed. With the "duration"-field you can specify the
+time shown on one bottom axis length.
+
+Right beside you find a button which cleans the graph display.
+
+The Log window at the bottom of the main window shows you some debug information.
+
+The "File"-menu entry allows you to open and save a project as well as create a new one.
+The Help entry shows this documentation.
+
+
+Have Fun!

@@ -95,7 +95,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Operanden</string>
+       <string>Operands</string>
       </property>
      </widget>
     </item>
@@ -143,7 +143,7 @@
     <item row="1" column="0">
      <widget class="QLabel" name="label_8">
       <property name="text">
-       <string>Speicherbereich</string>
+       <string>Memory area</string>
       </property>
      </widget>
     </item>
@@ -204,14 +204,14 @@
     <item row="1" column="3">
      <widget class="QLabel" name="label_9">
       <property name="text">
-       <string>Adresse</string>
+       <string>Address</string>
       </property>
      </widget>
     </item>
     <item row="1" column="5">
      <widget class="QLabel" name="label_10">
       <property name="text">
-       <string>Repräsentation</string>
+       <string>Representation</string>
       </property>
      </widget>
     </item>
@@ -335,7 +335,7 @@
     <item row="1" column="1">
      <widget class="QLabel" name="label_15">
       <property name="text">
-       <string>Größe</string>
+       <string>Size</string>
       </property>
      </widget>
     </item>
@@ -359,19 +359,29 @@
     </font>
    </property>
    <property name="text">
-    <string>Einstellungen</string>
+    <string>Settings</string>
    </property>
   </widget>
   <widget class="QWidget" name="layoutWidget">
    <property name="geometry">
     <rect>
-     <x>13</x>
-     <y>63</y>
+     <x>16</x>
+     <y>62</y>
      <width>261</width>
-     <height>178</height>
+     <height>161</height>
     </rect>
    </property>
    <layout class="QGridLayout" name="gridLayout_2">
+    <item row="4" column="1">
+     <widget class="QLineEdit" name="lineEdit_local_MPI">
+      <property name="toolTip">
+       <string>0 - 127</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+      </property>
+     </widget>
+    </item>
     <item row="5" column="1">
      <widget class="QLineEdit" name="lineEdit_Rack">
       <property name="toolTip">
@@ -395,28 +405,7 @@
     <item row="3" column="0">
      <widget class="QLabel" name="label_3">
       <property name="text">
-       <string>Geschwindigkeit</string>
-      </property>
-     </widget>
-    </item>
-    <item row="5" column="0">
-     <widget class="QLabel" name="label_6">
-      <property name="text">
-       <string>Rack</string>
-      </property>
-     </widget>
-    </item>
-    <item row="4" column="0">
-     <widget class="QLabel" name="label_4">
-      <property name="text">
-       <string>Lokale MPI</string>
-      </property>
-     </widget>
-    </item>
-    <item row="1" column="0">
-     <widget class="QLabel" name="label_5">
-      <property name="text">
-       <string>CPU MPI</string>
+       <string>Speed</string>
       </property>
      </widget>
     </item>
@@ -474,17 +463,35 @@
     <item row="0" column="0">
      <widget class="QLabel" name="label">
       <property name="text">
-       <string>Protokoll</string>
+       <string>Protocol</string>
       </property>
      </widget>
     </item>
-    <item row="0" column="1">
-     <widget class="QComboBox" name="ComboBox_Protokoll"/>
+    <item row="5" column="0">
+     <widget class="QLabel" name="label_6">
+      <property name="text">
+       <string>Rack</string>
+      </property>
+     </widget>
+    </item>
+    <item row="4" column="0">
+     <widget class="QLabel" name="label_4">
+      <property name="text">
+       <string>Locale MPI</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="label_5">
+      <property name="text">
+       <string>CPU MPI</string>
+      </property>
+     </widget>
     </item>
     <item row="2" column="0">
      <widget class="QLabel" name="label_2">
       <property name="text">
-       <string>IP-Adresse</string>
+       <string>IP-Address</string>
       </property>
      </widget>
     </item>
@@ -511,15 +518,8 @@
       </property>
      </widget>
     </item>
-    <item row="4" column="1">
-     <widget class="QLineEdit" name="lineEdit_local_MPI">
-      <property name="toolTip">
-       <string>0 - 127</string>
-      </property>
-      <property name="alignment">
-       <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-      </property>
-     </widget>
+    <item row="0" column="1">
+     <widget class="QComboBox" name="ComboBox_Protokoll"/>
     </item>
    </layout>
   </widget>

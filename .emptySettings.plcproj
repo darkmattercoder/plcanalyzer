@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DATA>
+    <SETTINGS>
+        <IP_ADDR></IP_ADDR>
+        <PROTOCOL>122</PROTOCOL>
+        <LOCAL_MPI>0</LOCAL_MPI>
+        <PLC_MPI>0</PLC_MPI>
+        <PLC_2_MPI>-1</PLC_2_MPI>
+        <RACK>0</RACK>
+        <SLOT>0</SLOT>
+        <SPEED>0</SPEED>
+    </SETTINGS>
+    <SLOTS/>
+</DATA>

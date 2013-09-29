@@ -1,40 +1,42 @@
-/*******************************************************************************
- *   *File: xmlsettingshandler.cpp                                             *
- *   *Date: 2013-06-01                                                         *
- *   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
- *               Lukas Kern <lukas.kern@online.de>                             *
- *               Carsten Klein <hook-the-master@gmx.net>                       *
- *                                                                             *
- *   *License information:                                                     *
- *                                                                             *
- *   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
- *                                                                             *
- *   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
- *   redistribute it and/or modify it under the terms of the GNU General       *
- *   Public License as published by the Free Software Foundation; either       *
- *   version 2 of the License, or (at your option) any later version.          *
- *                                                                             *
- *   This program is distributed in the hope that it will be useful, but       *
- *   WITHOUT ANY WARRANTY; without even the implied warranty of                *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
- *   GNU General Public License for more details.                              *
- *   You should have received a copy of the GNU General Public License         *
- *   along with this program; if not, write to the Free Software               *
- *   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
- *   02110-1301, USA.                                                          *
- *                                                                             *
- *   *Program name: PLCANALYZER                                                *
- *   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
- *                               * Reads memory areas                          *
- *                               * Draws a graph over time for operands        *
- *   *Have fun!                                                                *
- ******************************************************************************/
+/******************************************************************************
+*   *File: xmlsettingshandler.cpp                                             *
+*   *Date: 2013-06-01                                                         *
+*   *Version: 1.0                                                             *
+*   *Author(s): Jochen Bauer <devel@jochenbauer.net>                          *
+*               Lukas Kern <lukas.kern@online.de>                             *
+*               Carsten Klein <hook-the-master@gmx.net>                       *
+*                                                                             *
+*   *License information:                                                     *
+*                                                                             *
+*   Copyright (C) [2013] [Jochen Bauer, Lukas Kern, Carsten Klein]            *
+*                                                                             *
+*   This file is part of PLCANALYZER. PLCANALYZER is free software; you can   *
+*   redistribute it and/or modify it under the terms of the GNU General       *
+*   Public License as published by the Free Software Foundation; either       *
+*   version 2 of the License, or (at your option) any later version.          *
+*                                                                             *
+*   This program is distributed in the hope that it will be useful, but       *
+*   WITHOUT ANY WARRANTY; without even the implied warranty of                *
+*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the             *
+*   GNU General Public License for more details.                              *
+*   You should have received a copy of the GNU General Public License         *
+*   along with this program; if not, write to the Free Software               *
+*   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA             *
+*   02110-1301, USA.                                                          *
+*                                                                             *
+*   *Program name: PLCANALYZER                                                *
+*   *What this program does:    Connects to most SIMATIC S7/S5 Controllers    *
+*                               * Reads memory areas                          *
+*                               * Draws a graph over time for operands        *
+*   *Have fun!                                                                *
+******************************************************************************/
 
 #include<QFileDialog>
-//#include <mainwindow.h>
 #include "xmlsettingshandler.h"
 #include <iostream>
-
+#ifdef BCCWIN
+#include "windows.h"
+#endif
 
 xmlSettingsHandler::xmlSettingsHandler(QMainWindow *parent)
     : QMainWindow(parent)
@@ -49,35 +51,48 @@ xmlSettingsHandler::~xmlSettingsHandler()
 
 void xmlSettingsHandler::newProject()
 {
-
+    // Todo: implement!
 }
 
-bool xmlSettingsHandler::openProject(bool lastSets)
+bool xmlSettingsHandler::openProject(bool lastSets, bool emptySet)
 {
-    if(!lastSets)
+    // Open a new project. Also used for any existent settings from before
+    if(!lastSets && !emptySet)
     {
         filename = QFileDialog::getOpenFileName(this,"Öffnen",".","PLCANALYZER-"
                                                 "Projekte (*.plcproj)");
+    }else if(lastSets)
+    {
+        filename = ".lastSettings.plcproj";
     }else
     {
-        filename = "lastSettings.plcproj";
-
+        filename = ".emptySettings.plcproj";
     }
     QFile file(filename);
     if (!file.open(QFile::ReadOnly | QFile::Text))
     {
-        if(!lastSets)
+        if(!lastSets && !emptySet)
         {
             std::cout << "Error: Cannot read file " << qPrintable(filename)
                       << ": " << qPrintable(file.errorString())
                       << std::endl;
-        }else return false;
+        }else if(emptySet)
+        {
+            QMessageBox *msgBoxOpenError = new QMessageBox(this);
+            msgBoxOpenError->setIcon(QMessageBox::Critical);
+            msgBoxOpenError->setText("Reference file for empty project not found. Load a project or safe an empty"
+                                     "connection set by hand using the connection settings dialog. It should be named \""
+                                     + filename + "\"");
+            msgBoxOpenError->show();
+        }
+        else return false;
 
     }
-
+    // Setup the object
     xmlReader.setDevice(&file);
     openedConSlots.clear();
     ConSlot tempSlot;
+    // parse the whole file to get the right entries
     while(!xmlReader.atEnd())
     {
         xmlReader.readNext();
@@ -121,7 +136,7 @@ bool xmlSettingsHandler::openProject(bool lastSets)
         }
 
     }
-
+    // Small error msg
     if(xmlReader.hasError())
     {
         std::cout << "XML-READER Error: " <<
@@ -133,6 +148,7 @@ bool xmlSettingsHandler::openProject(bool lastSets)
 
     }else
     {
+        // Up date settings and slots
         emit newSlotsOpened(openedConSlots);
         emit newSettingsOpened(openedConSets);
     }
@@ -153,8 +169,13 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets,
                                                 "PLCANALYZER-Projekte (*.plcproj)");
     }else
     {
-        filename = "lastSettings.plcproj";
+        // create file and make it hidden
+        filename = ".lastSettings.plcproj";
+#ifdef BCCWIN
+        // TODO: Set file hidden attribute
+#endif
     }
+    // Setup the file
     if(!filename.contains(".plcproj")) {filename.append(".plcproj");}
     QFile file(filename);
     file.open(QIODevice::WriteOnly);
@@ -182,6 +203,7 @@ void xmlSettingsHandler::saveProject(ConSets* currentConSets,
     xmlWriter.writeEndElement();
 
     xmlWriter.writeStartElement("SLOTS");
+    // For each slot fill the values
     for(int i=0;i<currentConSlots.size();++i)
     {
         QString slotDescriptor = "SLOT_" + QString::number(i);
