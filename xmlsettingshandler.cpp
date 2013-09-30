@@ -49,11 +49,6 @@ xmlSettingsHandler::~xmlSettingsHandler()
 
 }
 
-void xmlSettingsHandler::newProject()
-{
-    // Todo: implement!
-}
-
 bool xmlSettingsHandler::openProject(bool lastSets, bool emptySet)
 {
     // Open a new project. Also used for any existent settings from before

@@ -386,7 +386,7 @@ void MainWindow::on_Button_read_slots_clicked()
 }
 
 // Autoscale axes
-void MainWindow::on_pushButton_clicked()
+void MainWindow::on_rescale_clicked()
 {
     ui->customPlot->rescaleAxes();
 }

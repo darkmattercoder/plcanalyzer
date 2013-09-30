@@ -58,7 +58,7 @@ class MainWindow;
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-    
+
 public:
 
     explicit MainWindow(QWidget *parent = 0);
@@ -71,35 +71,29 @@ public:
 
 private slots:
 
-    void on_Button_Connect_clicked();
-    // uncommented due to obsolescence
-    // void on_Button_Get_Val_clicked();
+    // Own Slots
     void ChangeSettings(ConSets* NewConSets);
     void TimeOut();
+    void changeSlots(const QVector<ConSlot> &newConSlots);
+
+    // Buttons
     void on_pushButton_ConSets_clicked();
     void on_Button_read_slots_clicked();
-    void changeSlots(const QVector<ConSlot> &newConSlots);
-    void on_pushButton_clicked();
+    void on_clearGraphs_clicked();
+    void on_rescale_clicked();
+    void on_Button_Connect_clicked();
 
     //Menu entries
     void on_actionNewProject_triggered();
     void on_actionOpenProject_triggered();
     void on_actionSaveProject_triggered();
-
     void on_actionAbout_QT_triggered();
-
-
     void on_actionAbout_triggered();
-
     void on_actionHelp_triggered();
 
-
-    void on_clearGraphs_clicked();
-
 signals:
-
+    // No Signals needed.
 private:
-
 
     int recordings;
     int amountOfPoints;
